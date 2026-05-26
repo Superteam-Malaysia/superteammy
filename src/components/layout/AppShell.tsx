@@ -1,23 +1,23 @@
 "use client";
 
-import { LoadingProvider, useLoading } from "@/contexts/LoadingContext";
 import { HeroLogoRefProvider } from "@/contexts/HeroLogoRefContext";
 import { LenisProvider } from "@/contexts/LenisContext";
-import { LoadingScreen } from "@/components/ui/LoadingScreen";
+// import { LoadingProvider, useLoading } from "@/contexts/LoadingContext";
+// import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import { SmoothScroll } from "@/components/ui/SmoothScroll";
 
 function AppShellContent({ children }: { children: React.ReactNode }) {
-  const { loading, setLoading } = useLoading();
+  // const { loading, setLoading } = useLoading();
 
   return (
     <LenisProvider>
-      <LoadingScreen onComplete={() => setLoading(false)} />
-      <SmoothScroll enabled={!loading}>
+      {/* <LoadingScreen onComplete={() => setLoading(false)} /> */}
+      <SmoothScroll enabled>
         <div
           style={{
-            opacity: loading ? 0 : 1,
+            opacity: 1,
             transition: "opacity 0.3s ease-out",
-            pointerEvents: loading ? "none" : "auto",
+            pointerEvents: "auto",
           }}
         >
           {children}
@@ -29,10 +29,10 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
-    <LoadingProvider>
-      <HeroLogoRefProvider>
-        <AppShellContent>{children}</AppShellContent>
-      </HeroLogoRefProvider>
-    </LoadingProvider>
+    // <LoadingProvider>
+    <HeroLogoRefProvider>
+      <AppShellContent>{children}</AppShellContent>
+    </HeroLogoRefProvider>
+    // </LoadingProvider>
   );
 }

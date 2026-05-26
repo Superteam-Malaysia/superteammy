@@ -106,8 +106,8 @@ export function MembersSpotlight({ profiles, content }: MembersSpotlightProps) {
               <motion.span
                 className="block text-center will-change-transform"
                 style={{ lineHeight: 1.25 }}
-                initial={{ y: 60 }}
-                animate={mobileInView ? { y: 0 } : { y: 60 }}
+                initial={{ y: 96 }}
+                animate={mobileInView ? { y: 0 } : { y: 96 }}
                 transition={{
                   duration: 0.9,
                   ease: [0.77, 0, 0.175, 1],
@@ -117,9 +117,14 @@ export function MembersSpotlight({ profiles, content }: MembersSpotlightProps) {
               </motion.span>
             </div>
           </h2>
-          <p className="text-[10px] text-white/90 leading-relaxed max-w-3xl mx-auto px-5 md:px-0">
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={mobileInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+            transition={{ duration: 0.45, delay: mobileInView ? 0.9 : 0 }}
+            className="text-[10px] text-white/90 leading-relaxed max-w-3xl mx-auto px-5 md:px-0"
+          >
             {description}
-          </p>
+          </motion.p>
         </motion.div>
 
         <div className="-mx-4 overflow-visible relative">
@@ -182,8 +187,8 @@ export function MembersSpotlight({ profiles, content }: MembersSpotlightProps) {
               <motion.span
                 className="block text-center will-change-transform"
                 style={{ lineHeight: 1.25 }}
-                initial={{ y: 60 }}
-                animate={desktopInView ? { y: 0 } : { y: 60 }}
+                initial={{ y: 96 }}
+                animate={desktopInView ? { y: 0 } : { y: 96 }}
                 transition={{
                   duration: 0.9,
                   ease: [0.77, 0, 0.175, 1],
@@ -193,9 +198,14 @@ export function MembersSpotlight({ profiles, content }: MembersSpotlightProps) {
               </motion.span>
             </div>
           </h2>
-          <p className="text-sm sm:text-base md:text-lg text-white/90 leading-relaxed max-w-3xl mx-auto">
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={desktopInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+            transition={{ duration: 0.45, delay: desktopInView ? 0.9 : 0 }}
+            className="text-sm sm:text-base md:text-lg text-white/90 leading-relaxed max-w-3xl mx-auto"
+          >
             {description}
-          </p>
+          </motion.p>
         </motion.div>
 
         <div className="relative -mx-6 md:-mx-8 overflow-visible ">

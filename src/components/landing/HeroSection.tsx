@@ -168,6 +168,10 @@ const DEFAULT_HERO = {
   description: "We connect local talent with global opportunities. Build, earn, and grow alongside Malaysia's most ambitious web3 community.",
 };
 
+const UNICORN_HERO_PROJECT_ID = "9nnsZqe4sd4ZxHapzuRh";
+
+const UNICORN_HERO_SCRIPT = `!function(){var u=window.UnicornStudio;if(u&&u.init){if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",function(){u.init()})}else{u.init()}}else{window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.1.12/dist/unicornStudio.umd.js",i.onload=function(){if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",function(){UnicornStudio.init()})}else{UnicornStudio.init()}},(document.head||document.body).appendChild(i)}}();`;
+
 export function HeroSection({ content }: { content?: SiteContent | null }) {
   const titleLine1 = content?.title || DEFAULT_HERO.title;
   const titleLine2 = content?.subtitle || DEFAULT_HERO.subtitle;
@@ -205,30 +209,46 @@ export function HeroSection({ content }: { content?: SiteContent | null }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const initUnicorn = () => {
+      const unicorn = window.UnicornStudio as { init?: () => void } | undefined;
+      unicorn?.init?.();
+    };
+
+    initUnicorn();
+    const t1 = window.setTimeout(initUnicorn, 300);
+    const t2 = window.setTimeout(initUnicorn, 1000);
+
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, []);
+
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex flex-col"
+      className="relative min-h-screen flex flex-col overflow-hidden bg-black"
       style={{ zIndex: 0 }}
     >
+      
       {/* Unicorn Studio Background — parallax layer */}
       <div
         ref={backgroundRef}
-        className="absolute inset-0 w-full h-full will-change-transform"
+        className="absolute inset-0 h-full w-full overflow-hidden pointer-events-none will-change-transform"
+        aria-hidden="true"
       >
         <div
-          data-us-project="4ICJyh1ZdclndHQ7640M"
-          className="absolute inset-0 w-full h-full min-w-full min-h-full"
+          data-us-project={UNICORN_HERO_PROJECT_ID}
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
           style={{
-            width: "100%",
-            height: "100%",
-            minWidth: "100%",
-            minHeight: "100%",
+            width: "max(100vw, calc(100vh * 1.6))",
+            height: "max(100vh, calc(100vw / 1.6))",
           }}
         />
       </div>
       <Script id="unicorn-studio" strategy="afterInteractive" data-us-production="true">
-        {`!function(){var u=window.UnicornStudio;if(u&&u.init){if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",function(){u.init()})}else{u.init()}}else{window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.0.5/dist/unicornStudio.umd.js",i.onload=function(){if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",function(){UnicornStudio.init()})}else{UnicornStudio.init()}},(document.head||document.body).appendChild(i)}}();`}
+        {UNICORN_HERO_SCRIPT}
       </Script>
 
       {/* Dark overlay - gradient from black 50% to transparent over bottom 30% */}
@@ -308,11 +328,11 @@ export function HeroSection({ content }: { content?: SiteContent | null }) {
                   <motion.span
                     className="block text-center will-change-transform"
                     style={{ lineHeight: 1.25 }}
-                    initial={{ y: 60 }}
+                    initial={{ y: 96 }}
                     animate={
                       textRevealed
                         ? { y: 0 }
-                        : { y: 60 }
+                        : { y: 96 }
                     }
                     transition={{
                       duration: 0.9,
@@ -337,12 +357,18 @@ export function HeroSection({ content }: { content?: SiteContent | null }) {
         {/* Bottom: CTA buttons + Subtitle */}
         {/* Mobile: paragraph above buttons with 10px gap */}
         <div className="flex flex-col items-center w-full md:hidden">
-          <p
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={textRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+            transition={{
+              duration: 0.45,
+              delay: textRevealed ? 1.05 : 0,
+            }}
             className="w-full max-w-md text-center text-[10px] text-white/80 leading-relaxed uppercase font-inter font-semibold"
             style={{ marginBottom: 10 }}
           >
             {description}
-          </p>
+          </motion.p>
           <div className="flex items-center justify-between w-full gap-4">
             <CtaButton href="/dashboard" text="CONNECT" />
             <CtaButton href="https://t.me/superteammy" text="EXPLORE" external />
@@ -354,12 +380,18 @@ export function HeroSection({ content }: { content?: SiteContent | null }) {
           <div className="flex items-center justify-between w-full gap-4">
             <CtaButton href="/dashboard" text="CONNECT" />
             <div className="flex-1 min-w-0 h-px bg-white/20" />
-            <p
+            <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={textRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+            transition={{
+              duration: 0.45,
+              delay: textRevealed ? 1.05 : 0,
+            }}
             className="w-lg xl:w-2xl text-center text-xs xl:text-base text-white/80 leading-relaxed uppercase font-inter font-medium"
             style={{ marginBottom: 10 }}
           >
             {description}
-          </p>
+          </motion.p>
             <div className="flex-1 min-w-0 h-px bg-white/20" />
             <CtaButton href="https://t.me/superteammy" text="EXPLORE" external />
           </div>

@@ -46,8 +46,8 @@ export function FAQSection({ faqs, content }: FAQSectionProps) {
               <motion.span
                 className="block text-center will-change-transform"
                 style={{ lineHeight: 1.25 }}
-                initial={{ y: 60 }}
-                animate={inView ? { y: 0 } : { y: 60 }}
+                initial={{ y: 96 }}
+                animate={inView ? { y: 0 } : { y: 96 }}
                 transition={{
                   duration: 0.9,
                   ease: [0.77, 0, 0.175, 1],

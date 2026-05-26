@@ -4,6 +4,7 @@ import { useEffect, useRef, useMemo } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import type { MotionValue } from "framer-motion";
 import type { SiteContent } from "@/lib/types";
+
 function useElementScrollProgress(
   ref: React.RefObject<HTMLDivElement | null>,
   revealFraction = 0.15
@@ -59,14 +60,17 @@ function ScrollRevealText({
 
   return (
     <p className={className}>
+      {/* <span className="inline-block w-[10vw] max-w-[340px]" aria-hidden="true" /> */}
       {words.map((word, i) => {
         const start = i / words.length;
         const end = start + 1 / words.length;
         return (
-          <Word key={i} progress={progress} range={[start, end]}>
-            {word}
+          <span key={i}>
+            <Word progress={progress} range={[start, end]}>
+              {word}
+            </Word>
             {i < words.length - 1 ? " " : ""}
-          </Word>
+          </span>
         );
       })}
     </p>
@@ -97,7 +101,7 @@ export function WhoWeAreSection({ content }: { content?: SiteContent | null }) {
     w.UnicornStudio = { isInitialized: false };
     const script = document.createElement("script");
     script.src =
-      "https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.0.5/dist/unicornStudio.umd.js";
+      "https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.1.12/dist/unicornStudio.umd.js";
     script.onload = () => {
       const us = w.UnicornStudio as { init?: () => void } | undefined;
       us?.init?.();
@@ -146,7 +150,7 @@ export function WhoWeAreSection({ content }: { content?: SiteContent | null }) {
       {/* Sticky Unicorn Studio background — stays in viewport while section scrolls */}
       <div className="sticky top-0 h-screen w-full">
         <div
-          data-us-project="B1teAktYtdx9ixws50oS"
+          data-us-project="M4Npp8uoO33G2Wq56jtk"
           className="absolute inset-0 w-full h-full"
           data-us-production="true"
         />
@@ -154,16 +158,21 @@ export function WhoWeAreSection({ content }: { content?: SiteContent | null }) {
 
       {/* Scroll-reveal text area — taller container with sticky text inside */}
       <div ref={scrollRevealRef} className="relative -mt-[100vh] min-h-[150vh]">
-        <div className="sticky top-0 h-screen flex items-center justify-center px-6 z-10 pt-[65vh]">
-          <div className="max-w-7xl text-center">
+        <div className="sticky top-0 h-screen flex items-center justify-center px-6 z-10 pt-[50vh]">
+          <div className="max-w-[1650px] text-center px-10">
             <ScrollRevealText
               text={text}
               progress={scrollYProgress}
-              className="font-[family-name:var(--font-orbitron)] text-base md:text-lg lg:text-3xl xl:text-4xl text-white font-black leading-tight"
+              className="font-[family-name:var(--font-orbitron)] block text-base md:text-lg lg:text-3xl xl:text-5xl text-white font-black leading-tight"
             />
           </div>
         </div>
       </div>
+
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-[45vh] bg-gradient-to-b from-transparent to-[#090C0E]"
+        aria-hidden="true"
+      />
     </section>
   );
 }

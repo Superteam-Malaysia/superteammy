@@ -93,8 +93,8 @@ export function EventsSection({ events, content }: EventsSectionProps) {
             <motion.span
               className="block text-center will-change-transform"
               style={{ lineHeight: 1.25 }}
-              initial={{ y: 60 }}
-              animate={inView ? { y: 0 } : { y: 60 }}
+              initial={{ y: 96 }}
+              animate={inView ? { y: 0 } : { y: 96 }}
               transition={{
                 duration: 0.9,
                 ease: [0.77, 0, 0.175, 1],
@@ -112,9 +112,14 @@ export function EventsSection({ events, content }: EventsSectionProps) {
               </h2>
             </motion.span>
           </div>
-          <p className="text-xs md:text-[16px] text-white/90 max-w-3xl mx-auto text-center">
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+            transition={{ duration: 0.45, delay: inView ? 0.9 : 0 }}
+            className="text-xs md:text-[16px] text-white/90 max-w-3xl mx-auto text-center"
+          >
             {description}
-          </p>
+          </motion.p>
         </div>
       </div>
 
