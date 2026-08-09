@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getTweet } from "react-tweet/api";
 import { AdminCommunityClient } from "@/app/admin/community/AdminCommunityClient";
 import { getCommunityTweets } from "@/lib/supabase/queries";

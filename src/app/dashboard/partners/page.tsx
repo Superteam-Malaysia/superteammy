@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getPartners } from "@/lib/supabase/queries";
 import { AdminPartnersClient } from "@/app/admin/partners/AdminPartnersClient";
 

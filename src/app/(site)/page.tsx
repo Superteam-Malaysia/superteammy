@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { HeroSection } from "@/components/landing/HeroSection";
 import { WhoWeAreSection } from "@/components/landing/WhoWeAreSection";
 import { MissionSection } from "@/components/landing/MissionSection";

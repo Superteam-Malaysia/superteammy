@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getEvents } from "@/lib/supabase/queries";
 import { AdminEventsClient } from "@/app/admin/events/AdminEventsClient";
 

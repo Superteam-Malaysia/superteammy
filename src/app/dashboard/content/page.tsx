@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { AdminContentClient } from "@/app/admin/content/AdminContentClient";
 import { getSiteContent, getFAQs } from "@/lib/supabase/queries";
 

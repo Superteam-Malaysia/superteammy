@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { createServerClient } from "@/lib/supabase/server";
 import { getAllProfiles } from "@/lib/supabase/queries";
 import { AdminMembersClient } from "@/app/admin/members/AdminMembersClient";

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getProfiles, getSubskills } from "@/lib/supabase/queries";
 import { MembersPageClient } from "./MembersPageClient";
 

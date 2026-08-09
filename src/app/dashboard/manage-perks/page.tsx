@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getPerks } from "@/lib/supabase/queries";
 import { AdminPerksClient } from "@/app/admin/perks/AdminPerksClient";
 
