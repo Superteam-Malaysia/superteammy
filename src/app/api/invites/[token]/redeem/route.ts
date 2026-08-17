@@ -48,9 +48,13 @@ export async function POST(
     return NextResponse.json({ error: signupErr.message }, { status: 400 });
   }
 
+  // An invite is itself the approval, so skip the pending queue.
   const { error: profileErr } = await admin.from("profiles").insert({
     id: newUser.user.id,
     user_role: invite.invited_role,
+    approval_status: "approved",
+    approved_at: new Date().toISOString(),
+    approved_by: invite.created_by ?? null,
     onboarding_completed: false,
   });
 

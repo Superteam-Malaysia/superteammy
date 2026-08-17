@@ -24,12 +24,6 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { motion } from "framer-motion";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { UnicornBackground } from "@/components/ui/UnicornBackground";
 
 const sidebarLinks: { href: string; label: string; icon: typeof LayoutDashboard; badge?: string }[] = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -61,44 +55,38 @@ export default function DashboardLayout({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [profileData, setProfileData] = useState<{ avatar_url: string | null; nickname: string | null } | null>(null);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loginError, setLoginError] = useState("");
-  const [showLoginPanel, setShowLoginPanel] = useState(false);
 
   useEffect(() => {
     checkAuth();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     const stored = localStorage.getItem("dashboard-sidebar-collapsed");
     if (stored !== null) setSidebarCollapsed(stored === "true");
   }, []);
 
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      const t = setTimeout(() => setShowLoginPanel(true), 5000);
-      return () => clearTimeout(t);
-    }
-  }, [isLoading, isAuthenticated]);
-
   async function checkAuth() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      setIsAuthenticated(false);
-      setIsLoading(false);
+      // Signing in lives at /login now; middleware also catches this server-side.
+      router.replace(`/login?next=${encodeURIComponent(pathname)}`);
       return;
     }
 
     const { data: profile } = await supabase
       .from("profiles")
-      .select("onboarding_completed, user_role, avatar_url, nickname")
+      .select("onboarding_completed, user_role, avatar_url, nickname, approval_status")
       .eq("id", user.id)
       .single();
 
+    if (profile?.approval_status === "pending" || profile?.approval_status === "rejected") {
+      router.replace("/pending");
+      return;
+    }
+
     if (!profile?.onboarding_completed) {
-      router.push("/onboarding");
+      router.replace("/onboarding");
       return;
     }
 
@@ -108,98 +96,16 @@ export default function DashboardLayout({
     setIsLoading(false);
   }
 
-  async function handleLogin(e: React.FormEvent) {
-    e.preventDefault();
-    setLoginError("");
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) throw error;
-
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("onboarding_completed, user_role, avatar_url, nickname")
-        .eq("id", data.user!.id)
-        .single();
-
-      if (!profile?.onboarding_completed) {
-        router.push("/onboarding");
-        return;
-      }
-
-      setUserRole(profile.user_role);
-      setProfileData({ avatar_url: profile.avatar_url ?? null, nickname: profile.nickname ?? null });
-      setIsAuthenticated(true);
-    } catch (err: unknown) {
-      setLoginError(err instanceof Error ? err.message : "Login failed");
-    }
-  }
-
   async function handleLogout() {
     await supabase.auth.signOut();
     router.push("/");
   }
 
-  if (isLoading) {
+  // Covers both the initial check and the moment before a redirect lands.
+  if (isLoading || !isAuthenticated) {
     return (
       <div className="dark min-h-screen flex items-center justify-center" style={{ backgroundColor: "#080B0E" }}>
         <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return (
-      <div className="dark min-h-screen flex items-center justify-center px-6 relative">
-        <UnicornBackground />
-        {showLoginPanel && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="relative z-10 flex flex-col items-center gap-6 w-full max-w-md"
-        >
-          <Image
-            src="/white-stmy-logo.png"
-            alt="Superteam Malaysia"
-            width={128}
-            height={128}
-            className="h-14 w-14 object-contain"
-          />
-          <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Sign in to access Superteam Member&apos;s dashboard</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-              {loginError && <p className="text-sm text-destructive">{loginError}</p>}
-              <Button type="submit" className="w-full cursor-pointer">Sign In</Button>
-            </form>
-          </CardContent>
-        </Card>
-        </motion.div>
-        )}
       </div>
     );
   }

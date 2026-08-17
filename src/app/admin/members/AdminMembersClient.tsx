@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Search, MoreVertical, Shield, Eye, UserX, UserCheck, ExternalLink, Mail, Pencil, Award } from "lucide-react";
+import { Search, MoreVertical, Shield, Eye, UserX, UserCheck, ExternalLink, Mail, Pencil, Award, UserPlus } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import type { Profile, UserRole } from "@/lib/types";
 import { Button } from "@/components/ui/button";
@@ -39,7 +39,7 @@ const MEMBER_BADGES = ["Bounty Hunter", "Hackathon Winner", "Solana Builder", "C
 export function AdminMembersClient({ initialProfiles, userRole = "member" }: AdminMembersClientProps) {
   const [profiles, setProfiles] = useState<Profile[]>(initialProfiles);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "onboarded" | "pending" | "deactivated">("all");
+  const [statusFilter, setStatusFilter] = useState<"all" | "onboarded" | "onboarding" | "rejected" | "deactivated">("all");
   const [viewProfile, setViewProfile] = useState<Profile | null>(null);
   const [roleChangeTarget, setRoleChangeTarget] = useState<{ id: string; nickname: string; currentRole: UserRole } | null>(null);
   const [newRole, setNewRole] = useState<UserRole>("member");
@@ -47,6 +47,7 @@ export function AdminMembersClient({ initialProfiles, userRole = "member" }: Adm
   const [editMember, setEditMember] = useState<{ profile: Profile; memberNumber: string; badges: string[] } | null>(null);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const [toastExiting, setToastExiting] = useState(false);
+  const [reviewingId, setReviewingId] = useState<string | null>(null);
 
   const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -65,7 +66,13 @@ export function AdminMembersClient({ initialProfiles, userRole = "member" }: Adm
     };
   }, [toast]);
 
+  // Self-registrations waiting on a super admin. Shown in their own queue above the
+  // table rather than mixed into it, so they don't get lost among existing members.
+  const awaitingApproval = profiles.filter((p) => p.approval_status === "pending");
+
   const filteredProfiles = profiles.filter((p) => {
+    if (p.approval_status === "pending") return false;
+
     const matchesSearch =
       !searchQuery.trim() ||
       (p.nickname || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -75,7 +82,10 @@ export function AdminMembersClient({ initialProfiles, userRole = "member" }: Adm
     const matchesStatus =
       statusFilter === "all" ||
       (statusFilter === "onboarded" && p.onboarding_completed && !isDeactivated) ||
-      (statusFilter === "pending" && !p.onboarding_completed && !isDeactivated) ||
+      // "onboarding" = approved but hasn't finished their profile yet. Distinct
+      // from approval-pending, which lives in the queue above.
+      (statusFilter === "onboarding" && !p.onboarding_completed && !isDeactivated) ||
+      (statusFilter === "rejected" && p.approval_status === "rejected") ||
       (statusFilter === "deactivated" && isDeactivated);
 
     return matchesSearch && matchesStatus;
@@ -141,6 +151,35 @@ export function AdminMembersClient({ initialProfiles, userRole = "member" }: Adm
     }
   }
 
+  async function handleReview(userId: string, decision: "approve" | "reject", role: UserRole = "member") {
+    setReviewingId(userId);
+    const res = await fetch("/api/admin/review-user", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, decision, role }),
+    });
+    setReviewingId(null);
+
+    if (res.ok) {
+      setProfiles(profiles.map((p) =>
+        p.id === userId
+          ? {
+              ...p,
+              approval_status: decision === "approve" ? ("approved" as const) : ("rejected" as const),
+              user_role: decision === "approve" ? role : p.user_role,
+            }
+          : p
+      ));
+      setToast({
+        message: decision === "approve" ? "Member approved" : "Registration rejected",
+        type: "success",
+      });
+    } else {
+      const data = await res.json();
+      setToast({ message: data.error || "Failed to review registration", type: "error" });
+    }
+  }
+
   async function handleUpdateMember() {
     if (!editMember) return;
     const num = editMember.memberNumber.trim() ? parseInt(editMember.memberNumber, 10) : null;
@@ -184,6 +223,68 @@ export function AdminMembersClient({ initialProfiles, userRole = "member" }: Adm
         )}
       </div>
 
+      {userRole === "super_admin" && awaitingApproval.length > 0 && (
+        <Card className="mb-6 border-amber-500/30 bg-amber-500/[0.03]">
+          <div className="px-6 py-4 border-b border-white/5 flex items-center gap-2">
+            <UserPlus className="w-4 h-4 text-amber-500" />
+            <h2 className="font-semibold">
+              Pending approval
+              <span className="ml-2 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 text-xs">
+                {awaitingApproval.length}
+              </span>
+            </h2>
+          </div>
+          <div className="divide-y divide-white/5">
+            {awaitingApproval.map((profile) => (
+              <div
+                key={profile.id}
+                className="px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between"
+              >
+                <div className="min-w-0">
+                  <p className="text-white font-medium truncate">
+                    {profile.nickname || profile.real_name || "New registration"}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Registered{" "}
+                    {profile.created_at
+                      ? new Date(profile.created_at).toLocaleDateString()
+                      : "recently"}
+                  </p>
+                </div>
+                <div className="flex gap-2 shrink-0">
+                  <Button
+                    size="sm"
+                    className="cursor-pointer"
+                    disabled={reviewingId === profile.id}
+                    onClick={() => handleReview(profile.id, "approve", "member")}
+                  >
+                    <UserCheck className="w-3 h-3 mr-1.5" /> Approve
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="cursor-pointer"
+                    disabled={reviewingId === profile.id}
+                    onClick={() => handleReview(profile.id, "approve", "admin")}
+                  >
+                    <Shield className="w-3 h-3 mr-1.5" /> As admin
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="cursor-pointer text-destructive hover:text-destructive"
+                    disabled={reviewingId === profile.id}
+                    onClick={() => handleReview(profile.id, "reject")}
+                  >
+                    <UserX className="w-3 h-3 mr-1.5" /> Reject
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 flex-wrap mb-6">
         <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -195,7 +296,7 @@ export function AdminMembersClient({ initialProfiles, userRole = "member" }: Adm
           />
         </div>
         <div className="flex gap-2">
-          {(["all", "onboarded", "pending", "deactivated"] as const).map((status) => (
+          {(["all", "onboarded", "onboarding", "rejected", "deactivated"] as const).map((status) => (
             <Button
               key={status}
               variant={statusFilter === status ? "default" : "outline"}
@@ -279,13 +380,17 @@ export function AdminMembersClient({ initialProfiles, userRole = "member" }: Adm
                         <span className="px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 text-xs">
                           Deactivated
                         </span>
+                      ) : profile.approval_status === "rejected" ? (
+                        <span className="px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 text-xs">
+                          Rejected
+                        </span>
                       ) : profile.onboarding_completed ? (
                         <span className="px-2 py-0.5 rounded-full bg-green-500/10 text-green-500 text-xs">
                           Active
                         </span>
                       ) : (
                         <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 text-xs">
-                          Pending
+                          Onboarding
                         </span>
                       )}
                     </td>

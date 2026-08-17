@@ -2,6 +2,19 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 
+/** Reachable without a session. */
+const PUBLIC_PREFIXES = ['/invite/', '/login', '/register', '/forgot-password', '/reset-password'];
+
+const SUPER_ADMIN_PATHS = ['/dashboard/members', '/dashboard/invites'];
+const ADMIN_PATHS = [
+  '/dashboard/events',
+  '/dashboard/partners',
+  '/dashboard/content',
+  '/dashboard/manage-perks',
+  '/dashboard/community',
+  '/dashboard/metrics',
+];
+
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
@@ -9,10 +22,9 @@ export async function middleware(request: NextRequest) {
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('Referrer-Policy', 'origin-when-cross-origin');
 
-  const { pathname } = request.nextUrl;
+  const { pathname, search } = request.nextUrl;
 
-  // Public routes that don't need auth checks
-  if (pathname.startsWith('/invite/')) {
+  if (PUBLIC_PREFIXES.some((p) => pathname.startsWith(p))) {
     return response;
   }
 
@@ -34,37 +46,47 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  // Redirect /admin to /dashboard
+  // /admin/* is the old prefix; keep the redirect so bookmarks still work.
   if (pathname.startsWith('/admin')) {
     const newPath = pathname.replace(/^\/admin/, '/dashboard');
     return NextResponse.redirect(new URL(newPath || '/dashboard', request.url));
   }
 
-  // Protected routes: /dashboard, /onboarding
-  if (pathname.startsWith('/dashboard')) {
-    if (!user) {
-      return response;
-    }
+  const signIn = () => {
+    const url = new URL('/login', request.url);
+    url.searchParams.set('next', pathname + search);
+    return NextResponse.redirect(url);
+  };
 
-    const userRole = (user.app_metadata?.user_role as string) || 'member';
-
-    // Super admin-only routes
-    if (pathname.startsWith('/dashboard/members') || pathname.startsWith('/dashboard/invites')) {
-      if (userRole !== 'super_admin') {
-        return NextResponse.redirect(new URL('/dashboard', request.url));
-      }
-    }
-
-    // General admin routes require admin or super_admin
-    const adminPaths = ['/dashboard/events', '/dashboard/partners', '/dashboard/content', '/dashboard/manage-perks'];
-    if (adminPaths.some((p) => pathname.startsWith(p)) && userRole !== 'super_admin' && userRole !== 'admin') {
-      return NextResponse.redirect(new URL('/dashboard', request.url));
-    }
+  if (pathname === '/pending') {
+    if (!user) return signIn();
+    return response;
   }
 
-  if (pathname === '/onboarding') {
-    if (!user) {
-      return NextResponse.redirect(new URL('/dashboard', request.url));
+  if (pathname.startsWith('/dashboard') || pathname === '/onboarding') {
+    // Previously this fell through to a client-side check, so protected pages
+    // rendered briefly before redirecting.
+    if (!user) return signIn();
+
+    // app_metadata is the trustworthy copy -- it's signed into the JWT, unlike
+    // profiles.user_role, which is only a mirror for the UI.
+    const userRole = (user.app_metadata?.user_role as string) || 'member';
+
+    if (user.app_metadata?.deactivated === true) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+
+    if (pathname.startsWith('/dashboard')) {
+      if (SUPER_ADMIN_PATHS.some((p) => pathname.startsWith(p)) && userRole !== 'super_admin') {
+        return NextResponse.redirect(new URL('/dashboard', request.url));
+      }
+      if (
+        ADMIN_PATHS.some((p) => pathname.startsWith(p)) &&
+        userRole !== 'super_admin' &&
+        userRole !== 'admin'
+      ) {
+        return NextResponse.redirect(new URL('/dashboard', request.url));
+      }
     }
   }
 
@@ -72,5 +94,13 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/dashboard/:path*', '/onboarding', '/invite/:path*'],
+  matcher: [
+    '/admin/:path*',
+    '/dashboard/:path*',
+    '/onboarding',
+    '/pending',
+    '/invite/:path*',
+    '/login',
+    '/register',
+  ],
 };

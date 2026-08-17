@@ -31,12 +31,7 @@ export default function InvitePage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
-  const [showForm, setShowForm] = useState(false);
-
-  useEffect(() => {
-    const t = setTimeout(() => setShowForm(true), 5000);
-    return () => clearTimeout(t);
-  }, []);
+  const [showForm, setShowForm] = useState(true);
 
   useEffect(() => {
     validateToken();

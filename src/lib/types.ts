@@ -22,9 +22,14 @@ export interface Member {
 
 export type UserRole = 'super_admin' | 'admin' | 'member';
 
+export type ApprovalStatus = 'pending' | 'approved' | 'rejected';
+
 export interface Profile {
   id: string;
   user_role: UserRole;
+  approval_status?: ApprovalStatus;
+  approved_at?: string | null;
+  approved_by?: string | null;
   nickname: string;
   real_name: string;
   avatar_url: string;

@@ -170,6 +170,8 @@ export async function getProfiles(): Promise<Profile[]> {
       .select("*")
       .eq("onboarding_completed", true)
       .or("is_active.is.null,is_active.eq.true")
+      // Tolerate null for rows written before the approval migration.
+      .or("approval_status.is.null,approval_status.eq.approved")
       .order("member_number", { ascending: true, nullsFirst: false });
 
     if (error) {
@@ -209,6 +211,7 @@ export async function getFeaturedProfiles(): Promise<Profile[]> {
     .eq("is_featured", true)
     .eq("onboarding_completed", true)
     .or("is_active.is.null,is_active.eq.true")
+    .or("approval_status.is.null,approval_status.eq.approved")
     .order("display_order", { ascending: true });
 
   if (error) {
