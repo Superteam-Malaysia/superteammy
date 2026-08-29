@@ -30,7 +30,7 @@ export function AuthShell({ title, description, children, footer }: AuthShellPro
       >
         <Link href="/">
           <Image
-            src="/white-stmy-logo.png"
+            src="/stmy-mark.svg"
             alt="Superteam Malaysia"
             width={128}
             height={128}

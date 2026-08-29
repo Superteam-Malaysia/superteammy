@@ -18,6 +18,13 @@ const nextConfig: NextConfig = {
         hostname: "**.supabase.co",
         pathname: "/storage/v1/object/public/**",
       },
+      {
+        // Member avatars imported from the community sheet point at X/Twitter's
+        // CDN. next/image rejects unconfigured hosts at runtime.
+        protocol: "https",
+        hostname: "pbs.twimg.com",
+        pathname: "/**",
+      },
     ],
   },
 };

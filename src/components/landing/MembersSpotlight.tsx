@@ -17,6 +17,16 @@ interface MembersSpotlightProps {
 const CARD_SCALE = 0.9;
 // Card base width 320px; scaled visual width = 320*0.85. Use that so cards stick close.
 const CARD_WIDTH = Math.round(320 * CARD_SCALE); // 272
+const MOBILE_CARD_WIDTH = 280 + 16; // card + gap-4
+
+// Pixels per second. The track length grows with the member count, so the
+// duration is derived from it — otherwise adding members speeds the scroll up.
+const MARQUEE_SPEED = 80;
+const MIN_DURATION = 18;
+
+function marqueeDuration(count: number, cardWidth: number) {
+  return Math.max(MIN_DURATION, (count * cardWidth) / MARQUEE_SPEED);
+}
 
 const DEFAULT_MEMBERS = {
   title: "Member Spotlight",
@@ -43,6 +53,15 @@ export function MembersSpotlight({ profiles, content }: MembersSpotlightProps) {
     }),
     [profiles],
   );
+
+  const desktopDuration = marqueeDuration(profiles.length, CARD_WIDTH);
+  const mobileDuration = marqueeDuration(profiles.length, MOBILE_CARD_WIDTH);
+  const desktopStyle = {
+    "--marquee-duration": `${desktopDuration}s`,
+  } as React.CSSProperties;
+  const mobileStyle = {
+    "--marquee-duration": `${mobileDuration}s`,
+  } as React.CSSProperties;
 
   const renderCards = (
     rowProfiles: Profile[],
@@ -129,7 +148,7 @@ export function MembersSpotlight({ profiles, content }: MembersSpotlightProps) {
 
         <div className="-mx-4 overflow-visible relative">
           
-          <div className="marquee-track marquee-mobile-ltr flex gap-4 w-max">
+          <div className="marquee-track marquee-mobile-ltr flex gap-4 w-max" style={mobileStyle}>
             <div className="flex gap-4 shrink-0">
               {profiles.map((profile, i) => (
                 <div
@@ -211,7 +230,7 @@ export function MembersSpotlight({ profiles, content }: MembersSpotlightProps) {
         <div className="relative -mx-6 md:-mx-8 overflow-visible ">
           {/* Row 1: left to right (content scrolls left) */}
           <div className="marquee-row group -mb-5">
-            <div className="marquee-track marquee-ltr">
+            <div className="marquee-track marquee-ltr" style={desktopStyle}>
               <div className="flex gap-0 pr-0 shrink-0 overflow-visible">
                 {renderCards(row1, 0, 0)}
               </div>
@@ -223,7 +242,7 @@ export function MembersSpotlight({ profiles, content }: MembersSpotlightProps) {
 
           {/* Row 2: right to left (content scrolls right) */}
           <div className="marquee-row group">
-            <div className="marquee-track marquee-rtl">
+            <div className="marquee-track marquee-rtl" style={desktopStyle}>
               <div className="flex gap-0 pr-0 shrink-0 overflow-visible">
                 {renderCards(row2, profiles.length, 0)}
               </div>

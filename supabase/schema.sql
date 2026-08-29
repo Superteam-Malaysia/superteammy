@@ -144,7 +144,7 @@ INSERT INTO stats (label, value, suffix, icon, display_order) VALUES
 
 INSERT INTO faqs (question, answer, display_order) VALUES
   ('What is Superteam Malaysia?', 'Superteam Malaysia is the local chapter of the global Superteam network, dedicated to empowering builders, creators, founders, and talent in the Solana ecosystem.', 1),
-  ('How do I join Superteam Malaysia?', 'You can join our community by connecting with us on Telegram, Discord, or Twitter/X. We welcome developers, designers, content creators, and anyone passionate about Web3.', 2),
+  ('How do I join Superteam Malaysia?', 'You can join our community by connecting with us on Telegram, or Twitter/X. We welcome developers, designers, content creators, and anyone passionate about Web3.', 2),
   ('What opportunities are available?', 'We offer bounties, grants, job opportunities, hackathons, workshops, and mentorship programs for builders of all skill levels.', 3),
   ('How can projects collaborate with us?', 'Reach out to us via our social channels. We can help with community building, talent sourcing, event partnerships, and ecosystem integration.', 4),
   ('Do I need to be a developer to join?', 'Absolutely not! We welcome all skill sets — designers, content creators, marketers, business developers, community managers, and more.', 5);

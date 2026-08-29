@@ -319,7 +319,7 @@ const faqs = [
   {
     question: "How do I join Superteam Malaysia?",
     answer:
-      "You can join our community by connecting with us on Telegram, Discord, or Twitter/X. We welcome developers, designers, content creators, business developers, and anyone passionate about Web3 and Solana.",
+      "You can join our community by connecting with us on Telegram, or Twitter/X. We welcome developers, designers, content creators, business developers, and anyone passionate about Web3 and Solana.",
     display_order: 2,
   },
   {

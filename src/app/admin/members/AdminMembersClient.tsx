@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Search, MoreVertical, Shield, Eye, UserX, UserCheck, ExternalLink, Mail, Pencil, Award, UserPlus } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
+import { MEMBER_BADGES } from "@/lib/badges";
 import type { Profile, UserRole } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,7 +35,7 @@ const roleColors: Record<UserRole, string> = {
   member: "bg-green-500/10 text-green-500",
 };
 
-const MEMBER_BADGES = ["Bounty Hunter", "Hackathon Winner", "Solana Builder", "Core Contributor"] as const;
+
 
 export function AdminMembersClient({ initialProfiles, userRole = "member" }: AdminMembersClientProps) {
   const [profiles, setProfiles] = useState<Profile[]>(initialProfiles);

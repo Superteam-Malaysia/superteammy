@@ -21,7 +21,7 @@ const BAR_DURATION_S =
   (LOGO_ANIM_MS + SCRAMBLE_DURATION_MS + HOLD_AFTER_MS) / 1000;
 
 const LOADING_LOGO_W = 80;
-const LOADING_LOGO_H = 62;
+const LOADING_LOGO_H = 68;
 
 export function LoadingScreen({ onComplete }: { onComplete: () => void }) {
   const [phase, setPhase] = useState<
@@ -146,7 +146,7 @@ export function LoadingScreen({ onComplete }: { onComplete: () => void }) {
                   }}
                 >
                   <Image
-                    src="/white-stmy-logo.png"
+                    src="/stmy-mark.svg"
                     alt="Superteam Malaysia"
                     width={LOADING_LOGO_W}
                     height={LOADING_LOGO_H}
@@ -164,7 +164,7 @@ export function LoadingScreen({ onComplete }: { onComplete: () => void }) {
               style={{ visibility: isZooming ? "hidden" : "visible" }}
             >
               <Image
-                src="/white-stmy-logo.png"
+                src="/stmy-mark.svg"
                 alt="Superteam Malaysia"
                 width={LOADING_LOGO_W}
                 height={LOADING_LOGO_H}

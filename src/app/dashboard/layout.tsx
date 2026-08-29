@@ -20,7 +20,10 @@ import {
   PanelLeftClose,
   PanelLeft,
   BarChart3,
-  Heart,
+  // Heart, // used by the hidden Community link
+  Inbox,
+  TrendingUp,
+  Images,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
@@ -35,10 +38,13 @@ const adminLinks = [
   { href: "/dashboard/members", label: "Members", icon: Users, roles: ["super_admin"] as const },
   { href: "/dashboard/events", label: "Events", icon: Calendar, roles: ["super_admin", "admin"] as const },
   { href: "/dashboard/partners", label: "Partners", icon: Handshake, roles: ["super_admin", "admin"] as const },
-  { href: "/dashboard/community", label: "Community", icon: Heart, roles: ["super_admin", "admin"] as const },
+  // { href: "/dashboard/community", label: "Community", icon: Heart, roles: ["super_admin", "admin"] as const }, // hidden for now
   { href: "/dashboard/manage-perks", label: "Perks", icon: Gift, roles: ["super_admin", "admin"] as const },
   { href: "/dashboard/content", label: "Site Content", icon: FileText, roles: ["super_admin", "admin"] as const },
   { href: "/dashboard/metrics", label: "Dashboard Metrics", icon: BarChart3, roles: ["super_admin", "admin"] as const },
+  { href: "/dashboard/stats", label: "Landing Stats", icon: TrendingUp, roles: ["super_admin", "admin"] as const },
+  { href: "/dashboard/gallery", label: "Event Gallery", icon: Images, roles: ["super_admin", "admin"] as const },
+  { href: "/dashboard/subscribers", label: "Subscribers", icon: Inbox, roles: ["super_admin", "admin"] as const },
   { href: "/dashboard/invites", label: "Invites", icon: Mail, roles: ["super_admin"] as const },
 ];
 
@@ -144,16 +150,16 @@ export default function DashboardLayout({
           <div className={cn("pt-6 shrink-0", sidebarCollapsed ? "md:px-0 md:flex md:justify-center" : "px-5")}>
             <Link href="/" className={cn("block", sidebarCollapsed && "md:w-10 md:h-10 md:flex md:items-center md:justify-center")}>
               <Image
-                src="/white-stmy-logo.png"
+                src="/stmy-mark.svg"
                 alt="Superteam Malaysia"
-                width={40}
+                width={47}
                 height={40}
                 className={cn("h-6 w-6 object-contain", "hidden", sidebarCollapsed && "md:block")}
               />
               <Image
                 src="/superteam.svg"
                 alt="Superteam Malaysia"
-                width={120}
+                width={156}
                 height={24}
                 className={cn("h-4 w-auto md:h-6", sidebarCollapsed && "md:hidden")}
               />

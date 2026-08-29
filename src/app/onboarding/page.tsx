@@ -255,7 +255,7 @@ export default function OnboardingPage() {
       <UnicornBackground />
       <div className="relative z-10 w-full max-w-lg">
         <div className="flex justify-center mb-8">
-          <Image src="/superteam.svg" alt="Superteam Malaysia" width={160} height={32} className="h-8 w-auto" />
+          <Image src="/superteam.svg" alt="Superteam Malaysia" width={207} height={32} className="h-8 w-auto" />
         </div>
 
         {/* Progress */}

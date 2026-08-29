@@ -1,5 +1,5 @@
 import { createServerClient } from "./server";
-import type { Member, Event, Partner, Stat, Testimonial, FAQ, Profile, Invite, LookupTag, SubskillTag, Project, Perk, CommunityTweet, SiteContent } from "../types";
+import type { Member, Event, Partner, Stat, Testimonial, FAQ, Profile, Invite, LookupTag, SubskillTag, Project, Perk, CommunityTweet, SiteContent, NewsletterSubscriber, EventPhoto } from "../types";
 
 export async function getMembers(): Promise<Member[]> {
   const supabase = await createServerClient();
@@ -179,7 +179,11 @@ export async function getProfiles(): Promise<Profile[]> {
       return [];
     }
 
-    const profiles = data as Profile[];
+    // A profile with no name renders as a blank "MEMBER" card, so skip those
+    // rather than padding the spotlight with empty shells.
+    const profiles = (data as Profile[]).filter(
+      (p) => (p.nickname || p.real_name || "").trim().length > 0
+    );
     return attachProfileRelations(supabase, profiles);
   } catch (err) {
     console.error("Failed to fetch profiles:", err instanceof Error ? err.message : "Unknown error");
@@ -342,4 +346,49 @@ export async function getProfileProjects(profileId: string): Promise<Project[]> 
     return [];
   }
   return data as Project[];
+}
+
+export async function getNewsletterSubscribers(): Promise<NewsletterSubscriber[]> {
+  try {
+    const supabase = await createServerClient();
+    const { data, error } = await supabase
+      .from("newsletter_subscribers")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Failed to fetch newsletter subscribers:", error.message);
+      return [];
+    }
+    return data as NewsletterSubscriber[];
+  } catch (err) {
+    console.error("Failed to fetch newsletter subscribers:", err instanceof Error ? err.message : "Unknown error");
+    return [];
+  }
+}
+
+export async function getEventPhotos(): Promise<EventPhoto[]> {
+  try {
+    const supabase = await createServerClient();
+    const { data, error } = await supabase
+      .from("event_photos")
+      .select("*")
+      .order("display_order", { ascending: true });
+
+    if (error) {
+      // PGRST205 = table missing, i.e. the migration has not run yet. The
+      // component falls back to the bundled photos, so this is expected
+      // degradation rather than a failure worth an error overlay.
+      if (error.code === "PGRST205") {
+        console.warn("event_photos table not found — using bundled photos.");
+      } else {
+        console.error("Failed to fetch event photos:", error.message);
+      }
+      return [];
+    }
+    return data as EventPhoto[];
+  } catch (err) {
+    console.error("Failed to fetch event photos:", err instanceof Error ? err.message : "Unknown error");
+    return [];
+  }
 }

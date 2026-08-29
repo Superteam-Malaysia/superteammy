@@ -8,6 +8,7 @@ import type { Profile } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { useLenisRef } from "@/contexts/LenisContext";
+import { BADGE_PILL_CLASS, BADGE_PILL_FALLBACK, cardGradientFor } from "@/lib/badges";
 
 interface MemberProfileCardProps {
   profile: Profile;
@@ -41,20 +42,7 @@ export function MemberProfileCard({
     profile.telegram_url ||
     profile.website_url;
 
-  const badges = profile.badges || [];
-  const hasBountyHunter = badges.includes("Bounty Hunter");
-  const hasSolanaBuilder = badges.includes("Solana Builder");
-  const hasHackathonWinner = badges.includes("Hackathon Winner");
-  const hasCoreContributor = badges.includes("Core Contributor");
-  const cardGradient = hasBountyHunter
-    ? "linear-gradient(180deg, #4C1D1D 0%, #933939 100%)"
-    : hasSolanaBuilder
-      ? "linear-gradient(180deg, #153C13 0%, #287824 100%)"
-      : hasHackathonWinner
-        ? "linear-gradient(180deg, #504A20 0%, #8B8138 100%)"
-        : hasCoreContributor
-          ? "linear-gradient(180deg, #14173D 0%, #293280 100%)"
-          : "linear-gradient(180deg, #1C1C1C 0%, #343535 100%)";
+  const cardGradient = cardGradientFor(profile.badges);
 
   const [isFlipped, setIsFlipped] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -112,7 +100,7 @@ export function MemberProfileCard({
         <div className="relative p-5 flex flex-col items-center h-full min-h-0 z-20">
           <div className="w-full flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <Image src="/superteam.svg" alt="Superteam Malaysia" width={150} height={24} />
+              <Image src="/superteam.svg" alt="Superteam Malaysia" width={156} height={24} className="h-6 w-auto" />
             </div>
             {formattedMemberNum && (
               <span className="px-2.5 py-1 rounded-sm text-xs font-bold text-white border border-white/20 bg-white/10 font-[family-name:var(--font-orbitron)]">
@@ -142,11 +130,7 @@ export function MemberProfileCard({
                         key={b}
                         className={cn(
                           "px-2 py-0.5 rounded-full border text-[10px] font-black uppercase tracking-wider font-[family-name:var(--font-orbitron)]",
-                          b === "Bounty Hunter" ? "bg-[#CB5454]/50 border-[#6B2929]/50 text-white"
-                            : b === "Solana Builder" ? "bg-[#49C942]/50 border-[#6BF863]/50 text-white"
-                            : b === "Hackathon Winner" ? "bg-[#E7D763]/50 border-[#A38A33]/50 text-white"
-                            : b === "Core Contributor" ? "bg-[#424FC9]/50 border-[#6863F8]/50 text-white"
-                            : "bg-amber-500/20 text-amber-400 border-transparent"
+                          BADGE_PILL_CLASS[b] ?? BADGE_PILL_FALLBACK
                         )}
                       >
                         {b}
@@ -203,7 +187,7 @@ export function MemberProfileCard({
       }}
     >
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0" style={{ opacity: 0.06 }}>
-        <Image src="/white-stmy-logo.png" alt="" width={100} height={100} className="object-contain" />
+        <Image src="/stmy-mark.svg" alt="" width={117} height={100} className="object-contain" />
       </div>
       <div className="absolute z-10 w-full h-full pointer-events-none" style={{ backgroundImage: "url('/images/noise.png')" }} />
       <div className="relative flex-1 min-h-0 z-30 overflow-y-auto overscroll-contain" onClick={(e) => e.stopPropagation()}>
@@ -304,8 +288,9 @@ export function MemberProfileCard({
             <Image
               src="/superteam.svg"
               alt="Superteam Malaysia"
-              width={150}
+              width={156}
               height={24}
+              className="h-6 w-auto"
             />
           </div>
           {formattedMemberNum && (
@@ -348,15 +333,7 @@ export function MemberProfileCard({
                       key={b}
                       className={cn(
                         "px-2 py-0.5 rounded-full border text-[10px] font-black uppercase tracking-wider font-[family-name:var(--font-orbitron)]",
-                        b === "Bounty Hunter"
-                          ? "bg-[#CB5454]/50 border-[#6B2929]/50 text-white"
-                          : b === "Solana Builder"
-                            ? "bg-[#49C942]/50 border-[#6BF863]/50 text-white"
-                            : b === "Hackathon Winner"
-                              ? "bg-[#E7D763]/50 border-[#A38A33]/50 text-white"
-                              : b === "Core Contributor"
-                                ? "bg-[#424FC9]/50 border-[#6863F8]/50 text-white"
-                                : "bg-amber-500/20 text-amber-400 border-transparent"
+                        BADGE_PILL_CLASS[b] ?? BADGE_PILL_FALLBACK
                       )}
                     >
                       {b}
@@ -461,7 +438,7 @@ export function MemberProfileCard({
               style={{ opacity: 0.06 }}
             >
               <Image
-                src="/white-stmy-logo.png"
+                src="/stmy-mark.svg"
                 alt=""
                 width={100}
                 height={100}

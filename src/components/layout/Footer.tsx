@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,11 +21,6 @@ const socialLinks = [
     label: "Instagram",
     icon: "/icons/instagram.svg",
   },
-  {
-    href: "https://discord.gg/superteammy",
-    label: "Discord",
-    icon: "/icons/discord.svg",
-  },
 ];
 
 const navLinks = [
@@ -34,7 +30,6 @@ const navLinks = [
   { href: "#events", label: "Events" },
   { href: "/members", label: "Members" },
   { href: "#ecosystem", label: "Ecosystems" },
-  { href: "#community", label: "Community" },
   { href: "#faq", label: "FAQ" },
 ];
 
@@ -48,10 +43,97 @@ const resourceLinks = [
   { href: "https://solana.com/branding", label: "Solana Brand Kit" },
 ];
 
+type SubscribeStatus = "idle" | "loading" | "success" | "error";
+
+type Toast = { message: string; type: "success" | "error" };
+
+/** Posts the footer signup to /api/subscribe, reporting the result via a toast. */
+function useSubscribe(source: string, notify: (toast: Toast) => void) {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<SubscribeStatus>("idle");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (status === "loading") return;
+
+    setStatus("loading");
+
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, source }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setStatus("error");
+        notify({
+          message: data.error || "Something went wrong. Please try again.",
+          type: "error",
+        });
+        return;
+      }
+
+      setStatus("success");
+      notify({
+        message: data.alreadySubscribed
+          ? "You're already on the list."
+          : "Thanks — you're subscribed!",
+        type: "success",
+      });
+      setEmail("");
+    } catch {
+      setStatus("error");
+      notify({ message: "Network error. Please try again.", type: "error" });
+    }
+  }
+
+  return { email, setEmail, status, handleSubmit, setStatus };
+}
+
+/** One toast shared by both footer forms; only one is ever on screen at a time. */
+function useSubscribeToast() {
+  const [toast, setToast] = useState<Toast | null>(null);
+  const [isExiting, setIsExiting] = useState(false);
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  function clearTimers() {
+    timers.current.forEach(clearTimeout);
+    timers.current = [];
+  }
+
+  const notify = useCallback((next: Toast) => {
+    clearTimers();
+    setIsExiting(false);
+    setToast(next);
+
+    timers.current.push(
+      setTimeout(() => {
+        setIsExiting(true);
+        timers.current.push(
+          setTimeout(() => {
+            setToast(null);
+            setIsExiting(false);
+          }, 300)
+        );
+      }, 4000)
+    );
+  }, []);
+
+  // Timers outlive the toast itself, so they have to be torn down on unmount.
+  useEffect(() => clearTimers, []);
+
+  return { toast, isExiting, notify };
+}
+
 export function Footer() {
   const footerRef = useRef<HTMLElement>(null);
   const footerBgRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLDivElement>(null);
+  const { toast, isExiting: toastExiting, notify } = useSubscribeToast();
+  const desktopSubscribe = useSubscribe("footer", notify);
+  const mobileSubscribe = useSubscribe("footer-mobile", notify);
 
   useEffect(() => {
     const footer = footerRef.current;
@@ -140,7 +222,7 @@ export function Footer() {
                       src="/superteam.svg"
                       alt="Superteam"
                       width={300}
-                      height={100}
+                      height={46}
                       className="h-6 w-auto md:h-auto md:w-[300px]"
                     />
                   </Link>
@@ -180,58 +262,43 @@ export function Footer() {
                   </h3>
                   <form
                     className="flex w-2/3 max-w-sm md:max-w-md gap-0 rounded-lg overflow-hidden bg-white"
-                    onSubmit={(e) => e.preventDefault()}
+                    onSubmit={desktopSubscribe.handleSubmit}
                   >
                     <input
                       type="email"
                       name="email"
+                      required
+                      value={desktopSubscribe.email}
+                      onChange={(e) => {
+                        desktopSubscribe.setEmail(e.target.value);
+                        desktopSubscribe.setStatus("idle");
+                      }}
                       placeholder="Enter your email"
                       className="flex-1 min-w-0 px-4 py-3 text-black placeholder:text-gray-500 text-xs md:text-sm outline-none rounded-l-lg "
                       aria-label="Email for updates"
                     />
                     <button
                       type="submit"
-                      className="shrink-0 w-12 h-12 cursor-pointer flex items-center justify-center bg-white text-black hover:bg-white/90 transition-colors rounded-r-lg"
+                      disabled={desktopSubscribe.status === "loading"}
+                      className="shrink-0 w-12 h-12 cursor-pointer flex items-center justify-center bg-white text-black hover:bg-white/90 transition-colors rounded-r-lg disabled:opacity-60 disabled:cursor-not-allowed"
                       aria-label="Subscribe"
                     >
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M5 12h14M12 5l7 7-7 7" />
-                      </svg>
-                    </button>
-                  </form>
-                </div>
-
-                <div className="flex flex-col items-left gap-[18px] md:gap-6 md:mb-10">
-                  {/* MobileCTA */}
-                  <div className="md:hidden flex-col items-start text-center gap-2 flex">
-                    <h3 className="text-xs  font-black text-white font-[family-name:var(--font-orbitron)] tracking-tight">
-                      Sign up for our community updates
-                    </h3>
-                    <form
-                      className="flex w-[300px] gap-0 rounded-lg overflow-hidden bg-white"
-                      onSubmit={(e) => e.preventDefault()}
-                    >
-                      <input
-                        type="email"
-                        name="email"
-                        placeholder="Enter your email"
-                        className="flex-1 min-w-0 px-4 py-2 text-black placeholder:text-gray-500 text-xs md:text-sm outline-none rounded-l-lg "
-                        aria-label="Email for updates"
-                      />
-                      <button
-                        type="submit"
-                        className="shrink-0 w-10 h-10 cursor-pointer flex items-center justify-center bg-white text-black hover:bg-white/90 transition-colors rounded-r-lg"
-                        aria-label="Subscribe"
-                      >
+                      {desktopSubscribe.status === "loading" ? (
+                        <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                      ) : desktopSubscribe.status === "success" ? (
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M20 6 9 17l-5-5" />
+                        </svg>
+                      ) : (
                         <svg
                           width="20"
                           height="20"
@@ -244,6 +311,69 @@ export function Footer() {
                         >
                           <path d="M5 12h14M12 5l7 7-7 7" />
                         </svg>
+                      )}
+                    </button>
+                  </form>
+                </div>
+
+                <div className="flex flex-col items-left gap-[18px] md:gap-6 md:mb-10">
+                  {/* MobileCTA */}
+                  <div className="md:hidden flex-col items-start text-center gap-2 flex">
+                    <h3 className="text-xs  font-black text-white font-[family-name:var(--font-orbitron)] tracking-tight">
+                      Sign up for our community updates
+                    </h3>
+                    <form
+                      className="flex w-[300px] gap-0 rounded-lg overflow-hidden bg-white"
+                      onSubmit={mobileSubscribe.handleSubmit}
+                    >
+                      <input
+                        type="email"
+                        name="email"
+                        required
+                        value={mobileSubscribe.email}
+                        onChange={(e) => {
+                          mobileSubscribe.setEmail(e.target.value);
+                          mobileSubscribe.setStatus("idle");
+                        }}
+                        placeholder="Enter your email"
+                        className="flex-1 min-w-0 px-4 py-2 text-black placeholder:text-gray-500 text-xs md:text-sm outline-none rounded-l-lg "
+                        aria-label="Email for updates"
+                      />
+                      <button
+                        type="submit"
+                        disabled={mobileSubscribe.status === "loading"}
+                        className="shrink-0 w-10 h-10 cursor-pointer flex items-center justify-center bg-white text-black hover:bg-white/90 transition-colors rounded-r-lg disabled:opacity-60 disabled:cursor-not-allowed"
+                        aria-label="Subscribe"
+                      >
+                        {mobileSubscribe.status === "loading" ? (
+                          <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                        ) : mobileSubscribe.status === "success" ? (
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M20 6 9 17l-5-5" />
+                          </svg>
+                        ) : (
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                          </svg>
+                        )}
                       </button>
                     </form>
                   </div>
@@ -314,7 +444,7 @@ export function Footer() {
                         >
                           Junshen
                         </a>
-                        .
+                        {" "}and Han.
                       </span>
                     </p>
                     <div className="flex flex-wrap items-center gap-x-1 text-white/50">
@@ -374,6 +504,58 @@ export function Footer() {
           />
         </div>
       </footer>
+
+      {toast && (
+        <div
+          role="status"
+          aria-live="polite"
+          className={cn(
+            // Above the fixed navbar (z-100), anchored to the bottom because
+            // that is where the reader already is when they hit subscribe.
+            "fixed left-1/2 bottom-6 z-[110] -translate-x-1/2 flex items-center gap-2.5",
+            "rounded-full border border-white/10 bg-background/95 backdrop-blur px-5 py-3 shadow-lg",
+            "transition-all duration-300 ease-out",
+            toastExiting
+              ? "translate-y-3 opacity-0"
+              : "translate-y-0 opacity-100"
+          )}
+        >
+          {toast.type === "success" ? (
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="shrink-0 text-green-400"
+              aria-hidden="true"
+            >
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+          ) : (
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="shrink-0 text-red-400"
+              aria-hidden="true"
+            >
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          )}
+          <p className="text-sm font-medium text-white whitespace-nowrap">
+            {toast.message}
+          </p>
+        </div>
+      )}
     </>
   );
 }

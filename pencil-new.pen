@@ -1049,16 +1049,6 @@
                     },
                     {
                       "type": "text",
-                      "id": "llS1r",
-                      "name": "fl3",
-                      "fill": "#A0A0B0",
-                      "content": "Discord",
-                      "fontFamily": "Inter",
-                      "fontSize": 14,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
                       "id": "NUVlE",
                       "name": "fl4",
                       "fill": "#A0A0B0",

@@ -16,7 +16,7 @@ export function HeroLogo({ className = "w-[52px] h-[52px]" }: HeroLogoProps) {
       className="flex justify-center"
     >
       <Image
-        src="/white-stmy-logo.png"
+        src="/stmy-mark.svg"
         alt="Superteam Malaysia"
         width={104}
         height={102}

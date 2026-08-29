@@ -179,11 +179,11 @@ body {
 }
 .marquee-ltr {
   animation-name: marquee-ltr;
-  animation-duration: 18s;
+  animation-duration: var(--marquee-duration, 18s);
 }
 .marquee-rtl {
   animation-name: marquee-rtl;
-  animation-duration: 18s;
+  animation-duration: var(--marquee-duration, 18s);
 }
 .group:hover .marquee-track {
   animation-play-state: paused;
@@ -193,7 +193,7 @@ body {
 
 .marquee-mobile-ltr {
   animation-name: marquee-ltr;
-  animation-duration: 18s;
+  animation-duration: var(--marquee-duration, 18s);
 }
 
 @keyframes marquee-ltr {

@@ -45,3 +45,7 @@ next-env.d.ts
 hero-initial.png
 hero-final.png
 screenshot-hero.js
+member-spotlight-backup-*.json
+member-credentials.csv
+pending-migrations.sql
+member-backup-*.json
