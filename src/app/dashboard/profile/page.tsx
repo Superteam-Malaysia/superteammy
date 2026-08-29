@@ -18,6 +18,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { MultiSelect, type MultiSelectOption } from "@/components/ui/multi-select";
+import { ChangePasswordCard } from "@/components/dashboard/ChangePasswordCard";
+import { BadgePicker } from "@/components/dashboard/BadgePicker";
 import { cn } from "@/lib/utils";
 
 export default function ProfileEditPage() {
@@ -44,6 +46,7 @@ export default function ProfileEditPage() {
   const [telegramUrl, setTelegramUrl] = useState("");
   const [achievements, setAchievements] = useState("");
   const [talkToMeAbout, setTalkToMeAbout] = useState("");
+  const [badges, setBadges] = useState<string[]>([]);
 
   const [allRoles, setAllRoles] = useState<MultiSelectOption[]>([]);
   const [selectedRoles, setSelectedRoles] = useState<MultiSelectOption[]>([]);
@@ -58,7 +61,7 @@ export default function ProfileEditPage() {
   const initialRef = useRef<{
     nickname: string; realName: string; avatarUrl: string; bio: string;
     twitterUrl: string; githubUrl: string; linkedinUrl: string; websiteUrl: string; telegramUrl: string;
-    achievements: string; talkToMeAbout: string;
+    achievements: string; talkToMeAbout: string; badges: string[];
     roleIds: string[]; companyIds: string[]; skillIds: string[]; subskillIds: string[];
   } | null>(null);
 
@@ -66,6 +69,13 @@ export default function ProfileEditPage() {
     if (selected.length !== initialIds.length) return false;
     const set = new Set(initialIds);
     return selected.every((x) => set.has(x.id));
+  }
+
+  // Badges are plain strings, so they need their own order-insensitive compare.
+  function stringsEqual(a: string[], b: string[]) {
+    if (a.length !== b.length) return false;
+    const set = new Set(b);
+    return a.every((x) => set.has(x));
   }
 
   const hasUnsavedChanges = (() => {
@@ -76,6 +86,7 @@ export default function ProfileEditPage() {
       bio !== init.bio || twitterUrl !== init.twitterUrl || githubUrl !== init.githubUrl ||
       linkedinUrl !== init.linkedinUrl || websiteUrl !== init.websiteUrl || telegramUrl !== init.telegramUrl ||
       achievements !== init.achievements || talkToMeAbout !== init.talkToMeAbout ||
+      !stringsEqual(badges, init.badges) ||
       !selectedIdsEqual(selectedRoles, init.roleIds) ||
       !selectedIdsEqual(selectedCompanies, init.companyIds) ||
       !selectedIdsEqual(selectedSkills, init.skillIds) ||
@@ -162,6 +173,7 @@ export default function ProfileEditPage() {
       setTelegramUrl(p.telegram_url || "");
       setAchievements(p.achievements || "");
       setTalkToMeAbout(p.talk_to_me_about || "");
+      setBadges(p.badges || []);
     }
 
     // Load junction data
@@ -195,6 +207,7 @@ export default function ProfileEditPage() {
       telegramUrl: (p.telegram_url as string) || "",
       achievements: (p.achievements as string) || "",
       talkToMeAbout: (p.talk_to_me_about as string) || "",
+      badges: (p.badges as string[]) || [],
       roleIds: roles.map((r) => r.id),
       companyIds: companies.map((c) => c.id),
       skillIds: skills.map((s) => s.id),
@@ -241,7 +254,7 @@ export default function ProfileEditPage() {
       nickname, real_name: realName, avatar_url: avatarUrl, bio,
       twitter_url: twitterUrl, github_url: githubUrl, linkedin_url: linkedinUrl,
       website_url: websiteUrl, telegram_url: telegramUrl,
-      achievements, talk_to_me_about: talkToMeAbout,
+      achievements, talk_to_me_about: talkToMeAbout, badges,
     }).eq("id", userId);
 
     if (error) {
@@ -262,7 +275,7 @@ export default function ProfileEditPage() {
     initialRef.current = {
       nickname, realName, avatarUrl, bio,
       twitterUrl, githubUrl, linkedinUrl, websiteUrl, telegramUrl,
-      achievements, talkToMeAbout,
+      achievements, talkToMeAbout, badges,
       roleIds: selectedRoles.map((r) => r.id),
       companyIds: selectedCompanies.map((c) => c.id),
       skillIds: selectedSkills.map((s) => s.id),
@@ -402,6 +415,7 @@ export default function ProfileEditPage() {
         <Card className="bg-[#080B0E] border-border/50">
           <CardHeader><CardTitle>About You</CardTitle></CardHeader>
           <CardContent className="space-y-4">
+            <BadgePicker value={badges} onChange={setBadges} />
             <div className="space-y-2">
               <Label>Achievements in Web3</Label>
               <textarea value={achievements} onChange={(e) => setAchievements(e.target.value)} rows={4} placeholder="Hackathon wins, grants, notable projects..." className="flex min-h-[100px] w-full rounded-md border border-border/50 bg-[#171717] px-3 py-2 text-sm shadow-xs placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-text" />
@@ -412,6 +426,10 @@ export default function ProfileEditPage() {
             </div>
           </CardContent>
         </Card>
+
+        <ChangePasswordCard
+          onNotify={(message, type) => setToast({ message, type })}
+        />
       </div>
 
       <Dialog open={leaveDialogOpen} onOpenChange={(open) => { setLeaveDialogOpen(open); if (!open) setPendingHref(null); }}>
