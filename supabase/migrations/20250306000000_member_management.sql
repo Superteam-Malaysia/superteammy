@@ -530,7 +530,6 @@ INSERT INTO subskills (name, skill_id) VALUES
   ('Game Design', (SELECT id FROM skills WHERE name = 'Design')),
   ('Presentation Design', (SELECT id FROM skills WHERE name = 'Design')),
   ('Community Manager', (SELECT id FROM skills WHERE name = 'Community')),
-  ('Discord Moderator', (SELECT id FROM skills WHERE name = 'Community')),
   ('Business Development', (SELECT id FROM skills WHERE name = 'Growth')),
   ('Digital Marketing', (SELECT id FROM skills WHERE name = 'Growth')),
   ('Photography', (SELECT id FROM skills WHERE name = 'Content')),
