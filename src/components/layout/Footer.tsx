@@ -41,6 +41,7 @@ const resourceLinks = [
   { href: "https://drive.google.com/drive/folders/1QSKnKm1EAjwk8R5zxtFi_WBuEse0QKGt?usp=sharing", label: "SuperteamMY Brand Kit" },
   { href: "https://solana.com", label: "Solana" },
   { href: "https://solana.com/branding", label: "Solana Brand Kit" },
+  { href: "https://superteamdao.notion.site/malaysia", label: "Docs" },
 ];
 
 type SubscribeStatus = "idle" | "loading" | "success" | "error";
