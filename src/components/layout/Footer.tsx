@@ -37,7 +37,7 @@ const resourceLinks = [
   { href: "https://superteam.fun", label: "Superteam Global" },
   { href: "https://earn.superteam.fun", label: "Superteam Earn" },
   { href: "https://talent.superteam.fun", label: "Superteam Talent" },
-  { href: "https://superteam.fun/brand", label: "Superteam Brand Kit" },
+  { href: "https://superteam.fun/branding", label: "Superteam Brand Kit" },
   { href: "https://drive.google.com/drive/folders/1QSKnKm1EAjwk8R5zxtFi_WBuEse0QKGt?usp=sharing", label: "SuperteamMY Brand Kit" },
   { href: "https://solana.com", label: "Solana" },
   { href: "https://solana.com/branding", label: "Solana Brand Kit" },
