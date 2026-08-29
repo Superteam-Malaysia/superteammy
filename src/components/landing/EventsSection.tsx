@@ -12,7 +12,9 @@ const TABS = [
   { id: "upcoming" as const, label: "Upcoming" },
 ] as const;
 
-const EVENT_IMAGES = Array.from(
+// Fallback only — used if the event_photos table is empty or unreachable, so
+// the dome never renders blank.
+const FALLBACK_EVENT_IMAGES = Array.from(
   { length: 32 },
   (_, i) => `/images/events/${i + 1}.jpeg`,
 );
@@ -29,6 +31,8 @@ function formatDate(dateStr: string) {
 interface EventsSectionProps {
   events: Event[];
   content?: SiteContent | null;
+  /** Managed in Dashboard → Event Gallery. */
+  photos?: string[];
 }
 
 const PAST_EVENTS_LIMIT = 50;
@@ -38,7 +42,8 @@ const DEFAULT_EVENTS = {
   description: "Bringing the community together through meetups, workshops, hackathons, and builder gatherings.",
 };
 
-export function EventsSection({ events, content }: EventsSectionProps) {
+export function EventsSection({ events, content, photos }: EventsSectionProps) {
+  const galleryImages = photos && photos.length > 0 ? photos : FALLBACK_EVENT_IMAGES;
   const title = content?.title || DEFAULT_EVENTS.title;
   const description = content?.description || DEFAULT_EVENTS.description;
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
@@ -60,7 +65,7 @@ export function EventsSection({ events, content }: EventsSectionProps) {
             className="w-full h-full"
           >
             <DomeGallery
-              images={EVENT_IMAGES}
+              images={galleryImages}
               segments={35}
               maxVerticalRotationDeg={10}
               fit={0.75}
@@ -77,7 +82,7 @@ export function EventsSection({ events, content }: EventsSectionProps) {
             className="w-full h-full"
           >
             <DomeGallery
-              images={EVENT_IMAGES}
+              images={galleryImages}
               segments={25}
               maxVerticalRotationDeg={10}
               fit={1}

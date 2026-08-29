@@ -15,6 +15,7 @@ import {
   getPartners,
   getFAQs,
   getSiteContent,
+  getEventPhotos,
 } from "@/lib/supabase/queries";
 import type { Event, FAQ, Partner, Profile, Stat } from "@/lib/types";
 
@@ -30,6 +31,7 @@ export default async function Home() {
     getPartners(),
     getFAQs(),
     getSiteContent(),
+    getEventPhotos(),
   ]);
 
   const stats = results[0].status === "fulfilled" ? toArray<Stat>(results[0].value) : [];
@@ -38,6 +40,10 @@ export default async function Home() {
   const partners = results[3].status === "fulfilled" ? toArray<Partner>(results[3].value) : [];
   const faqs = results[4].status === "fulfilled" ? toArray<FAQ>(results[4].value) : [];
   const siteContent = results[5].status === "fulfilled" ? results[5].value : {};
+  const eventPhotos =
+    results[6].status === "fulfilled"
+      ? toArray<{ image_url: string }>(results[6].value).map((p) => p.image_url)
+      : [];
 
   return (
     <>
@@ -48,7 +54,7 @@ export default async function Home() {
         <MissionSection content={siteContent.mission} />
         <StatsSection stats={stats} content={siteContent.stats} />
         <hr className="border-white/10 w-full mx-auto my-0" />
-        <EventsSection events={events} content={siteContent.events} />
+        <EventsSection events={events} content={siteContent.events} photos={eventPhotos} />
         <hr className="border-white/10 w-full mx-auto my-0" />
         <MembersSpotlight profiles={profiles} content={siteContent.members_spotlight} />
         <hr className="border-white/10 w-full mx-auto my-0" />

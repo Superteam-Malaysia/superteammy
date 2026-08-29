@@ -181,3 +181,20 @@ export interface Perk {
   display_order: number;
   created_at: string;
 }
+
+export interface NewsletterSubscriber {
+  id: string;
+  email: string;
+  source: string | null;
+  is_active: boolean;
+  unsubscribed_at: string | null;
+  created_at: string;
+}
+
+export interface EventPhoto {
+  id: string;
+  image_url: string;
+  caption: string | null;
+  display_order: number;
+  created_at: string;
+}
