@@ -17,7 +17,7 @@ const heroNavLinks = [
   { href: "#events", label: "EVENTS" },
   { href: "#members", label: "MEMBERS" },
   { href: "#ecosystem", label: "ECOSYSTEMS" },
-  { href: "#community", label: "COMMUNITY" },
+  // { href: "#community", label: "COMMUNITY" }, // hidden for now
   { href: "#faq", label: "FAQ" },
 ];
 
@@ -251,6 +251,20 @@ export function HeroSection({ content }: { content?: SiteContent | null }) {
         {UNICORN_HERO_SCRIPT}
       </Script>
 
+      {/* Flat scrim over the whole animation. The Unicorn background peaks very
+          bright in the centre, which is exactly where the heading sits. */}
+      <div className="absolute inset-0 pointer-events-none bg-black/35" />
+
+      {/* Radial vignette: darkest in the middle to kill the light plume behind
+          the title, fading out at the edges so the skyline keeps its contrast. */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage:
+            "radial-gradient(ellipse 70% 55% at 50% 45%, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.25) 55%, transparent 100%)",
+        }}
+      />
+
       {/* Dark overlay - gradient from black 50% to transparent over bottom 30% */}
       <div
         className="absolute inset-0 pointer-events-none bg-size-[100%_30%] bg-bottom bg-no-repeat"
@@ -277,9 +291,9 @@ export function HeroSection({ content }: { content?: SiteContent | null }) {
             <Image
               src="/superteam.svg"
               alt="Superteam Malaysia"
-              width={154}
-              height={18}
-              className="h-5 w-auto"
+              width={259}
+              height={40}
+              className="h-8 xl:h-10 w-auto"
               priority
             />
           </div>
@@ -310,18 +324,24 @@ export function HeroSection({ content }: { content?: SiteContent | null }) {
               ref={heroLogoRef}
               className="absolute -top-[100%] left-1/2 -translate-x-1/2 w-[80px] h-[80px] md:w-[120px] md:h-[120px] flex items-center justify-center"
             >
-              <Image
-                src="/white-stmy-logo.png"
+              {/* <Image
+                src="/stmy-mark.svg"
                 alt="Superteam Malaysia"
                 width={120}
                 height={120}
                 className="w-[80px] md:w-[120px] h-auto"
                 priority
-              />
+              /> */}
             </div>
             <h2
               className="h-[80px] md:h-[120px] font-[family-name:var(--font-orbitron)] font-black text-lg md:text-4xl xl:text-5xl text-white leading-tight text-center flex flex-col items-center justify-center gap-0"
               aria-label={`${titleLine1} ${titleLine2}`}
+              style={{
+                // Tight shadow for edge definition, wide one to seat the text
+                // against bright frames of the looping background.
+                textShadow:
+                  "0 2px 8px rgba(0,0,0,0.55), 0 6px 32px rgba(0,0,0,0.45)",
+              }}
             >
               {[titleLine1, titleLine2].map((line, i) => (
                 <div key={i} className="overflow-hidden" style={{ lineHeight: 1.25 }}>
@@ -365,13 +385,13 @@ export function HeroSection({ content }: { content?: SiteContent | null }) {
               delay: textRevealed ? 1.05 : 0,
             }}
             className="w-full max-w-md text-center text-[10px] text-white/80 leading-relaxed uppercase font-inter font-semibold"
-            style={{ marginBottom: 10 }}
+            style={{ marginBottom: 10, textShadow: "0 1px 6px rgba(0,0,0,0.5)" }}
           >
             {description}
           </motion.p>
           <div className="flex items-center justify-between w-full gap-4">
             <CtaButton href="/dashboard" text="CONNECT" />
-            <CtaButton href="https://t.me/superteammy" text="EXPLORE" external />
+            <CtaButton href="https://t.me/superteammy" text="JOIN NOW" external />
           </div>
         </div>
         {/* Desktop: paragraph 10px above buttons */}
@@ -388,12 +408,12 @@ export function HeroSection({ content }: { content?: SiteContent | null }) {
               delay: textRevealed ? 1.05 : 0,
             }}
             className="w-lg xl:w-2xl text-center text-xs xl:text-base text-white/80 leading-relaxed uppercase font-inter font-medium"
-            style={{ marginBottom: 10 }}
+            style={{ marginBottom: 10, textShadow: "0 1px 6px rgba(0,0,0,0.5)" }}
           >
             {description}
           </motion.p>
             <div className="flex-1 min-w-0 h-px bg-white/20" />
-            <CtaButton href="https://t.me/superteammy" text="EXPLORE" external />
+            <CtaButton href="https://t.me/superteammy" text="JOIN NOW" external />
           </div>
         </div>
       </div>

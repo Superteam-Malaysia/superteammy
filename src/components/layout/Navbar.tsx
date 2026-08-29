@@ -15,7 +15,7 @@ const navLinks = [
   { href: "#events", label: "EVENTS" },
   { href: "#members", label: "MEMBERS" },
   { href: "#ecosystem", label: "ECOSYSTEMS" },
-  { href: "#community", label: "COMMUNITY" },
+  // { href: "#community", label: "COMMUNITY" }, // hidden for now
   { href: "#faq", label: "FAQ" },
 ];
 
@@ -37,9 +37,9 @@ const socialLinks = [
     icon: "/icons/instagram.svg",
   },
   {
-    href: "https://discord.gg/superteammy",
-    label: "DISCORD",
-    icon: "/icons/discord.svg",
+    href: "https://www.linkedin.com/company/superteam-malaysia",
+    label: "LINKEDIN",
+    icon: "/icons/linkedin.svg",
   },
 ];
 
@@ -216,17 +216,14 @@ function SocialLink({
   );
 }
 
-const SCROLL_UP_THRESHOLD = 150;
 const MOBILE_BREAKPOINT = 768;
 
 export function Navbar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [visible, setVisible] = useState(false);
   const [pastHero, setPastHero] = useState(false);
+  const [inFooter, setInFooter] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const lastScrollY = useRef(0);
-  const scrollUpAccum = useRef(0);
 
   useEffect(() => {
     const mq = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
@@ -241,6 +238,8 @@ export function Navbar() {
 
   const isMembersPage = pathname === "/members";
 
+  // Visibility is purely positional: the bar belongs to the stretch of page
+  // between the hero and the footer, regardless of scroll direction.
   const handleScroll = useCallback(() => {
     const currentY = window.scrollY;
     const hero = document.getElementById("hero");
@@ -248,36 +247,24 @@ export function Navbar() {
       ? hero.offsetTop + hero.offsetHeight
       : window.innerHeight;
 
-    const isPastHero = currentY > heroBottom - 100;
-    setPastHero(isPastHero);
+    setPastHero(currentY > heroBottom - 100);
 
-    if (!isPastHero) {
-      setVisible(false);
-      lastScrollY.current = currentY;
-      scrollUpAccum.current = 0;
-      return;
-    }
-
-    const delta = currentY - lastScrollY.current;
-
-    if (delta > 0) {
-      // Scrolling down
-      scrollUpAccum.current = 0;
-      setVisible(false);
-    } else {
-      // Scrolling up
-      scrollUpAccum.current += Math.abs(delta);
-      if (scrollUpAccum.current >= SCROLL_UP_THRESHOLD) {
-        setVisible(true);
-      }
-    }
-
-    lastScrollY.current = currentY;
+    // "Fully in the footer" — its top edge has reached the top of the viewport,
+    // so nothing but footer is on screen.
+    const footer = document.querySelector("footer");
+    setInFooter(footer ? footer.getBoundingClientRect().top <= 0 : false);
   }, []);
 
   useEffect(() => {
+    // Sync once on mount so a page restored mid-scroll starts in the right state.
+    const id = requestAnimationFrame(handleScroll);
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleScroll);
+    return () => {
+      cancelAnimationFrame(id);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
   }, [handleScroll]);
 
   useEffect(() => {
@@ -292,10 +279,9 @@ export function Navbar() {
   }, [menuOpen]);
 
   const showBar =
-    isMembersPage ||
-    (visible && pastHero) ||
+    // The menu overlay needs its own close button to stay reachable.
     menuOpen ||
-    (isMobile && !pastHero);
+    (!inFooter && (isMembersPage || pastHero || isMobile));
 
   return (
     <>
@@ -321,9 +307,9 @@ export function Navbar() {
               <Image
                 src="/superteam.svg"
                 alt="Superteam Malaysia"
-                width={140}
-                height={24}
-                className="h-4 w-auto"
+                width={181}
+                height={28}
+                className="h-7 w-auto"
               />
             </Link>
             <button
@@ -342,9 +328,9 @@ export function Navbar() {
               <Image
                 src="/superteam.svg"
                 alt="Superteam Malaysia"
-                width={140}
-                height={16}
-                className="h-4 w-auto"
+                width={181}
+                height={28}
+                className="h-7 w-auto"
                 priority
               />
             </Link>
@@ -368,22 +354,6 @@ export function Navbar() {
           >
             {/* Top spacer for the navbar */}
             <div className="h-20" />
-
-            {/* Logo */}
-            <motion.div
-              className="flex justify-center pt-6 pb-8 pl-4"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3, duration: 0.4 }}
-            >
-              <Image
-                src="/white-stmy-logo.png"
-                alt="Superteam Malaysia"
-                width={80}
-                height={80}
-                className="w-[80px] h-auto"
-              />
-            </motion.div>
 
             {/* Nav Links */}
             <div className="flex-1 flex flex-col items-center justify-center gap-5 md:gap-7">

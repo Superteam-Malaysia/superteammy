@@ -113,7 +113,7 @@ export default function InvitePage() {
           <Image
             src="/superteam.svg"
             alt="Superteam Malaysia"
-            width={160}
+            width={207}
             height={32}
             className="h-8 w-auto"
           />
