@@ -5,7 +5,8 @@ buildCommand = "npm install && npm run build"
 watchPatterns = ["**"]
 
 [deploy]
-startCommand = "bash scripts/start-production.sh"
+startCommand = "npm start"
+preDeployCommand = "npm run borneo:generate-ics && npm run borneo:db:migrate && npm run borneo:db:import-guests && npm run borneo:db:seed-teams && npm run borneo:db:seed-staff"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
 

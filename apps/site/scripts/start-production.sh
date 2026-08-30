@@ -24,4 +24,4 @@ npm run borneo:db:backfill-telegram-avatars || echo "[startup] telegram avatar b
 echo "[startup] telegram webhook"
 npm run borneo:telegram:setup-webhook || echo "[startup] telegram webhook setup skipped"
 echo "[startup] next start"
-NODE_ENV=production exec npm run start:server
+NODE_ENV=production exec next start -H 0.0.0.0 -p "${PORT:-3000}"
