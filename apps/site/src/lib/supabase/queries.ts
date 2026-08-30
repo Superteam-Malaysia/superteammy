@@ -392,3 +392,24 @@ export async function getEventPhotos(): Promise<EventPhoto[]> {
     return [];
   }
 }
+
+/** Every project with its owner, newest first. Admin showcase list. */
+export async function getAllProjects(): Promise<Project[]> {
+  try {
+    const supabase = await createServerClient();
+    const { data, error } = await supabase
+      .from("projects")
+      .select("*, profile:profiles(id, nickname, real_name)")
+      .order("display_order", { ascending: true })
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Failed to fetch projects:", error.message);
+      return [];
+    }
+    return data as Project[];
+  } catch (err) {
+    console.error("Failed to fetch projects:", err instanceof Error ? err.message : "Unknown error");
+    return [];
+  }
+}

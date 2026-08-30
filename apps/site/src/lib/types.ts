@@ -84,9 +84,14 @@ export interface Project {
   title: string;
   description: string;
   link: string;
+  image_url: string;
+  is_featured: boolean;
+  display_order: number;
   created_at: string;
   skills?: LookupTag[];
   subskills?: SubskillTag[];
+  /** Owner, joined in for the admin list. Absent on member-scoped queries. */
+  profile?: { id: string; nickname: string; real_name: string } | null;
 }
 
 export interface Event {
