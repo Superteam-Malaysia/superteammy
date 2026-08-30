@@ -44,6 +44,7 @@ const adminLinks = [
   { href: "/dashboard/metrics", label: "Dashboard Metrics", icon: BarChart3, roles: ["super_admin", "admin"] as const },
   { href: "/dashboard/stats", label: "Landing Stats", icon: TrendingUp, roles: ["super_admin", "admin"] as const },
   { href: "/dashboard/gallery", label: "Event Gallery", icon: Images, roles: ["super_admin", "admin"] as const },
+  { href: "/dashboard/showcase", label: "Project Showcase", icon: FolderOpen, roles: ["super_admin", "admin"] as const },
   { href: "/dashboard/subscribers", label: "Subscribers", icon: Inbox, roles: ["super_admin", "admin"] as const },
   { href: "/dashboard/invites", label: "Invites", icon: Mail, roles: ["super_admin"] as const },
 ];
