@@ -1,7 +1,7 @@
 [build]
 builder = "NIXPACKS"
 buildCommand = "echo 'edge: caddy only'"
-watchPatterns = ["services/edge/**"]
+watchPatterns = ["**"]
 
 [deploy]
 startCommand = "caddy run --config Caddyfile --adapter caddyfile"
