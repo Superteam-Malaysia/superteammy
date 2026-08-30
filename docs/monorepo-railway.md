@@ -14,8 +14,10 @@ Point the subdomain at the **superteammy** service:
 
 1. Railway → project **svb** → service **superteammy** → Settings → Domains → add `my.superteam.fun`
 2. At your DNS host for `superteam.fun`:
-   - **CNAME** `my` → `<superteammy-service>.up.railway.app`
+   - **CNAME** `my` → `superteammy-production.up.railway.app` (or the hostname Railway shows)
    - **TXT** `_railway-verify.my` → `railway-verify=…` (if prompted)
+
+**Important:** If `my.superteam.fun` still resolves to Cloudflare/Vercel (A records `104.21.x.x`), traffic will not reach Railway. Use a CNAME to Railway, not a proxy to an old host. `stmy.fun` is already working as a canary.
 
 Optionally attach `stmy.fun` to **superteammy** so the old domain keeps working.
 
