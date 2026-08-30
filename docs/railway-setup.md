@@ -22,16 +22,14 @@ SVB participant data lives in **Postgres on Railway**. Builders sign in with
    | `TELEGRAM_BOT_TOKEN` | Bot token from BotFather |
    | `NEXT_PUBLIC_TELEGRAM_BOT_USERNAME` | Optional — bot username is resolved from the token at runtime |
 
-5. Deploy — `railway.toml` runs migrations on start, then `next start`.
+5. Deploy — `apps/site/railway.toml` runs Borneo migrations on start, then `next start`.
 
 6. **Import guests** (after first deploy, or from Railway shell):
 
    ```bash
-   cd apps/web
-   railway run npm run db:migrate
-   railway run npm run db:import-guests
-   railway run npm run db:seed-teams
-   railway run npm run db:seed-staff
+   cd apps/site
+   railway run npm run borneo:db:migrate
+   railway run npm run borneo:db:import-guests
    ```
 
    CSV source: `data/imports/guests-2026-08-19.csv` (63 Luma guests).
@@ -40,11 +38,11 @@ SVB participant data lives in **Postgres on Railway**. Builders sign in with
 
 ```bash
 docker compose up -d postgres
-# create apps/web/.env.local with AUTH_SECRET, TELEGRAM_BOT_TOKEN, DATABASE_URL
+# create apps/site/.env.local with AUTH_SECRET, TELEGRAM_BOT_TOKEN, DATABASE_URL
 
-cd apps/web
-npm run db:migrate
-npm run db:import-guests
+cd apps/site
+npm run borneo:db:migrate
+npm run borneo:db:import-guests
 npm run dev
 ```
 

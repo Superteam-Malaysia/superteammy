@@ -1,7 +1,7 @@
 # Superteam Malaysia + Startup Village Borneo — https://my.superteam.fun and /borneo
 [build]
 builder = "NIXPACKS"
-buildCommand = "npm run build"
+buildCommand = "npm install && npm run build"
 watchPatterns = ["**"]
 
 [deploy]
