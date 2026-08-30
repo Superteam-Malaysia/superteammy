@@ -1,0 +1,191 @@
+/**
+ * Startup Village Borneo — application theme
+ * Adapted from Breakpoint reference tokens + Borneo regional accents.
+ * Import in the Next.js app global CSS.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;500;700&display=swap');
+
+  :root {
+  /* ── SVB logo palette ─────────────────────────────────────── */
+  --svb-color-blue: #2450e6;
+  --svb-color-red: #b91c2e;
+  --svb-color-gold: #d4a82a;
+  --svb-color-midnight: #061228;
+  --svb-color-white: #ffffff;
+
+  --svb-color-solana-mint: var(--svb-color-gold);
+  --svb-color-solana-purple: #2450e6;
+  --svb-color-breakpoint-purple: var(--svb-color-blue);
+
+  /* Borneo warmth — mapped to logo accents */
+  --svb-color-borneo-teal: #1e6fd4;
+  --svb-color-borneo-amber: var(--svb-color-gold);
+  --svb-color-borneo-coral: var(--svb-color-red);
+  --svb-color-borneo-forest: #0d3d6b;
+
+  /* ── Semantic (dark-first, SVB logo) ─────────────── */
+  --color-bg-primary: var(--svb-color-midnight);
+  --color-bg-secondary: #0a1a35;
+  --color-bg-elevated: #0f2447;
+  --color-bg-invert: var(--svb-color-white);
+  --color-bg-accent: var(--svb-color-gold);
+  --color-bg-accent-muted: #d4a82a1a;
+  --color-bg-brand: var(--svb-color-blue);
+  --color-bg-warning: var(--svb-color-gold);
+
+  --color-text-primary: var(--svb-color-white);
+  --color-text-secondary: #b8c4d9;
+  --color-text-muted: #8a9bb5;
+  --color-text-invert: var(--svb-color-midnight);
+  --color-text-highlight: var(--svb-color-red);
+  --color-text-accent: var(--svb-color-gold);
+  --color-text-on-accent: var(--svb-color-midnight);
+
+  --color-stroke-primary: #1e3a5f;
+  --color-stroke-secondary: #2a4a72;
+  --color-stroke-focus: var(--svb-color-white);
+
+  --color-success: var(--svb-color-gold);
+  --color-error: var(--svb-color-red);
+  --color-pending: var(--svb-color-gold);
+
+  --color-task-content: var(--svb-color-red);
+  --color-task-race: var(--svb-color-gold);
+  --color-task-deadline: var(--svb-color-red);
+
+  /* ── Wisp system (legacy names → SVB values) ───── */
+  --color-wisp: var(--svb-color-white);
+  --color-null: var(--svb-color-midnight);
+  --color-byte: var(--svb-color-red);
+  --color-azure: var(--svb-color-blue);
+  --color-lime: var(--svb-color-gold);
+  --color-wisp-10: #ffffff1a;
+  --color-wisp-40: #ffffff66;
+  --color-transparent-wisp-10: #ffffff1a;
+  --color-transparent-null-10: #0612281a;
+
+  --svb-gradient-bg:
+    radial-gradient(
+      ellipse 80vmax 60vmax at 85% -8%,
+      color-mix(in srgb, var(--svb-color-red) 38%, transparent),
+      transparent 58%
+    ),
+    radial-gradient(
+      ellipse 72vmax 58vmax at -8% 108%,
+      color-mix(in srgb, var(--svb-color-gold) 32%, transparent),
+      transparent 56%
+    ),
+    radial-gradient(
+      ellipse 78vmax 56vmax at 52% 48%,
+      color-mix(in srgb, var(--svb-color-blue) 36%, transparent),
+      transparent 64%
+    );
+  --svb-noise-opacity: 0.28;
+
+  /* ── Stat display (prices, big points) ─────────────────────── */
+  --text-stat-display: clamp(4rem, 3.648rem + 1.502vw, 5rem);
+  --text-stat-display-line-height: clamp(4.16rem, 3.794rem + 1.562vw, 5.2rem);
+  --text-stat-display-letter-spacing: clamp(-0.25rem, -0.282rem + 0.135vw, -0.16rem);
+
+  /* ── CTA heights ───────────────────────────────────────────── */
+  --cta-height-sm: 3rem;
+  --cta-height-md: 3.5rem;
+  --cta-height-lg: 4.25rem;
+
+  /* ── Event map (Breakpoint event-day pattern) ──────────────── */
+  --map-pin-mint: var(--svb-color-gold);
+  --map-pin-mint-40: #d4a82a66;
+  --map-surface: var(--svb-color-midnight);
+  --map-border-wisp-20: #ffffff33;
+  --map-border-byte-50: #b91c2e80;
+  --map-control-size: 1.75rem; /* 28px zoom buttons */
+  --map-search-height: 3rem;   /* 48px */
+  --map-callout-max-h: 20rem;  /* max-h-80 */
+
+  /* ── Typography ────────────────────────────────────────────── */
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --text-display: clamp(2.5rem, 8vw, 5rem);
+  --text-h1: clamp(2rem, 6vw, 5rem);
+  --text-h2: clamp(1.75rem, 4vw, 4rem);
+  --text-h3: clamp(1.5rem, 3vw, 3rem);
+  --text-h4: 2.5rem;
+  --text-h5: 2rem;
+  --text-h6: 1.5rem;
+  --text-body-lg: 1.5rem;
+  --text-body: 1.125rem;
+  --text-body-sm: 0.875rem;
+  --text-eyebrow: 1rem;
+  --text-button: 0.875rem;
+  --text-caption: 0.6875rem;
+
+  --tracking-display: 0.05rem;
+  --tracking-h1: -0.03em;
+  --tracking-h2: 0.04em;
+  --tracking-eyebrow: 0.08rem;
+  --tracking-button: 0.07rem;
+
+  --leading-tight: 0.98;
+  --leading-snug: 1.15;
+  --leading-normal: 1.45;
+
+  /* ── Spacing (Breakpoint scale) ────────────────────────────── */
+  --space-4xs: 0.25rem;
+  --space-3xs: 0.5rem;
+  --space-2xs: 0.75rem;
+  --space-xs: 1rem;
+  --space-s: 1.5rem;
+  --space-m: 2rem;
+  --space-l: 3rem;
+  --space-xl: 4rem;
+  --space-2xl: 5rem;
+  --space-3xl: 7.5rem;
+
+  --section-py-mobile: 5rem;
+  --section-py-desktop: 7.5rem;
+  --container-px-mobile: 16px;
+  --container-px-desktop: 32px;
+
+  /* ── Radius & borders ──────────────────────────────────────── */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+
+  /* ── Motion ────────────────────────────────────────────────── */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 600ms;
+  --duration-reveal: 900ms;
+  --duration-ticker: 200s;
+  --duration-accordion: 200ms;
+
+  /* Halftone UI ink palette */
+  --ink: var(--color-wisp);
+  --purple: var(--svb-color-blue);
+  --green: var(--svb-color-gold);
+  --blue: var(--svb-color-blue);
+  --grey: #b8c4d9;
+  --orange: var(--svb-color-gold);
+  --pink: var(--svb-color-red);
+  --red: var(--svb-color-red);
+
+  /* ── Z-index layers ────────────────────────────────────────── */
+  --z-nav: 40;
+  --z-modal: 50;
+  --z-tooltip: 60;
+}
+
+/* Reduced motion: respect user preference (constitution: accessibility) */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-normal: 0ms;
+    --duration-slow: 0ms;
+    --duration-reveal: 0ms;
+  }
+}

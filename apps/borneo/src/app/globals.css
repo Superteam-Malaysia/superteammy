@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+@import "../styles/svb-theme.css";
+@import "../styles/breakpoint-components.css";
+@import "../styles/experience.css";
+@import "../styles/taste-polish.css";
+@import "../styles/unslop.css";
+@import "../styles/hero-reveal.css";
+@import "../styles/halftone-surfaces.css";
+@import "../styles/site-nav.css";
+@import "../styles/breakpoint-footer.css";
+@import "../styles/footer-scramble.css";
+@import "../styles/photo-strip.css";
+@import "../styles/workshop-rows.css";
+@import "../styles/breakout-subhead.css";
+@import "../styles/partner-logo-wall.css";
+@import "../styles/prize-tracks.css";
+@import "../styles/merch-drop.css";
+@import "../styles/judges-panel.css";
+@import "../styles/schedule-day-cards.css";
+@import "../styles/brand-assets.css";
+@import "../styles/participant-directory.css";
+@import "../styles/team-ecosystem.css";
+@import "../styles/image-upload.css";
+
+@theme inline {
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-display: var(--font-display);
+}
+
+@keyframes accordion-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--site-nav-height);
+  min-height: 100%;
+  background-color: var(--color-null);
+}
+
+/*
+ * Fixed viewport backdrop — one continuous gradient + grain layer.
+ * Avoids per-section seams from scroll-attached body backgrounds.
+ */
+html::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background-color: var(--color-null);
+  background-image: var(--svb-gradient-bg);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+html::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--svb-noise-opacity);
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+}
+
+body {
+  background: transparent;
+  color: var(--color-wisp);
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  min-height: 100vh;
+}

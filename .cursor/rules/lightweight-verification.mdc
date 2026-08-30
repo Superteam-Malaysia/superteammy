@@ -1,0 +1,22 @@
+---
+description: Skip verification entirely for small data/CSS/layout fixes — no build, no GUI, no artifacts
+alwaysApply: true
+---
+
+# Verification — skip for small changes (global)
+
+For **small, low-risk changes** — data syncs (`src/data/*`), docs, copy,
+config constants, and **small CSS/layout tweaks** (e.g. moving one nav item,
+spacing, alignment) — **skip verification entirely**:
+
+- No `npm run build` (unless CI will catch it and you want a sanity check)
+- No grep/read sanity checks
+- No browser / computer-use walks
+- No screenshots, screen recordings, or video review subagents
+- No dev servers started just to verify
+
+Make the edit, commit, and move on.
+
+**Verify only for non-trivial work:** new pages, new components, auth flows,
+API behavior, multi-file refactors, or anything where runtime behavior is
+uncertain and not obvious from the diff alone.

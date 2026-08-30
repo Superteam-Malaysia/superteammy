@@ -1,0 +1,179 @@
+/**
+ * Anti-slop typography — no eyebrow+kicker stacks, no accent-split heroes.
+ * Rules from unslop-ui-skill (no-ai-slop).
+ */
+
+.page-header {
+  max-width: 48rem;
+  margin-bottom: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .page-header {
+    margin-bottom: 3rem;
+  }
+}
+
+/* .page-header__meta — removed; no upper kickers on page headers
+.page-header__meta {
+  margin-bottom: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--color-wisp) 55%, transparent);
+}
+*/
+
+.page-header__title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--color-wisp);
+}
+
+.page-header__lead {
+  margin-top: 1.25rem;
+  max-width: 42rem;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: color-mix(in srgb, var(--color-wisp) 78%, transparent);
+}
+
+.section-heading {
+  /* Breakout subhead styles live in breakout-subhead.css */
+}
+
+.section-intro {
+  display: flex;
+  flex-direction: column;
+}
+
+.section-intro__lead {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--color-wisp) 72%, transparent);
+}
+
+/* Inline labels — sentence case, not uppercase kickers (unslop-ui v2) */
+.text-label {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--color-wisp) 60%, transparent);
+}
+
+.text-label-accent {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--color-byte);
+}
+
+.text-label-muted {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--color-wisp) 50%, transparent);
+}
+
+.text-label-sm {
+  font-size: 0.6875rem;
+}
+
+/* Home hero layout — title styles in hero-reveal.css */
+.home-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.home-hero__stage {
+  position: relative;
+  min-height: min(85vh, 42rem);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.home-hero__backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.home-hero__video {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.home-hero__backdrop-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-null) 52%, transparent) 0%,
+      color-mix(in srgb, var(--color-null) 18%, transparent) 18%,
+      transparent 32%
+    ),
+    linear-gradient(
+      to top,
+      color-mix(in srgb, var(--color-null) 38%, transparent) 0%,
+      transparent 36%
+    );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero__video {
+    /* Keep poster/first frame visible — do not hide the video element */
+    animation: none;
+  }
+}
+
+.home-hero__inner {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  text-align: center;
+  /* Fixed gap below sticky nav (.site-content already clears nav height) */
+  padding-top: 20px;
+  padding-bottom: 0;
+}
+
+.home-hero__separator {
+  flex-shrink: 0;
+  /* Pin to bottom of video stage — clears burn-in subtitles above */
+  margin-top: auto;
+  padding: 0 1rem clamp(1rem, 2.5vh, 1.5rem);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-hero__meta {
+  margin: 0 auto;
+  max-width: 48rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--color-wisp) 78%, transparent);
+  text-shadow: none;
+}

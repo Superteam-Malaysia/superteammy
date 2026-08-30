@@ -1,47 +1,46 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.uv/
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
+# Node
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
+pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# Build / tooling output
+dist/
+build/
+target/
+.cache/
+.next/
+out/
+
+# Environment / secrets
+.env
+.env.*
 !.env.example
 
-# vercel
-.vercel
+# OS
+.DS_Store
+Thumbs.db
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# Spec Kit runtime state (per-agent feature pointer; not shared config)
+.specify/feature.json
 
-# Dev artifacts
+# Local archive scrape artifacts (not for commit)
+tmp-bp*.html
+tmp-bp*.js
+
+# Cursor agent-local credentials/artifacts (keep committed commands & skills)
+.cursor/**/credentials*
+.cursor/**/*.token
+
+# Dev artifacts (site)
 hero-initial.png
 hero-final.png
 screenshot-hero.js
@@ -49,9 +48,3 @@ member-spotlight-backup-*.json
 member-credentials.csv
 pending-migrations.sql
 member-backup-*.json
-
-# Generated at build time by next-sitemap (postbuild). Committing these means a
-# local build overwrites them with NEXT_PUBLIC_SITE_URL=http://localhost:3000.
-public/robots.txt
-public/sitemap.xml
-public/sitemap-*.xml

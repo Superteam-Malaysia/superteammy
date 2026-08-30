@@ -1,0 +1,96 @@
+/**
+ * Breakpoint hero decode text — scramble-to-clear (solana.com/breakpoint module 37442).
+ */
+
+.home-hero__title {
+  margin: 0 auto;
+  max-width: none;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 8.5vw, 5rem);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  color: var(--color-wisp);
+  white-space: pre-line;
+  text-shadow: 0 2px 24px color-mix(in srgb, var(--color-null) 65%, transparent);
+}
+
+/*
+ * Poster wordmark — official stacked SVG lockup from launch artwork.
+ */
+.hero-wordmark {
+  --wordmark-scale: 0.75;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.hero-wordmark__logo {
+  display: block;
+  width: min(calc(92vw * var(--wordmark-scale)), calc(38rem * var(--wordmark-scale)));
+  height: auto;
+  aspect-ratio: 721 / 477;
+  max-height: min(calc(46vh * var(--wordmark-scale)), calc(26rem * var(--wordmark-scale)));
+  overflow: visible;
+  filter: drop-shadow(0 2px 24px color-mix(in srgb, var(--color-null) 65%, transparent));
+}
+
+.decode-svg__block {
+  fill: color-mix(in srgb, var(--color-wisp) 92%, transparent);
+}
+
+.decode-svg__glyph text {
+  pointer-events: none;
+  user-select: none;
+}
+
+.decode-svg__segment {
+  cursor: default;
+}
+
+.hero-wordmark__logo--interactive .decode-svg__segment {
+  cursor: default;
+}
+
+.decode-svg__hit {
+  pointer-events: all;
+}
+
+@media (min-width: 768px) {
+  .hero-wordmark__logo {
+    width: min(calc(88vw * var(--wordmark-scale)), calc(44rem * var(--wordmark-scale)));
+    max-height: min(calc(42vh * var(--wordmark-scale)), calc(28rem * var(--wordmark-scale)));
+  }
+}
+
+.decode-text__char {
+  display: inline;
+}
+
+.decode-text__block {
+  display: inline-block;
+  height: 0.72em;
+  background: var(--color-wisp);
+  vertical-align: middle;
+  margin: 0 0.08em;
+}
+
+.decode-text__word {
+  opacity: 0;
+  animation: decode-text-word 0.001s linear forwards;
+}
+
+@keyframes decode-text-word {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .decode-text__word {
+    opacity: 1;
+    animation: none;
+  }
+}

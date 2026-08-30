@@ -1,0 +1,219 @@
+/**
+ * Breakpoint-style footer — purple block, countdown, mega skyline mark.
+ * EL-19 from docs/design/03-element-library.md
+ */
+
+.bp-footer {
+  position: relative;
+  margin-top: auto;
+  padding-top: 2rem; /* breathing room before jagged edge — not part of the step SVG */
+  color: var(--svb-color-midnight);
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .bp-footer {
+    padding-top: 3rem;
+  }
+}
+
+/* Last page section — jagged footer replaces the section divider */
+.site-content main > section:last-child {
+  border-bottom: none;
+}
+
+/* Stepped / blocky top edge — crop to jagged silhouette only (~24px of the 200px SVG) */
+.bp-footer__steps {
+  width: 100%;
+  height: 1.5rem; /* top ~24px of viewBox — jagged edge, not the solid fill band */
+  overflow: hidden;
+  line-height: 0;
+}
+
+.bp-footer__steps-svg {
+  display: block;
+  width: 100%;
+  min-width: 52.5rem; /* 840px — matches Breakpoint min-w-[840px] */
+  height: 12.5rem; /* 200px — matches Breakpoint h-[200px] */
+  color: var(--svb-color-blue);
+}
+
+.bp-footer__inner {
+  /* Full-bleed blue — inset is from the real viewport edges */
+  width: 100%;
+  /* Keep social / links clear of the blue block edges */
+  padding: 1.25rem clamp(2rem, 7vw, 5.5rem) 0;
+  background: var(--svb-color-blue);
+}
+
+@media (min-width: 768px) {
+  .bp-footer__inner {
+    padding-top: 1.5rem;
+  }
+}
+
+/* Top row: social · copyright · links */
+.bp-footer__top {
+  display: grid;
+  gap: 1.25rem;
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .bp-footer__top {
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+  }
+
+  .bp-footer__links {
+    justify-self: end;
+  }
+}
+
+.bp-footer__social {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 900px) {
+  .bp-footer__social {
+    justify-self: start;
+  }
+}
+
+.bp-footer__social-link {
+  display: inline-flex;
+  color: var(--svb-color-midnight);
+  opacity: 1;
+  transition: opacity 120ms ease;
+}
+
+.bp-footer__social-link:hover {
+  opacity: 0.65;
+}
+
+.bp-footer__copyright {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--svb-color-midnight);
+}
+
+.bp-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.25rem 1.75rem;
+}
+
+@media (min-width: 900px) {
+  .bp-footer__links {
+    justify-content: flex-end;
+  }
+}
+
+.bp-footer__link {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--svb-color-midnight);
+  text-decoration: none;
+  transition: opacity 120ms ease;
+}
+
+.bp-footer__link:hover {
+  opacity: 0.65;
+}
+
+/* Countdown */
+.bp-footer__countdown {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem 1rem;
+  margin-top: 2.5rem;
+  padding-bottom: 2rem;
+}
+
+@media (min-width: 640px) {
+  .bp-footer__countdown {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-bottom: 2.5rem;
+  }
+}
+
+.bp-footer__countdown-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  text-align: center;
+}
+
+.bp-footer__countdown-value {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 2.768rem + 5.258vw, 7.5rem);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: #000;
+}
+
+.bp-footer__countdown-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--svb-color-midnight);
+}
+
+/* Skyline mega mark — full-bleed, bottom-aligned */
+.bp-footer__skyline-wrap {
+  position: relative;
+  width: 100vw;
+  max-width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  margin-top: 0.5rem;
+  padding-bottom: 0;
+  line-height: 0;
+  overflow: hidden;
+}
+
+.bp-footer__skyline-wrap::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 1;
+  height: 3px;
+  background: #000;
+  pointer-events: none;
+}
+
+.bp-footer__skyline {
+  display: block;
+  width: 100%;
+  aspect-ratio: 588 / 147;
+  min-height: clamp(5.5rem, 18vw, 11rem);
+}
+
+.bp-footer__skyline .kuching-skyline__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: auto;
+  shape-rendering: geometricPrecision;
+}

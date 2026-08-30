@@ -1,0 +1,106 @@
+/**
+ * SVB design tokens — Startup Village Borneo logo palette
+ * Blue (primary) · Crimson red · Mustard gold · White on midnight
+ */
+
+:root {
+  /* ── Logo palette ─────────────────────────────────────────── */
+  --svb-color-blue: #2450e6;
+  --svb-color-red: #b91c2e;
+  --svb-color-gold: #d4a82a;
+  --svb-color-midnight: #061228;
+  --svb-color-white: #ffffff;
+
+  /* Legacy aliases — remapped to SVB (no Breakpoint purple/mint) */
+  --svb-color-solana-mint: var(--svb-color-gold);
+  --svb-color-breakpoint-purple: var(--svb-color-blue);
+  --svb-color-borneo-teal: #1e6fd4;
+  --svb-color-borneo-amber: var(--svb-color-gold);
+  --svb-color-borneo-coral: var(--svb-color-red);
+  --svb-color-borneo-forest: #0d3d6b;
+
+  /* ── Semantic surfaces ────────────────────────────────────── */
+  --color-bg-primary: var(--svb-color-midnight);
+  --color-bg-secondary: #0a1a35;
+  --color-bg-elevated: #0f2447;
+  --color-bg-invert: var(--svb-color-white);
+  --color-bg-accent: var(--svb-color-gold);
+  --color-text-primary: var(--svb-color-white);
+  --color-text-secondary: #b8c4d9;
+  --color-text-invert: var(--svb-color-midnight);
+  --color-text-highlight: var(--svb-color-red);
+  --color-text-accent: var(--svb-color-gold);
+
+  /* Wisp system — names kept; values = SVB palette */
+  --color-wisp: var(--svb-color-white);
+  --color-null: var(--svb-color-midnight);
+  --color-byte: var(--svb-color-red);
+  --color-azure: var(--svb-color-blue);
+  --color-lime: var(--svb-color-gold);
+  --color-transparent-wisp-10: #ffffff1a;
+  --color-transparent-null-10: #0612281a;
+
+  /* Brand gradient — soft viewport glows, no hard null stop */
+  --svb-gradient-bg:
+    radial-gradient(
+      ellipse 80vmax 60vmax at 85% -8%,
+      color-mix(in srgb, var(--svb-color-red) 38%, transparent),
+      transparent 58%
+    ),
+    radial-gradient(
+      ellipse 72vmax 58vmax at -8% 108%,
+      color-mix(in srgb, var(--svb-color-gold) 32%, transparent),
+      transparent 56%
+    ),
+    radial-gradient(
+      ellipse 78vmax 56vmax at 52% 48%,
+      color-mix(in srgb, var(--svb-color-blue) 36%, transparent),
+      transparent 64%
+    );
+  --svb-noise-opacity: 0.28;
+
+  --text-stat-display: clamp(4rem, 3.648rem + 1.502vw, 5rem);
+  --text-stat-display-line-height: clamp(4.16rem, 3.794rem + 1.562vw, 5.2rem);
+  --text-stat-display-letter-spacing: clamp(-0.25rem, -0.282rem + 0.135vw, -0.16rem);
+
+  --cta-height-sm: 3rem;
+  --cta-height-md: 3.5rem;
+  --cta-height-lg: 4.25rem;
+
+  --map-pin-mint: var(--svb-color-gold);
+  --map-pin-mint-40: #d4a82a66;
+  --map-surface: var(--svb-color-midnight);
+
+  --font-display: 'Syne', system-ui, sans-serif;
+  --font-sans: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --space-xs: 1rem;
+  --space-s: 1.5rem;
+  --space-m: 2rem;
+  --space-l: 3rem;
+  --space-xl: 4rem;
+  --space-2xl: 5rem;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-normal: 300ms;
+
+  --z-nav: 50;
+  --site-nav-height: 3.5rem;
+
+  /* Halftone UI ink palette */
+  --ink: var(--color-wisp);
+  --purple: var(--svb-color-blue);
+  --green: var(--svb-color-gold);
+  --blue: var(--svb-color-blue);
+  --grey: #b8c4d9;
+  --orange: var(--svb-color-gold);
+  --pink: var(--svb-color-red);
+  --red: var(--svb-color-red);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-normal: 0ms;
+  }
+}

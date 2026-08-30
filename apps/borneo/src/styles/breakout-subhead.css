@@ -1,0 +1,89 @@
+/**
+ * Colosseum Breakout section subheads — black label + hard offset shadow
+ * (colosseum.com/breakout: box-shadow -8px 8px 0 0 accent)
+ */
+
+.section-heading {
+  margin: 0;
+}
+
+.breakout-subhead {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.breakout-subhead__label {
+  position: relative;
+  z-index: 1;
+  display: block;
+  padding: 0.625rem 1rem 1.125rem 1.125rem;
+  background: #000;
+  color: var(--color-wisp);
+  border: 3px solid #000;
+  border-radius: 1px;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+/* Real halftone-kit stipple — same engine as bar charts */
+.breakout-subhead__accent {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  transform: translate(-8px, 8px);
+  border-radius: 1px;
+  overflow: hidden;
+  background-color: var(--subhead-accent, var(--color-lime));
+}
+
+.breakout-subhead__accent canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+}
+
+@media (min-width: 1280px) {
+  .breakout-subhead__label {
+    font-size: 1.5rem;
+    line-height: 1.25;
+  }
+}
+
+.breakout-subhead--lime {
+  --subhead-accent: var(--color-lime);
+}
+
+.breakout-subhead--azure {
+  --subhead-accent: var(--color-azure);
+}
+
+.breakout-subhead--byte {
+  --subhead-accent: var(--color-byte);
+}
+
+.breakout-subhead--green {
+  --subhead-accent: #03bf62;
+}
+
+.section-intro {
+  gap: 1rem;
+  max-width: none;
+  /* Reserve space for the -8px / +8px accent offset */
+  padding: 0 0 8px 8px;
+}
+
+.section-intro__lead {
+  max-width: 42rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .breakout-subhead__accent canvas {
+    display: none;
+  }
+}
