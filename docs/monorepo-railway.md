@@ -6,29 +6,34 @@ This branch may live on `startup-village-borneo` temporarily — **merge into `s
 
 | Railway service | Root directory | Public URL |
 | ---------------- | -------------- | ---------- |
-| **edge** | `services/edge` | `https://my.superteam.fun` |
-| **superteammy** | `apps/site` | (internal upstream) |
-| **web** (SVB) | `apps/borneo` | `https://my.superteam.fun/borneo` |
+| **superteammy** | `apps/site` | `https://my.superteam.fun` (+ `/borneo` proxied to **web**) |
+| **web** (SVB) | `apps/borneo` | internal only (`web.railway.internal`) |
+
+No separate **edge** service — the site Next.js app reverse-proxies `/borneo` to the Borneo service via `BORNEO_UPSTREAM` in `apps/site/next.config.ts`.
 
 ## DNS (my.superteam.fun)
 
-Point the subdomain at Railway **edge** (same pattern as the old `stmy.fun` setup):
+Point the subdomain at the **superteammy** site service (not a separate edge proxy):
 
-1. Railway → project **svb** → service **edge** → Settings → Domains → add `my.superteam.fun`
+1. Railway → project **svb** → service **superteammy** → Settings → Domains → add `my.superteam.fun`
 2. At your DNS host for `superteam.fun`, add the records Railway shows (typically):
-   - **CNAME** `my` → `<edge-service>.up.railway.app`
+   - **CNAME** `my` → `<superteammy-service>.up.railway.app`
    - **TXT** `_railway-verify.my` → `railway-verify=…` (if prompted)
 
-After cutover, you can remove `stmy.fun` from edge or keep it as a redirect.
+Optionally attach `stmy.fun` to **superteammy** as well if you want the old domain to keep working.
 
-## Edge environment
+## Site environment
 
 | Variable | Example |
 | -------- | ------- |
-| `SITE_UPSTREAM` | `superteammy-production.up.railway.app:443` |
-| `BORNEO_UPSTREAM` | `web-production-cbc90.up.railway.app:443` |
+| `NEXT_PUBLIC_SITE_URL` | `https://my.superteam.fun` |
+| `BORNEO_UPSTREAM` | `http://web.railway.internal:8080` |
 
-Caddy config: `services/edge/Caddyfile` — `/borneo` → Borneo app, everything else → site.
+`/borneo` is proxied from the site app to the **web** service (see `apps/site/next.config.ts`).
+
+## Legacy edge service
+
+The old Caddy **edge** service is retired — routing lives in the site app now.
 
 ## Link GitHub repo to all three services
 
