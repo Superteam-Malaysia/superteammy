@@ -1,0 +1,35 @@
+<svg viewBox="0 0 56 44" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Startup Village Borneo hibiscus mark">
+  <title>SVB hibiscus mark</title>
+  <defs>
+    <linearGradient id="svb-hibiscus-grad" x1="10%" y1="8%" x2="92%" y2="96%">
+      <stop offset="0%" stop-color="#6d28d9"/>
+      <stop offset="40%" stop-color="#ab66fd"/>
+      <stop offset="75%" stop-color="#d946ef"/>
+      <stop offset="100%" stop-color="#f472b6"/>
+    </linearGradient>
+    <pattern id="svb-hibiscus-dots" width="2.4" height="2.4" patternUnits="userSpaceOnUse">
+      <circle cx="1.2" cy="1.2" r="0.55" fill="#e7d2f9" opacity="0.55"/>
+    </pattern>
+    <clipPath id="svb-hibiscus-clip">
+      <path d="M28 7 C21 12 17 18 20 24 C14 22 10 28 14 34 C18 38 24 36 28 33 C32 36 38 38 42 34 C46 28 42 22 36 24 C39 18 35 12 28 7 Z"/>
+    </clipPath>
+  </defs>
+  <g stroke="url(#svb-hibiscus-grad)" stroke-width="0.65" stroke-linecap="round" opacity="0.42">
+    <line x1="0" y1="36.5" x2="11" y2="36.5"/>
+    <line x1="0" y1="38.5" x2="14" y2="38.5"/>
+    <line x1="0" y1="40.5" x2="17" y2="40.5"/>
+    <line x1="0" y1="42.5" x2="12" y2="42.5"/>
+  </g>
+  <path fill="url(#svb-hibiscus-grad)" d="M28 7 C21 12 17 18 20 24 C14 22 10 28 14 34 C18 38 24 36 28 33 C32 36 38 38 42 34 C46 28 42 22 36 24 C39 18 35 12 28 7 Z"/>
+  <rect x="8" y="4" width="40" height="36" fill="url(#svb-hibiscus-dots)" clip-path="url(#svb-hibiscus-clip)" opacity="0.9"/>
+  <g stroke="url(#svb-hibiscus-grad)" stroke-width="1.15" stroke-linecap="round">
+    <line x1="27.5" y1="22" x2="40.5" y2="7.5"/>
+    <line x1="40.5" y1="7.5" x2="43.5" y2="4.5"/>
+  </g>
+  <g fill="url(#svb-hibiscus-grad)">
+    <circle cx="43.8" cy="4.2" r="2.1"/>
+    <circle cx="41.8" cy="7.2" r="1.15" opacity="0.9"/>
+  </g>
+  <circle cx="28" cy="24" r="2.4" fill="#11081b" opacity="0.55"/>
+  <circle cx="28" cy="24" r="1.1" fill="#f472b6" opacity="0.85"/>
+</svg>

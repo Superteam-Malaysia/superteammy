@@ -1,77 +1,58 @@
-# Railway — monorepo deploy (my.superteam.fun)
+# Railway — single Next.js app (my.superteam.fun)
 
-Single GitHub repo: **Superteam-Malaysia/superteammy** (canonical parent)
-
-This branch may live on `startup-village-borneo` temporarily — **merge into `superteammy`** and point all Railway services at that repo.
+Single GitHub repo: **Superteam-Malaysia/superteammy**
 
 | Railway service | Root directory | Public URL |
 | ---------------- | -------------- | ---------- |
-| **superteammy** | `apps/site` | `https://my.superteam.fun` (+ `/borneo` proxied to **web**) |
-| **web** (SVB) | `apps/borneo` | internal only (`web.railway.internal`) |
+| **superteammy** | `apps/site` | `https://my.superteam.fun` (site at `/`, Borneo at `/borneo`) |
 
-No separate **edge** service — the site Next.js app reverse-proxies `/borneo` to the Borneo service via `BORNEO_UPSTREAM` in `apps/site/next.config.ts`.
+One deploy serves both the Superteam Malaysia member site and Startup Village Borneo. Borneo lives under `apps/site/src/app/borneo/` and `apps/site/src/borneo/` — no separate **web** service and no edge proxy.
 
 ## DNS (my.superteam.fun)
 
-Point the subdomain at the **superteammy** site service (not a separate edge proxy):
+Point the subdomain at the **superteammy** service:
 
 1. Railway → project **svb** → service **superteammy** → Settings → Domains → add `my.superteam.fun`
-2. At your DNS host for `superteam.fun`, add the records Railway shows (typically):
+2. At your DNS host for `superteam.fun`:
    - **CNAME** `my` → `<superteammy-service>.up.railway.app`
    - **TXT** `_railway-verify.my` → `railway-verify=…` (if prompted)
 
-Optionally attach `stmy.fun` to **superteammy** as well if you want the old domain to keep working.
+Optionally attach `stmy.fun` to **superteammy** so the old domain keeps working.
 
-## Site environment
+## Environment (superteammy)
 
 | Variable | Example |
 | -------- | ------- |
 | `NEXT_PUBLIC_SITE_URL` | `https://my.superteam.fun` |
-| `BORNEO_UPSTREAM` | `http://web.railway.internal:8080` |
-
-`/borneo` is proxied from the site app to the **web** service (see `apps/site/next.config.ts`).
-
-## Legacy edge service
-
-The old Caddy **edge** service is retired — routing lives in the site app now.
-
-## Link GitHub repo to all three services
-
-For each service in Railway:
-
-1. Settings → Source → connect **Superteam-Malaysia/superteammy**
-2. Set **Root Directory** (table above)
-3. Redeploy
-
-Previously **web** pointed at `startup-village-borneo`; repoint it to this monorepo with root `apps/borneo`.
-
-## Borneo (web) variables
-
-| Variable | Value |
-| -------- | ----- |
-| `DATABASE_URL` | Postgres plugin (shared) |
-| `AUTH_SECRET` | Random 32+ chars |
+| `DATABASE_URL` | Postgres plugin (Borneo) |
+| `AUTH_SECRET` | Random 32+ chars (Borneo sessions) |
 | `APP_URL` | `https://my.superteam.fun` |
 | `NEXT_PUBLIC_BASE_PATH` | `/borneo` |
-| `NEXT_PUBLIC_SITE_URL` | `https://my.superteam.fun/borneo` |
+| `NEXT_PUBLIC_SITE_URL` (Borneo links) | `https://my.superteam.fun/borneo` |
 | `TELEGRAM_BOT_TOKEN` | BotFather token |
+| Supabase vars | Site auth (`NEXT_PUBLIC_SUPABASE_*`, etc.) |
 
-BotFather: `/setdomain` → **`my.superteam.fun`** (required for Login Widget).
+BotFather: `/setdomain` → **`my.superteam.fun`** (Telegram Login Widget).
 
-Deploy runs migrations + guest import + Telegram webhook via `apps/borneo/scripts/start-production.sh`.
+Production startup runs Borneo migrations, guest import, and Telegram webhook via `apps/site/scripts/start-production.sh`.
+
+## Retired services
+
+- **edge** — Caddy reverse proxy (removed)
+- **web** — standalone Borneo app at `apps/borneo` (merged into **superteammy**; delete after deploy validates)
+
+Copy any remaining **web** env vars onto **superteammy** before deleting **web**. Remove `BORNEO_UPSTREAM` — it was only used for the rewrite proxy.
 
 ## Local development
 
 ```bash
-# Site (port 3000)
 cd apps/site && npm install && npm run dev
-
-# Borneo (port 3001 — set in .env or pass -p)
-cd apps/borneo && npm install && npm run dev
 ```
+
+Site: `http://localhost:3000` · Borneo: `http://localhost:3000/borneo`
 
 Postgres for Borneo: `docker compose up -d postgres` from repo root; see `docs/railway-setup.md`.
 
-## Legacy repo
+## Legacy
 
-`Superteam-Malaysia/startup-village-borneo` is archived in favor of `apps/borneo` in this monorepo.
+`apps/borneo/` remains in the repo as reference until the merged deploy is stable. `Superteam-Malaysia/startup-village-borneo` is archived in favor of this monorepo.

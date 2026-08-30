@@ -1,15 +1,14 @@
-# Superteam Malaysia site — served at https://my.superteam.fun/
+# Superteam Malaysia + Startup Village Borneo — https://my.superteam.fun and /borneo
 [build]
 builder = "NIXPACKS"
-# Railpack already runs npm ci; a second npm ci hits EBUSY on node_modules/.cache
 buildCommand = "npm run build"
 watchPatterns = ["**"]
 
 [deploy]
-startCommand = "npm run start"
+startCommand = "bash scripts/start-production.sh"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
 
 [deploy.healthcheck]
-path = "/"
+path = "/borneo"
 timeout = 300
