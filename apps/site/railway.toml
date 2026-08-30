@@ -1,7 +1,8 @@
 # Superteam Malaysia site — served at https://my.superteam.fun/
 [build]
 builder = "NIXPACKS"
-buildCommand = "npm ci && npm run build"
+# Railpack already runs npm ci; a second npm ci hits EBUSY on node_modules/.cache
+buildCommand = "npm run build"
 watchPatterns = ["**"]
 
 [deploy]
