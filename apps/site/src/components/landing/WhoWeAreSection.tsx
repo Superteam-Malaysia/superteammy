@@ -126,11 +126,13 @@ export function WhoWeAreSection({ content }: { content?: SiteContent | null }) {
       <div className="sticky top-0 h-screen w-full">
         <UnicornScene
           projectId="M4Npp8uoO33G2Wq56jtk"
+          sdkUrl="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.2.12/dist/unicornStudio.umd.js"
           width="100%"
           height="100%"
           className="absolute inset-0 w-full h-full"
           scale={1}
-          dpi={1.5}
+          dpi={1}
+          fps={30}
           production
         />
       </div>
