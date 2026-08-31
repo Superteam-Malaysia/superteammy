@@ -48,7 +48,9 @@ Copy any remaining **web** env vars onto **superteammy** before deleting **web**
 ## Local development
 
 ```bash
-cd apps/site && npm install && npm run dev
+cd apps/site && npm install
+cp .env.example .env   # env is per app; a root .env is not read
+npm run dev
 ```
 
 Site: `http://localhost:3000` · Borneo: `http://localhost:3000/borneo`
