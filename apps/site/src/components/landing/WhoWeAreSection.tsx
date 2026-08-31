@@ -3,6 +3,7 @@
 import { useEffect, useRef, useMemo } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import type { MotionValue } from "framer-motion";
+import UnicornScene from "unicornstudio-react/next";
 import type { SiteContent } from "@/lib/types";
 
 function useElementScrollProgress(
@@ -81,33 +82,7 @@ export function WhoWeAreSection({ content }: { content?: SiteContent | null }) {
   const text = content?.description || DEFAULT_CONTENT;
   const sectionRef = useRef<HTMLElement>(null);
   const scrollRevealRef = useRef<HTMLDivElement>(null);
-  const scriptLoaded = useRef(false);
   const scrollYProgress = useElementScrollProgress(scrollRevealRef, 0.3);
-
-  useEffect(() => {
-    if (scriptLoaded.current) return;
-    scriptLoaded.current = true;
-
-    const w = window as unknown as Record<string, unknown>;
-    const u = w.UnicornStudio as { init?: () => void; isInitialized?: boolean } | undefined;
-
-    if (u?.init) {
-      u.init();
-      return;
-    }
-
-    if (u?.isInitialized !== undefined) return;
-
-    w.UnicornStudio = { isInitialized: false };
-    const script = document.createElement("script");
-    script.src =
-      "https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.1.12/dist/unicornStudio.umd.js";
-    script.onload = () => {
-      const us = w.UnicornStudio as { init?: () => void } | undefined;
-      us?.init?.();
-    };
-    document.head.appendChild(script);
-  }, []);
 
   // Snap to next section when ~85-90% scrolled past
   useEffect(() => {
@@ -149,10 +124,16 @@ export function WhoWeAreSection({ content }: { content?: SiteContent | null }) {
     <section id="about" ref={sectionRef} className="relative">
       {/* Sticky Unicorn Studio background — stays in viewport while section scrolls */}
       <div className="sticky top-0 h-screen w-full">
-        <div
-          data-us-project="M4Npp8uoO33G2Wq56jtk"
+        <UnicornScene
+          projectId="M4Npp8uoO33G2Wq56jtk"
+          sdkUrl="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.2.12/dist/unicornStudio.umd.js"
+          width="100%"
+          height="100%"
           className="absolute inset-0 w-full h-full"
-          data-us-production="true"
+          scale={1}
+          dpi={1}
+          fps={30}
+          production
         />
       </div>
 
