@@ -1,5 +1,15 @@
--- Superteam Malaysia Database Schema
--- Run this in your Supabase SQL Editor to set up the database
+-- Superteam Malaysia -- BASE schema.
+--
+-- This is the first layer only. It creates the seven original content tables;
+-- everything else (profiles, projects, invites, perks, newsletter_subscribers,
+-- event_photos, ...) is created by supabase/migrations/, which also ALTERs
+-- `events` and `site_content` from this file. Run this once, then every
+-- migration in timestamp order.
+--
+-- DO NOT re-run this on a database that is already set up. The policies below
+-- would be recreated alongside the ones later migrations installed, and because
+-- Postgres ORs policies together that would re-open write access that
+-- 20250320_tighten_legacy_rls.sql deliberately closed.
 
 -- Members table
 CREATE TABLE IF NOT EXISTS members (
@@ -86,6 +96,16 @@ CREATE TABLE IF NOT EXISTS site_content (
   image_url TEXT DEFAULT ''
 );
 
+-- Role helper. Redefined identically by 20250306_member_management.sql; it has
+-- to exist here because the policies below call it.
+CREATE OR REPLACE FUNCTION public.get_user_role()
+RETURNS TEXT AS $$
+  SELECT coalesce(
+    (auth.jwt() -> 'app_metadata' ->> 'user_role'),
+    'member'
+  );
+$$ LANGUAGE sql STABLE SECURITY DEFINER;
+
 -- Row Level Security (RLS) Policies
 
 -- Enable RLS on all tables
@@ -106,34 +126,61 @@ CREATE POLICY "Public read access" ON testimonials FOR SELECT USING (true);
 CREATE POLICY "Public read access" ON faqs FOR SELECT USING (true);
 CREATE POLICY "Public read access" ON site_content FOR SELECT USING (true);
 
--- Admin write access (authenticated users)
-CREATE POLICY "Admin insert" ON members FOR INSERT WITH CHECK (auth.role() = 'authenticated');
-CREATE POLICY "Admin update" ON members FOR UPDATE USING (auth.role() = 'authenticated');
-CREATE POLICY "Admin delete" ON members FOR DELETE USING (auth.role() = 'authenticated');
+-- Admin write access.
+-- These were `auth.role() = 'authenticated'`, which is true for ANY signed-in
+-- member, not just an admin -- a member could write these tables straight from
+-- the browser with the anon key. Names and predicates match what
+-- 20250320_tighten_legacy_rls.sql produces, so that migration re-applying over
+-- this is a no-op.
 
-CREATE POLICY "Admin insert" ON events FOR INSERT WITH CHECK (auth.role() = 'authenticated');
-CREATE POLICY "Admin update" ON events FOR UPDATE USING (auth.role() = 'authenticated');
-CREATE POLICY "Admin delete" ON events FOR DELETE USING (auth.role() = 'authenticated');
+CREATE POLICY "members_admin_insert" ON members
+  FOR INSERT WITH CHECK (public.get_user_role() IN ('super_admin', 'admin'));
+CREATE POLICY "members_admin_update" ON members
+  FOR UPDATE USING (public.get_user_role() IN ('super_admin', 'admin'));
+CREATE POLICY "members_admin_delete" ON members
+  FOR DELETE USING (public.get_user_role() IN ('super_admin', 'admin'));
 
-CREATE POLICY "Admin insert" ON partners FOR INSERT WITH CHECK (auth.role() = 'authenticated');
-CREATE POLICY "Admin update" ON partners FOR UPDATE USING (auth.role() = 'authenticated');
-CREATE POLICY "Admin delete" ON partners FOR DELETE USING (auth.role() = 'authenticated');
+CREATE POLICY "events_admin_insert" ON events
+  FOR INSERT WITH CHECK (public.get_user_role() IN ('super_admin', 'admin'));
+CREATE POLICY "events_admin_update" ON events
+  FOR UPDATE USING (public.get_user_role() IN ('super_admin', 'admin'));
+CREATE POLICY "events_admin_delete" ON events
+  FOR DELETE USING (public.get_user_role() IN ('super_admin', 'admin'));
 
-CREATE POLICY "Admin insert" ON stats FOR INSERT WITH CHECK (auth.role() = 'authenticated');
-CREATE POLICY "Admin update" ON stats FOR UPDATE USING (auth.role() = 'authenticated');
-CREATE POLICY "Admin delete" ON stats FOR DELETE USING (auth.role() = 'authenticated');
+CREATE POLICY "partners_admin_insert" ON partners
+  FOR INSERT WITH CHECK (public.get_user_role() IN ('super_admin', 'admin'));
+CREATE POLICY "partners_admin_update" ON partners
+  FOR UPDATE USING (public.get_user_role() IN ('super_admin', 'admin'));
+CREATE POLICY "partners_admin_delete" ON partners
+  FOR DELETE USING (public.get_user_role() IN ('super_admin', 'admin'));
 
-CREATE POLICY "Admin insert" ON testimonials FOR INSERT WITH CHECK (auth.role() = 'authenticated');
-CREATE POLICY "Admin update" ON testimonials FOR UPDATE USING (auth.role() = 'authenticated');
-CREATE POLICY "Admin delete" ON testimonials FOR DELETE USING (auth.role() = 'authenticated');
+CREATE POLICY "stats_admin_insert" ON stats
+  FOR INSERT WITH CHECK (public.get_user_role() IN ('super_admin', 'admin'));
+CREATE POLICY "stats_admin_update" ON stats
+  FOR UPDATE USING (public.get_user_role() IN ('super_admin', 'admin'));
+CREATE POLICY "stats_admin_delete" ON stats
+  FOR DELETE USING (public.get_user_role() IN ('super_admin', 'admin'));
 
-CREATE POLICY "Admin insert" ON faqs FOR INSERT WITH CHECK (auth.role() = 'authenticated');
-CREATE POLICY "Admin update" ON faqs FOR UPDATE USING (auth.role() = 'authenticated');
-CREATE POLICY "Admin delete" ON faqs FOR DELETE USING (auth.role() = 'authenticated');
+CREATE POLICY "testimonials_admin_insert" ON testimonials
+  FOR INSERT WITH CHECK (public.get_user_role() IN ('super_admin', 'admin'));
+CREATE POLICY "testimonials_admin_update" ON testimonials
+  FOR UPDATE USING (public.get_user_role() IN ('super_admin', 'admin'));
+CREATE POLICY "testimonials_admin_delete" ON testimonials
+  FOR DELETE USING (public.get_user_role() IN ('super_admin', 'admin'));
 
-CREATE POLICY "Admin insert" ON site_content FOR INSERT WITH CHECK (auth.role() = 'authenticated');
-CREATE POLICY "Admin update" ON site_content FOR UPDATE USING (auth.role() = 'authenticated');
-CREATE POLICY "Admin delete" ON site_content FOR DELETE USING (auth.role() = 'authenticated');
+CREATE POLICY "faqs_admin_insert" ON faqs
+  FOR INSERT WITH CHECK (public.get_user_role() IN ('super_admin', 'admin'));
+CREATE POLICY "faqs_admin_update" ON faqs
+  FOR UPDATE USING (public.get_user_role() IN ('super_admin', 'admin'));
+CREATE POLICY "faqs_admin_delete" ON faqs
+  FOR DELETE USING (public.get_user_role() IN ('super_admin', 'admin'));
+
+CREATE POLICY "site_content_admin_insert" ON site_content
+  FOR INSERT WITH CHECK (public.get_user_role() IN ('super_admin', 'admin'));
+CREATE POLICY "site_content_admin_update" ON site_content
+  FOR UPDATE USING (public.get_user_role() IN ('super_admin', 'admin'));
+CREATE POLICY "site_content_admin_delete" ON site_content
+  FOR DELETE USING (public.get_user_role() IN ('super_admin', 'admin'));
 
 -- Seed data
 INSERT INTO stats (label, value, suffix, icon, display_order) VALUES

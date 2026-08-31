@@ -282,7 +282,7 @@ superteammy/
 │   │   └── utils.ts               # General utilities
 │   └── middleware.ts              # Auth + RBAC middleware
 ├── supabase/
-│   ├── schema.sql                 # Base database schema
+│   ├── schema.sql                 # Base tables only — run first, then migrations
 │   └── migrations/                # 15+ incremental migrations
 ├── .env.example                   # Environment variable template
 ├── next.config.ts                 # Next.js configuration
@@ -371,8 +371,15 @@ npx supabase db push
 
 **Option B: Manual SQL**
 
-1. Run `supabase/schema.sql` in the Supabase SQL Editor for the base schema
+1. Run `supabase/schema.sql` in the Supabase SQL Editor for the base tables
 2. Run each file in `supabase/migrations/` in timestamp order
+
+`schema.sql` creates only the seven original content tables; the migrations
+create everything else and `ALTER` two of these, so both steps are required and
+the order matters. Do not re-run `schema.sql` against a database that is already
+set up — Postgres ORs RLS policies together, so recreating its policies
+alongside the migrations' would re-open write access that
+`20250320_tighten_legacy_rls.sql` closed.
 
 ### 3. Create Storage Buckets
 
