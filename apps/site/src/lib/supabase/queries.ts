@@ -1,34 +1,5 @@
 import { createServerClient } from "./server";
-import type { Member, Event, Partner, Stat, Testimonial, FAQ, Profile, Invite, LookupTag, SubskillTag, Project, Perk, CommunityTweet, SiteContent, NewsletterSubscriber, EventPhoto } from "../types";
-
-export async function getMembers(): Promise<Member[]> {
-  const supabase = await createServerClient();
-  const { data, error } = await supabase
-    .from("members")
-    .select("*")
-    .order("display_order", { ascending: true });
-
-  if (error) {
-    console.error("Failed to fetch members:", error.message);
-    return [];
-  }
-  return data as Member[];
-}
-
-export async function getFeaturedMembers(): Promise<Member[]> {
-  const supabase = await createServerClient();
-  const { data, error } = await supabase
-    .from("members")
-    .select("*")
-    .eq("is_featured", true)
-    .order("display_order", { ascending: true });
-
-  if (error) {
-    console.error("Failed to fetch featured members:", error.message);
-    return [];
-  }
-  return data as Member[];
-}
+import type { Event, Partner, Stat, FAQ, Profile, Invite, LookupTag, SubskillTag, Project, Perk, CommunityTweet, SiteContent, NewsletterSubscriber, EventPhoto } from "../types";
 
 export async function getEvents(opts?: { includeArchived?: boolean }): Promise<Event[]> {
   try {
@@ -86,20 +57,6 @@ export async function getStats(): Promise<Stat[]> {
     console.error("Failed to fetch stats:", err instanceof Error ? err.message : "Unknown error");
     return [];
   }
-}
-
-export async function getTestimonials(): Promise<Testimonial[]> {
-  const supabase = await createServerClient();
-  const { data, error } = await supabase
-    .from("testimonials")
-    .select("*")
-    .order("is_featured", { ascending: false });
-
-  if (error) {
-    console.error("Failed to fetch testimonials:", error.message);
-    return [];
-  }
-  return data as Testimonial[];
 }
 
 export async function getCommunityTweets(): Promise<CommunityTweet[]> {
