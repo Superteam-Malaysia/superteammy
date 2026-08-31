@@ -3,7 +3,7 @@
 import { useEffect, useRef, useMemo } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import type { MotionValue } from "framer-motion";
-import UnicornScene from "unicornstudio-react";
+import UnicornScene from "unicornstudio-react/next";
 import type { SiteContent } from "@/lib/types";
 
 function useElementScrollProgress(
@@ -126,6 +126,8 @@ export function WhoWeAreSection({ content }: { content?: SiteContent | null }) {
       <div className="sticky top-0 h-screen w-full">
         <UnicornScene
           projectId="M4Npp8uoO33G2Wq56jtk"
+          width="100%"
+          height="100%"
           className="absolute inset-0 w-full h-full"
           scale={1}
           dpi={1.5}
