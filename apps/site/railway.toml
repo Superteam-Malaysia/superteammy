@@ -6,7 +6,7 @@ watchPatterns = ["**"]
 
 [deploy]
 startCommand = "npm start"
-preDeployCommand = "npm run borneo:generate-ics && npm run borneo:db:migrate && npm run borneo:db:import-guests && npm run borneo:db:seed-teams && npm run borneo:db:seed-staff && (npm run borneo:telegram:setup-webhook || true)"
+preDeployCommand = "npm run borneo:generate-ics && npm run borneo:db:migrate && (npm run borneo:telegram:setup-webhook || true)"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
 
