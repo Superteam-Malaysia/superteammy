@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { resizeImage, LOGO_MAX_WIDTH } from "@/lib/resize-image";
 import { Plus, Pencil, Trash2, ImageIcon, GripVertical } from "lucide-react";
 import {
   DndContext,
@@ -125,9 +126,16 @@ export function AdminPartnersClient({ initialPartners }: AdminPartnersClientProp
   async function handleEditorComplete(blob: Blob) {
     setIsUploading(true);
     try {
-      const ext = "png";
+      // Logos came in as 5000px PNGs and render around 150px wide.
+      const resized = await resizeImage(
+        new File([blob], "logo.png", { type: blob.type || "image/png" }),
+        { maxWidth: LOGO_MAX_WIDTH }
+      );
+      const ext = resized.name.split(".").pop() || "png";
       const path = `${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${ext}`;
-      const { error } = await supabase.storage.from("partner-logos").upload(path, blob, { upsert: true });
+      const { error } = await supabase.storage
+        .from("partner-logos")
+        .upload(path, resized, { upsert: true, contentType: resized.type });
       if (error) throw error;
       const { data: urlData } = supabase.storage.from("partner-logos").getPublicUrl(path);
       setFormData((prev) => ({ ...prev, logo_url: urlData.publicUrl }));
