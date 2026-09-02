@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { Calendar, ArrowUpRight } from "lucide-react";
@@ -16,7 +16,7 @@ const TABS = [
 // the dome never renders blank.
 const FALLBACK_EVENT_IMAGES = Array.from(
   { length: 32 },
-  (_, i) => `/images/events/${i + 1}.jpeg`,
+  (_, i) => `/images/events/${i + 1}.webp`,
 );
 
 function formatDate(dateStr: string) {
@@ -37,6 +37,12 @@ interface EventsSectionProps {
 
 const PAST_EVENTS_LIMIT = 50;
 
+// Tailwind's lg breakpoint, which is what the two mounts used to switch on.
+const DESKTOP_QUERY = "(min-width: 1024px)";
+type DomeConfig = { segments: number; fit: number };
+const DESKTOP_DOME: DomeConfig = { segments: 35, fit: 0.75 };
+const MOBILE_DOME: DomeConfig = { segments: 25, fit: 1 };
+
 const DEFAULT_EVENTS = {
   title: "Our Events",
   description: "Bringing the community together through meetups, workshops, hackathons, and builder gatherings.",
@@ -47,6 +53,16 @@ export function EventsSection({ events, content, photos }: EventsSectionProps) {
   const title = content?.title || DEFAULT_EVENTS.title;
   const description = content?.description || DEFAULT_EVENTS.description;
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
+  // null until the breakpoint is known, so neither variant is built speculatively.
+  const [domeConfig, setDomeConfig] = useState<DomeConfig | null>(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia(DESKTOP_QUERY);
+    const apply = () => setDomeConfig(mq.matches ? DESKTOP_DOME : MOBILE_DOME);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
   const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming");
   const pastEvents = events.filter((e) => !e.is_upcoming).slice(0, PAST_EVENTS_LIMIT);
 
@@ -57,40 +73,28 @@ export function EventsSection({ events, content, photos }: EventsSectionProps) {
         ref={ref}
         className="relative w-screen left-1/2 -translate-x-1/2 h-screen min-h-[600px]"
       >
-        <div className="absolute inset-0 w-full h-full lg:block hidden">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={inView ? { opacity: 1 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="w-full h-full"
-          >
-            <DomeGallery
-              images={galleryImages}
-              segments={35}
-              maxVerticalRotationDeg={10}
-              fit={0.75}
-              fitBasis="width"
-              overlayBlurColor="#080B0E"
-            />
-          </motion.div>
-        </div>
-        <div className="absolute inset-0 w-full h-full lg:hidden block">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={inView ? { opacity: 1 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="w-full h-full"
-          >
-            <DomeGallery
-              images={galleryImages}
-              segments={25}
-              maxVerticalRotationDeg={10}
-              fit={1}
-              fitBasis="width"
-              overlayBlurColor="#080B0E"
-            />
-          </motion.div>
-        </div>
+        {/* One dome, not one per breakpoint. Both used to be mounted at
+            once -- `display:none` unmounts nothing, so a phone still built the
+            35-segment desktop dome and fetched every tile for it. */}
+        {domeConfig && (
+          <div className="absolute inset-0 w-full h-full">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={inView ? { opacity: 1 } : {}}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="w-full h-full"
+            >
+              <DomeGallery
+                images={galleryImages}
+                segments={domeConfig.segments}
+                maxVerticalRotationDeg={10}
+                fit={domeConfig.fit}
+                fitBasis="width"
+                overlayBlurColor="#080B0E"
+              />
+            </motion.div>
+          </div>
+        )}
 
         {/* Title - absolute overlay on top */}
         <div className="absolute flex justify-between inset-x-0 h-full lg:top-20 pt-12 lg:pb-32 md:pt-16 px-6 flex-col items-center z-10 pointer-events-none ">
