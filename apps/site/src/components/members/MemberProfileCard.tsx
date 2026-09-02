@@ -7,6 +7,7 @@ import { Link2, X } from "lucide-react";
 import type { Profile } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { XIcon, LinkedInIcon, TelegramIcon } from "@/components/icons/SocialIcons";
 import { useLenisRef } from "@/contexts/LenisContext";
 import { BADGE_PILL_CLASS, BADGE_PILL_FALLBACK, cardGradientFor } from "@/lib/badges";
 
@@ -45,6 +46,8 @@ export function MemberProfileCard({
   const cardGradient = cardGradientFor(profile.badges);
 
   const [isFlipped, setIsFlipped] = useState(false);
+  // Latches on the first flip so the back face stays mounted afterwards.
+  const [hasFlipped, setHasFlipped] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const lenisRef = useLenisRef();
 
@@ -52,6 +55,9 @@ export function MemberProfileCard({
     if (expandOnClick) {
       setIsExpanded(true);
     } else {
+      // Both land in one React batch, so the back face is in the DOM on the
+      // first frame of the rotation rather than appearing part-way through.
+      setHasFlipped(true);
       setIsFlipped((prev) => !prev);
     }
   };
@@ -157,17 +163,17 @@ export function MemberProfileCard({
           <div className="flex items-center justify-center gap-4 mt-auto min-h-[28px]">
             {profile.twitter_url && (
               <a href={profile.twitter_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-white/70 hover:text-white transition-colors" aria-label="X">
-                <Image src="/icons/x.svg" alt="" width={16} height={16} className="shrink-0" />
+                <XIcon className="shrink-0" />
               </a>
             )}
             {profile.linkedin_url && (
               <a href={profile.linkedin_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-white/70 hover:text-white transition-colors" aria-label="LinkedIn">
-                <Image src="/images/linkedin.svg" alt="" width={16} height={16} className="shrink-0" />
+                <LinkedInIcon className="shrink-0" />
               </a>
             )}
             {profile.telegram_url && (
               <a href={profile.telegram_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-white/70 hover:text-white transition-colors" aria-label="Telegram">
-                <Image src="/icons/telegram.svg" alt="" width={16} height={16} className="shrink-0" />
+                <TelegramIcon className="shrink-0" />
               </a>
             )}
             {profile.website_url && (
@@ -383,7 +389,7 @@ export function MemberProfileCard({
               className="text-white/70 hover:text-white transition-colors"
               aria-label="X"
             >
-              <Image src="/icons/x.svg" alt="" width={16} height={16} className="shrink-0" />
+              <XIcon className="shrink-0" />
             </a>
           )}
           {profile.linkedin_url && (
@@ -395,7 +401,7 @@ export function MemberProfileCard({
               className="text-white/70 hover:text-white transition-colors"
               aria-label="LinkedIn"
             >
-              <Image src="/images/linkedin.svg" alt="" width={16} height={16} className="shrink-0" />
+              <LinkedInIcon className="shrink-0" />
             </a>
           )}
           {profile.telegram_url && (
@@ -407,7 +413,7 @@ export function MemberProfileCard({
               className="text-white/70 hover:text-white transition-colors"
               aria-label="Telegram"
             >
-              <Image src="/icons/telegram.svg" alt="" width={16} height={16} className="shrink-0" />
+              <TelegramIcon className="shrink-0" />
             </a>
           )}
           {profile.website_url && (
@@ -426,7 +432,12 @@ export function MemberProfileCard({
             </div>
           </div>
 
-          {/* Back face */}
+          {/* Back face. Mounted on first flip and kept thereafter: it is a
+              whole second card -- image tags, gradient and noise layer --
+              that nobody has asked to see yet, and the marquee renders one
+              per member. hasFlipped latches so the node is in place before
+              the rotation starts, avoiding a blank first flip. */}
+          {hasFlipped && (
           <div
             className="absolute inset-0 w-full h-full rounded-2xl overflow-hidden flex flex-col"
             style={{
@@ -528,17 +539,17 @@ export function MemberProfileCard({
                 <div className="flex items-center justify-center gap-4 mt-auto pt-3">
                   {profile.twitter_url && (
                     <a href={profile.twitter_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-white/70 hover:text-white transition-colors" aria-label="X">
-                      <Image src="/icons/x.svg" alt="" width={16} height={16} className="shrink-0" />
+                      <XIcon className="shrink-0" />
                     </a>
                   )}
                   {profile.linkedin_url && (
                     <a href={profile.linkedin_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-white/70 hover:text-white transition-colors" aria-label="LinkedIn">
-                      <Image src="/images/linkedin.svg" alt="" width={16} height={16} className="shrink-0" />
+                      <LinkedInIcon className="shrink-0" />
                     </a>
                   )}
                   {profile.telegram_url && (
                     <a href={profile.telegram_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-white/70 hover:text-white transition-colors" aria-label="Telegram">
-                      <Image src="/icons/telegram.svg" alt="" width={16} height={16} className="shrink-0" />
+                      <TelegramIcon className="shrink-0" />
                     </a>
                   )}
                   {profile.website_url && (
@@ -567,6 +578,7 @@ export function MemberProfileCard({
               </div>
             </div>
           </div>
+          )}
         </motion.div>
       </motion.div>
     </motion.div>
