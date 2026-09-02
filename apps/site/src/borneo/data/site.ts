@@ -24,6 +24,7 @@ export const NAV_LINKS = [
   { href: "/schedule", label: "Schedule" },
   { href: "/speakers", label: "Speakers" },
   { href: "/prizes", label: "Prizes" },
+  { href: "/meteora", label: "Meteora" },
   { href: "/amazing-race", label: "Amazing Race", comingSoon: true },
   { href: "/teams", label: "Teams" },
   { href: "/demo-day", label: "Demo Day", comingSoon: true },
