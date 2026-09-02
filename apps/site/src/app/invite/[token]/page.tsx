@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Image from "next/image";
 import { Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
@@ -20,7 +20,6 @@ import { UnicornBackground } from "@/components/ui/UnicornBackground";
 
 export default function InvitePage() {
   const { token } = useParams<{ token: string }>();
-  const router = useRouter();
 
   const [status, setStatus] = useState<"loading" | "valid" | "invalid" | "success">("loading");
   const [errorMessage, setErrorMessage] = useState("");
@@ -96,7 +95,12 @@ export default function InvitePage() {
     }
 
     setStatus("success");
-    setTimeout(() => router.push("/onboarding"), 1500);
+    // A full document load, not a client-side navigation. signInWithPassword
+    // has only just written the auth cookie, and middleware now enforces auth
+    // server-side, so a soft navigation to /onboarding is bounced to /login
+    // before that cookie is attached. The 1500ms delay only ever masked this,
+    // on the occasions the cookie happened to land first.
+    setTimeout(() => window.location.assign("/onboarding"), 1500);
   }
 
   return (
