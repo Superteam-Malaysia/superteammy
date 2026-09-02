@@ -2,17 +2,16 @@
 
 import { Suspense, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { resolvePostLoginPath } from "@/lib/auth/redirect";
+import { resolvePostLoginPath, safeNext } from "@/lib/auth/redirect";
 
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next");
 
@@ -39,14 +38,26 @@ function LoginForm() {
       return;
     }
 
-    const { data: profile } = await supabase
+    const { data: profile, error: profileErr } = await supabase
       .from("profiles")
       .select("approval_status, onboarding_completed")
       .eq("id", data.user.id)
       .single();
 
-    router.push(resolvePostLoginPath(profile, next));
-    router.refresh();
+    // On a failed lookup, send them to the dashboard rather than guessing.
+    // resolvePostLoginPath treats a missing profile as "not onboarded" and
+    // would strand an onboarded user on /onboarding; the dashboard layout
+    // re-checks approval_status server-side, so nothing is bypassed.
+    const target = profileErr
+      ? safeNext(next) ?? "/dashboard"
+      : resolvePostLoginPath(profile, next);
+
+    // A full document load, not router.push. signInWithPassword has only just
+    // written the auth cookie, and a soft navigation asks middleware for the
+    // destination before that cookie is reliably attached -- middleware sees no
+    // session, redirects back to /login, and because we are already here
+    // nothing visibly happens and the button spins forever.
+    window.location.assign(target);
   }
 
   return (
