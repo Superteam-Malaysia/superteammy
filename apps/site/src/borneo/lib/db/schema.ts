@@ -48,6 +48,8 @@ export const participants = pgTable("participants", {
   commitmentProof: text("commitment_proof"),
   jerseySize: text("jersey_size"),
   ownAccommodation: text("own_accommodation"),
+  /** Solana wallet — collected on the Meteora challenge page only. */
+  solanaWallet: text("solana_wallet"),
   /** Full Luma export row for audit / future fields. */
   rawRegistration: jsonb("raw_registration").notNull().default({}),
   importedAt: timestamp("imported_at", { withTimezone: true })

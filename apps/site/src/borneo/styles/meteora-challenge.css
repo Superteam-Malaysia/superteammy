@@ -1,0 +1,311 @@
+/**
+ * Meteora challenge page — wallet submit + poster copy.
+ */
+
+.meteora-page {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.meteora-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 3rem 1.5rem 2.5rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-wisp) 8%, transparent);
+  background:
+    radial-gradient(ellipse 70% 80% at 0% 0%, color-mix(in srgb, var(--color-byte) 14%, transparent), transparent),
+    radial-gradient(ellipse 50% 60% at 100% 20%, color-mix(in srgb, var(--color-azure) 10%, transparent), transparent),
+    var(--color-null);
+}
+
+@media (min-width: 768px) {
+  .meteora-hero {
+    padding: 4.5rem 2rem 3.5rem;
+  }
+}
+
+.meteora-hero__inner {
+  max-width: 56rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.meteora-hero__day {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-byte);
+}
+
+.meteora-hero__title {
+  margin: 0;
+  max-width: 14ch;
+  font-family: var(--font-display), var(--font-sans);
+  font-size: clamp(2.5rem, 7vw, 4.25rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.92;
+  color: var(--color-wisp);
+}
+
+.meteora-hero__subtitle {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-wisp) 55%, transparent);
+}
+
+.meteora-hero__workshop {
+  margin: 0.5rem 0 0;
+  font-size: 0.9375rem;
+  color: color-mix(in srgb, var(--color-wisp) 72%, transparent);
+}
+
+.meteora-hero__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem 2.5rem;
+  margin-top: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid color-mix(in srgb, var(--color-wisp) 10%, transparent);
+}
+
+.meteora-hero__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.meteora-hero__stat-value {
+  font-family: var(--font-display), var(--font-sans);
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--color-wisp);
+}
+
+.meteora-hero__stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-wisp) 50%, transparent);
+}
+
+.meteora-hero__logo {
+  margin-top: 1.25rem;
+  height: 1.5rem;
+  width: auto;
+  opacity: 0.85;
+}
+
+.meteora-steps {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .meteora-steps {
+    padding: 4rem 2rem;
+  }
+}
+
+.meteora-steps__list {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 900px) {
+  .meteora-steps__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.meteora-steps__item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 100%;
+  padding: 1.35rem 1.4rem;
+  border: 1px solid color-mix(in srgb, var(--color-wisp) 12%, transparent);
+  background: color-mix(in srgb, var(--color-null) 94%, var(--color-byte) 6%);
+}
+
+.meteora-steps__item:nth-child(2) {
+  background: color-mix(in srgb, var(--color-null) 94%, var(--color-mint, #14f195) 6%);
+  border-color: color-mix(in srgb, var(--color-mint, #14f195) 25%, transparent);
+}
+
+.meteora-steps__item:nth-child(3) {
+  background: color-mix(in srgb, var(--color-null) 94%, var(--color-azure) 6%);
+  border-color: color-mix(in srgb, var(--color-azure) 25%, transparent);
+}
+
+.meteora-steps__n {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-byte);
+}
+
+.meteora-steps__cue {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: color-mix(in srgb, var(--color-wisp) 45%, transparent);
+}
+
+.meteora-steps__title {
+  margin: 0;
+  font-family: var(--font-display), var(--font-sans);
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--color-wisp);
+}
+
+.meteora-steps__detail {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--color-wisp) 75%, transparent);
+}
+
+.meteora-wallet-wrap {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 0 1.5rem 4rem;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .meteora-wallet-wrap {
+    padding: 0 2rem 5rem;
+  }
+}
+
+.meteora-wallet {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.75rem;
+  border: 1px solid color-mix(in srgb, var(--color-wisp) 14%, transparent);
+  background: color-mix(in srgb, var(--color-null) 88%, transparent);
+  transition: opacity 0.2s ease;
+}
+
+.meteora-wallet--locked {
+  opacity: 0.55;
+  pointer-events: none;
+  user-select: none;
+}
+
+.meteora-wallet--locked .meteora-wallet__sign-in-hint {
+  pointer-events: auto;
+  user-select: auto;
+}
+
+.meteora-wallet__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.meteora-wallet__title {
+  margin: 0;
+  font-family: var(--font-display), var(--font-sans);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-wisp);
+}
+
+.meteora-wallet__lead {
+  margin: 0;
+  max-width: 32rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--color-wisp) 70%, transparent);
+}
+
+.meteora-wallet__sign-in-hint {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+
+.meteora-wallet__sign-in-link {
+  color: var(--color-byte);
+  text-decoration: none;
+}
+
+.meteora-wallet__sign-in-link:hover {
+  text-decoration: underline;
+}
+
+.meteora-wallet__error {
+  margin: 0;
+  font-size: 0.875rem;
+  color: color-mix(in srgb, var(--color-byte) 90%, #ff6b6b);
+}
+
+.meteora-wallet__saved {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--color-byte);
+}
+
+.meteora-wallet__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.meteora-wallet__label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-wisp) 60%, transparent);
+}
+
+.meteora-wallet__input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--color-wisp) 18%, transparent);
+  background: var(--color-null);
+  color: var(--color-wisp);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+
+.meteora-wallet__input:focus {
+  outline: 2px solid color-mix(in srgb, var(--color-byte) 45%, transparent);
+  outline-offset: 2px;
+}
+
+.meteora-wallet__input:disabled {
+  cursor: not-allowed;
+  color: color-mix(in srgb, var(--color-wisp) 45%, transparent);
+}
+
+.meteora-wallet__submit {
+  align-self: flex-start;
+  margin-top: 0.25rem;
+}
+
+.meteora-wallet--active .meteora-wallet__submit:not(:disabled):hover {
+  opacity: 0.92;
+}
