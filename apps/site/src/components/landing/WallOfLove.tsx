@@ -8,6 +8,7 @@ import { EmbeddedTweet, TweetNotFound, TweetSkeleton, useTweet } from "react-twe
 import type { QuotedTweet, Tweet as TweetData, TweetBase, TweetEntities } from "react-tweet/api";
 import type { CommunityTweet, SiteContent } from "@/lib/types";
 import "react-tweet/theme.css";
+import { useMediaQuery, LG_QUERY } from "@/hooks/useMediaQuery";
 
 interface WallOfLoveProps {
   communityTweets: CommunityTweet[];
@@ -93,6 +94,7 @@ function SafeTweet({ id }: { id: string }) {
 }
 
 export function WallOfLove({ communityTweets, content }: WallOfLoveProps) {
+  const isLargeScreen = useMediaQuery(LG_QUERY);
   const title = content?.title || DEFAULT_WOL.title;
   const description = content?.description || DEFAULT_WOL.description;
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
@@ -101,22 +103,18 @@ export function WallOfLove({ communityTweets, content }: WallOfLoveProps) {
     <section id="community" className="relative py-14 md:py-24 lg:py-32 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 z-0 ">
-        <Image
-          src="/images/wol-bg.png"
-          alt=""
-          fill
-          className="object-cover object-center hidden lg:block"
-          unoptimized
-          priority={false}
-        />
-        <Image
-          src="/images/mobile-wol-bg.png"
-          alt=""
-          fill
-          className="object-cover object-center lg:hidden block"
-          unoptimized
-          priority={false}
-        />
+        {isLargeScreen !== null && (
+          <Image
+            src={
+              isLargeScreen ? "/images/wol-bg.png" : "/images/mobile-wol-bg.png"
+            }
+            alt=""
+            fill
+            className="object-cover object-center"
+            unoptimized
+            priority={false}
+          />
+        )}
 
       </div>
 

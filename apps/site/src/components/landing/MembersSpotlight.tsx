@@ -8,6 +8,7 @@ import Link from "next/link";
 import { MemberProfileCard } from "@/components/members/MemberProfileCard";
 import type { Profile, SiteContent } from "@/lib/types";
 import Image from "next/image";
+import { useMediaQuery, MD_QUERY, LG_QUERY } from "@/hooks/useMediaQuery";
 
 interface MembersSpotlightProps {
   profiles: Profile[];
@@ -34,6 +35,10 @@ const DEFAULT_MEMBERS = {
 };
 
 export function MembersSpotlight({ profiles, content }: MembersSpotlightProps) {
+  // One layout, not both. Rendering the desktop marquee on a phone built 208
+  // extra member cards -- ~15 images each -- that display:none never showed.
+  const isDesktop = useMediaQuery(MD_QUERY);
+  const isLargeScreen = useMediaQuery(LG_QUERY);
   const title = content?.title || DEFAULT_MEMBERS.title;
   const description = content?.description || DEFAULT_MEMBERS.description;
   const { ref: mobileHeaderRef, inView: mobileInView } = useInView({
@@ -91,28 +96,27 @@ export function MembersSpotlight({ profiles, content }: MembersSpotlightProps) {
   return (
     <section id="members" className="lg:py-24 py-12 overflow-hidden relative">
       <div className="absolute inset-0 z-[-1]">
-        <Image
-          src="/images/member-sec-bg.png"
-          alt=""
-          fill
-          className="object-cover object-center hidden lg:block"
-          unoptimized
-          priority={false}
-        />
-        <Image
-          src="/images/mobile-member-bg.png"
-          alt=""
-          fill
-          className="object-cover object-center block lg:hidden"
-          unoptimized
-          priority={false}
-        />
+        {isLargeScreen !== null && (
+          <Image
+            src={
+              isLargeScreen
+                ? "/images/member-sec-bg.png"
+                : "/images/mobile-member-bg.png"
+            }
+            alt=""
+            fill
+            className="object-cover object-center"
+            unoptimized
+            priority={false}
+          />
+        )}
       </div>
       <div className="absolute left-0 top-0 bottom-0 w-1/3 lg:hidden z-[1] bg-linear-to-r from-background/80 to-background/0 pointer-events-none" />
       <div className="absolute right-0 top-0 bottom-0 w-1/3 lg:hidden z-[1] bg-linear-to-l from-background/80 to-background/0 pointer-events-none" />
 
       {/* Mobile: no border div, single carousel - only visible below md (768px) */}
-      <div className="md:hidden flex flex-col gap-6 px-4 z-10">
+      {isDesktop === false && (
+      <div className="flex flex-col gap-6 px-4 z-10">
         <motion.div
           ref={mobileHeaderRef}
           initial={{ opacity: 0, y: 30 }}
@@ -191,8 +195,11 @@ export function MembersSpotlight({ profiles, content }: MembersSpotlightProps) {
         </div>
       </div>
 
-      {/* Tablet & Desktop: bordered wrapper + marquee (unchanged) */}
-      <div className="hidden md:flex mx-20 flex-col gap-1 shadow-lg bg-background rounded-[16px] p-8 px-20">
+      )}
+
+      {/* Tablet & Desktop: bordered wrapper + marquee */}
+      {isDesktop === true && (
+      <div className="flex mx-20 flex-col gap-1 shadow-lg bg-background rounded-[16px] p-8 px-20">
         {/* Header */}
         <motion.div
           ref={desktopHeaderRef}
@@ -269,6 +276,7 @@ export function MembersSpotlight({ profiles, content }: MembersSpotlightProps) {
           </Link>
         </div>
       </div>
+      )}
     </section>
   );
 }

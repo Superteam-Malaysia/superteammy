@@ -117,7 +117,10 @@ export function MemberProfileCard({
             <div className="w-full px-4">
               <div className="relative w-full aspect-square rounded-xl overflow-hidden">
                 {profile.avatar_url ? (
-                  <img src={profile.avatar_url} alt={displayName} className="w-full h-full object-cover" />
+                  <img
+                  loading="lazy"
+                  decoding="async"
+                  src={profile.avatar_url} alt={displayName} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-solana-purple/20 to-solana-green/20">
                     <span className="text-2xl font-bold text-white/80">{displayName.charAt(0)}</span>
@@ -314,6 +317,8 @@ export function MemberProfileCard({
               {profile.avatar_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
+                  loading="lazy"
+                  decoding="async"
                   src={profile.avatar_url}
                   alt={displayName}
                   className="w-full h-full object-cover"
