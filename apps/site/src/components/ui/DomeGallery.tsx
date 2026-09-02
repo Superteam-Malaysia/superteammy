@@ -792,7 +792,17 @@ export function DomeGallery({
                   onClick={onTileClick}
                   onPointerUp={onTilePointerUp}
                 >
-                  <img src={it.src} draggable={false} alt={it.alt} />
+                  <img
+                    src={it.src}
+                    draggable={false}
+                    alt={it.alt}
+                    // The dome wraps a full sphere, so most tiles are
+                    // rotated out of sight at any moment. Decoding all of
+                    // them up front is what put the page over the memory
+                    // ceiling on phones.
+                    loading="lazy"
+                    decoding="async"
+                  />
                 </div>
               </div>
             ))}
