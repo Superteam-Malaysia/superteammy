@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { resizeImage } from "@/lib/resize-image";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Loader2, Upload, ChevronRight, ChevronLeft, Check } from "lucide-react";
@@ -114,9 +115,13 @@ export default function OnboardingPage() {
     if (!file || !file.type.startsWith("image/") || !userId) return;
     setIsUploading(true);
     try {
-      const ext = file.name.split(".").pop() || "jpg";
+      // Cards show avatars at ~100px; 52 full-size uploads add up fast.
+      const resized = await resizeImage(file, { maxWidth: 400 });
+      const ext = resized.name.split(".").pop() || "jpg";
       const path = `${userId}/${Date.now()}.${ext}`;
-      const { error } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
+      const { error } = await supabase.storage
+        .from("avatars")
+        .upload(path, resized, { upsert: true, contentType: resized.type });
       if (error) throw error;
       const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
       setAvatarUrl(urlData.publicUrl);

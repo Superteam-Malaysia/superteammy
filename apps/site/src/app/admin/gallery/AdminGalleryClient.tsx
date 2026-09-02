@@ -22,6 +22,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { supabase } from "@/lib/supabase/client";
 import type { EventPhoto } from "@/lib/types";
+import { resizeImage, GALLERY_MAX_WIDTH } from "@/lib/resize-image";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
@@ -113,7 +114,11 @@ export function AdminGalleryClient({ initialPhotos }: AdminGalleryClientProps) {
     const added: EventPhoto[] = [];
     let order = photos.length;
 
-    for (const file of usable) {
+    for (const original of usable) {
+      // Camera originals are ~4000px wide and the dome draws them under 100px.
+      // A 4096x2731 photo costs ~45MB of RAM once decoded, so uploading them
+      // untouched is what put phones over the memory ceiling.
+      const file = await resizeImage(original, { maxWidth: GALLERY_MAX_WIDTH });
       const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
       const path = `${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${ext}`;
 
