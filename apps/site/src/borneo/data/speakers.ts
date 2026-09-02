@@ -318,7 +318,7 @@ export const WORKSHOP_LEADER_PROFILES: Record<
     twitter: "NicFury",
   },
   "s3-getblock": {
-    avatar: withBasePath("/speakers/magicblock.jpg"),
+    avatar: withBasePath("/speakers/vasily.jpg"),
   },
   "s3-sf-rwa": {
     avatar: withBasePath("/judges/seraphim.jpg"),
