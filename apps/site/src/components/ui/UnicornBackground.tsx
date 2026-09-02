@@ -10,9 +10,22 @@ const UNICORN_SCRIPT = `!function(){var u=window.UnicornStudio;if(u&&u.init){if(
 export function UnicornBackground() {
   useEffect(() => {
     const initUnicorn = () => {
-      const unicorn = (window as Window & { UnicornStudio?: { init: (opts?: unknown) => void } })
-        .UnicornStudio;
-      unicorn?.init({});
+      const unicorn = (
+        window as Window & { UnicornStudio?: { init?: (opts?: unknown) => void } }
+      ).UnicornStudio;
+
+      // The loader script assigns `window.UnicornStudio = { isInitialized: false }`
+      // as a placeholder before fetching the real library, so between those two
+      // moments UnicornStudio exists but has no init. `unicorn?.init(...)` only
+      // guards `unicorn` being absent, not `init`, so it threw
+      // "unicorn?.init is not a function" and took the whole page down with it.
+      // Optional-call the method instead, and never let a decorative background
+      // break the page it sits behind.
+      try {
+        unicorn?.init?.({});
+      } catch (err) {
+        console.warn("UnicornStudio background failed to initialise:", err);
+      }
     };
 
     initUnicorn();
