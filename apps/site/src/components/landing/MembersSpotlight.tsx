@@ -29,6 +29,14 @@ function marqueeDuration(count: number, cardWidth: number) {
   return Math.max(MIN_DURATION, (count * cardWidth) / MARQUEE_SPEED);
 }
 
+// A spotlight, not a directory -- "View All Members" goes to the full list.
+// Every card carries ~8 images and 4 noise-texture layers, and the marquee
+// duplicates the set to loop seamlessly, so an uncapped list meant 52 profiles
+// becoming 104 cards on mobile and 208 on desktop. That was ~865 painted
+// background layers and 13k DOM nodes -- enough to stall the renderer on a
+// laptop and kill the tab on a phone.
+const SPOTLIGHT_LIMIT = 12;
+
 const DEFAULT_MEMBERS = {
   title: "Member Spotlight",
   description: "Meet the talented builders driving the Solana ecosystem in Malaysia",
@@ -50,17 +58,24 @@ export function MembersSpotlight({ profiles, content }: MembersSpotlightProps) {
     threshold: 0.1,
   });
 
+  // Featured members first, then fill to the limit in display order.
+  const spotlight = useMemo(() => {
+    const featured = profiles.filter((p) => p.is_featured);
+    const rest = profiles.filter((p) => !p.is_featured);
+    return [...featured, ...rest].slice(0, SPOTLIGHT_LIMIT);
+  }, [profiles]);
+
   // Row 1: from front (index 0, 1, 2, ...). Row 2: from back (last, second-last, ...)
   const { row1, row2 } = useMemo(
     () => ({
-      row1: [...profiles],
-      row2: [...profiles].reverse(),
+      row1: [...spotlight],
+      row2: [...spotlight].reverse(),
     }),
-    [profiles],
+    [spotlight],
   );
 
-  const desktopDuration = marqueeDuration(profiles.length, CARD_WIDTH);
-  const mobileDuration = marqueeDuration(profiles.length, MOBILE_CARD_WIDTH);
+  const desktopDuration = marqueeDuration(spotlight.length, CARD_WIDTH);
+  const mobileDuration = marqueeDuration(spotlight.length, MOBILE_CARD_WIDTH);
   const desktopStyle = {
     "--marquee-duration": `${desktopDuration}s`,
   } as React.CSSProperties;
@@ -154,7 +169,7 @@ export function MembersSpotlight({ profiles, content }: MembersSpotlightProps) {
           
           <div className="marquee-track marquee-mobile-ltr flex gap-4 w-max" style={mobileStyle}>
             <div className="flex gap-4 shrink-0">
-              {profiles.map((profile, i) => (
+              {spotlight.map((profile, i) => (
                 <div
                   key={`${profile.id}-m0-${i}`}
                   className="shrink-0 flex justify-center"
@@ -165,7 +180,7 @@ export function MembersSpotlight({ profiles, content }: MembersSpotlightProps) {
               ))}
             </div>
             <div className="flex gap-4 shrink-0">
-              {profiles.map((profile, i) => (
+              {spotlight.map((profile, i) => (
                 <div
                   key={`${profile.id}-m1-${i}`}
                   className="shrink-0 flex justify-center"
@@ -251,10 +266,10 @@ export function MembersSpotlight({ profiles, content }: MembersSpotlightProps) {
           <div className="marquee-row group">
             <div className="marquee-track marquee-rtl" style={desktopStyle}>
               <div className="flex gap-0 pr-0 shrink-0 overflow-visible">
-                {renderCards(row2, profiles.length, 0)}
+                {renderCards(row2, spotlight.length, 0)}
               </div>
               <div className="flex gap-0 pr-0 shrink-0 overflow-visible">
-                {renderCards(row2, profiles.length, 1)}
+                {renderCards(row2, spotlight.length, 1)}
               </div>
             </div>
           </div>
