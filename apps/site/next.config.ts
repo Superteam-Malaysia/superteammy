@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Lets a phone on the same wifi load the dev server. Next blocks cross-origin
+  // dev resources (HMR and friends) by default; this has no effect on a
+  // production build. Add your own LAN IP if it differs.
+  allowedDevOrigins: ["192.168.100.18", "*.local"],
   async redirects() {
     return [{ source: "/borneo/venue", destination: "/borneo/travel", permanent: true }];
   },
