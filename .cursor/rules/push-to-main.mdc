@@ -1,0 +1,15 @@
+---
+description: Commit and push directly to main — do not create feature branches or open PRs
+alwaysApply: true
+---
+
+# Git — push to main (global)
+
+Do **not** create feature branches for this repo.
+
+- Work on **`main`** only: `git checkout main`, pull, edit, commit, `git push origin main`.
+- Do **not** create `cursor/*` or other topic branches unless the user explicitly asks for a branch or PR.
+- Do **not** open draft PRs or use `ManagePullRequest` for routine work — main is the integration branch.
+- Keep changes **scoped** (minimal blast radius). One concern per commit message is fine; no need for a branch to isolate small fixes.
+
+If you need to try something risky, ask the user first — still prefer main unless they want an experimental branch.

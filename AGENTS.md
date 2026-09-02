@@ -10,6 +10,14 @@ verification; commit and move on.
 - Do the work directly: grep, read files, run terminal commands, edit code yourself.
 - Do not launch background agents or delegate exploration/implementation to subagents.
 
+## Git — push to main
+
+- **No feature branches** for routine agent work. Commit and push directly to **`main`**.
+- Do not create `cursor/*` branches or draft PRs unless the user explicitly asks.
+- Keep diffs small and scoped — branches are not a substitute for minimal blast radius.
+
+See `.cursor/rules/push-to-main.mdc`.
+
 ## Testing — do not use
 
 - **No computer-use / GUI subagents** for this project.
