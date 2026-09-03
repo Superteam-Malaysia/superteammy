@@ -1,4 +1,5 @@
 import {
+  boolean,
   customType,
   jsonb,
   pgTable,
@@ -157,3 +158,29 @@ export type TeamMember = typeof teamMembers.$inferSelect;
 export type TeamMemberRole = "owner" | "editor" | "member";
 export type RaceSubmission = typeof raceSubmissions.$inferSelect;
 export type NewRaceSubmission = typeof raceSubmissions.$inferInsert;
+
+/** RedotPay card quiz — one submission per participant per question. */
+export const redotpayQuizSubmissions = pgTable(
+  "redotpay_quiz_submissions",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    participantId: uuid("participant_id")
+      .notNull()
+      .references(() => participants.id, { onDelete: "cascade" }),
+    questionId: text("question_id").notNull(),
+    answer: jsonb("answer").notNull(),
+    isCorrect: boolean("is_correct").notNull(),
+    quizDay: text("quiz_day").notNull(),
+    wonDailyPrize: boolean("won_daily_prize").notNull().default(false),
+    submittedAt: timestamp("submitted_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    unique("redotpay_quiz_submissions_participant_question_unique").on(
+      table.participantId,
+      table.questionId,
+    ),
+  ],
+);
+
+export type RedotPayQuizSubmission = typeof redotpayQuizSubmissions.$inferSelect;
+export type NewRedotPayQuizSubmission = typeof redotpayQuizSubmissions.$inferInsert;
