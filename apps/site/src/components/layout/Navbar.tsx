@@ -17,6 +17,7 @@ const navLinks = [
   { href: "#ecosystem", label: "ECOSYSTEMS" },
   // { href: "#community", label: "COMMUNITY" }, // hidden for now
   { href: "#faq", label: "FAQ" },
+  { href: "/borneo", label: "BORNEO" },
 ];
 
 const socialLinks = [
