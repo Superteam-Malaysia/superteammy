@@ -28,7 +28,6 @@ export const NAV_LINKS = [
   { href: "/redotpay", label: "RedotPay" },
   { href: "/amazing-race", label: "Amazing Race", comingSoon: true },
   { href: "/teams", label: "Teams" },
-  { href: "/demo-day", label: "Demo Day", comingSoon: true },
   { href: "/travel", label: "Travel", comingSoon: true },
 ] as const;
 
