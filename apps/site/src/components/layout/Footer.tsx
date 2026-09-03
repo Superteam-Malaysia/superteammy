@@ -37,11 +37,12 @@ const resourceLinks = [
   { href: "https://superteam.fun", label: "Superteam Global" },
   { href: "https://earn.superteam.fun", label: "Superteam Earn" },
   { href: "https://talent.superteam.fun", label: "Superteam Talent" },
-  { href: "https://superteam.fun/branding", label: "Superteam Brand Kit" },
   { href: "https://drive.google.com/drive/folders/1QSKnKm1EAjwk8R5zxtFi_WBuEse0QKGt?usp=sharing", label: "SuperteamMY Brand Kit" },
   { href: "https://solana.com", label: "Solana" },
-  { href: "https://solana.com/branding", label: "Solana Brand Kit" },
   { href: "https://superteamdao.notion.site/malaysia", label: "Docs" },
+  // Same site, so a relative path -- it resolves to my.superteam.fun/borneo in
+  // production and still works on localhost and any preview deploy.
+  { href: "/borneo", label: "Startup Village Borneo" },
 ];
 
 type SubscribeStatus = "idle" | "loading" | "success" | "error";
