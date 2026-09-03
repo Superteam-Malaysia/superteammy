@@ -208,7 +208,7 @@ export function EventsSection({ events, content, photos }: EventsSectionProps) {
                   <div className="flex flex-col rounded-xl overflow-hidden shadow-lg bg-black/20">
                     <div className="flex-1 min-h-0">
                       <iframe
-                        src="https://lu.ma/embed/calendar/cal-sZfiZHfUS5piycU/events?lt=dark"
+                        src="https://luma.com/embed/calendar/cal-sZfiZHfUS5piycU/events?lt=dark"
                         width="100%"
                         height="800"
                         frameBorder="0"
@@ -226,7 +226,7 @@ export function EventsSection({ events, content, photos }: EventsSectionProps) {
 
                 <div className="items-center flex w-full justify-center">
                   <a
-                    href="https://luma.com/mysuperteam"
+                    href="https://luma.com/superteammy"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group relative overflow-hidden inline-flex items-center justify-center gap-2 min-h-[40px] px-4 py-2 rounded-[8px] bg-[#20211B]/20 border border-white/10 font-[family-name:var(--font-orbitron)] font-medium text-sm transition-colors duration-300 hover:border-white cursor-pointer"
@@ -305,7 +305,7 @@ export function EventsSection({ events, content, photos }: EventsSectionProps) {
               </div>
               <div className="items-center flex w-full justify-center">
                 <a
-                  href="https://luma.com/mysuperteam"
+                  href="https://luma.com/superteammy"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group relative overflow-hidden inline-flex items-center justify-center gap-2 min-h-[40px] px-4 py-2 rounded-[8px] bg-[#20211B]/20 border border-white/10 font-[family-name:var(--font-orbitron)] font-medium text-sm transition-colors duration-300 hover:border-white cursor-pointer"
