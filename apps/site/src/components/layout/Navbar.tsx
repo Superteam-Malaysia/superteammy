@@ -17,7 +17,7 @@ const navLinks = [
   { href: "#ecosystem", label: "ECOSYSTEMS" },
   // { href: "#community", label: "COMMUNITY" }, // hidden for now
   { href: "#faq", label: "FAQ" },
-  { href: "/borneo", label: "BORNEO" },
+  { href: "/borneo", label: "STARTUP VILLAGE BORNEO" },
 ];
 
 const socialLinks = [
@@ -184,7 +184,9 @@ function MenuScrambleLink({
           className="w-1.5 h-1.5 shrink-0 rounded-full bg-current opacity-0 transition-opacity duration-200 group-hover:opacity-100"
           aria-hidden
         />
-        <span className="pointer-events-none font-mono">{display}</span>
+        {/* text-center so a label that wraps (Startup Village Borneo) stays
+            centred like every other item; the flex only centres the span box. */}
+        <span className="pointer-events-none font-mono text-center">{display}</span>
       </Link>
     </motion.div>
   );

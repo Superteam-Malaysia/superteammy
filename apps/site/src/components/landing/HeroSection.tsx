@@ -19,7 +19,7 @@ const heroNavLinks = [
   { href: "#ecosystem", label: "ECOSYSTEMS" },
   // { href: "#community", label: "COMMUNITY" }, // hidden for now
   { href: "#faq", label: "FAQ" },
-  { href: "/borneo", label: "BORNEO" },
+  { href: "/borneo", label: "STARTUP VILLAGE BORNEO" },
 ];
 
 function ScrambleLink({
