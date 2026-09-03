@@ -28,7 +28,7 @@ const socialLinks = [
     icon: "/icons/telegram.svg",
   },
   {
-    href: "https://lu.ma/superteammy",
+    href: "https://luma.com/superteammy",
     label: "LUMA",
     icon: "calendar" as const,
   },

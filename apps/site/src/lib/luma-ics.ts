@@ -22,7 +22,7 @@ function extractLumaUrl(description: string, uid: string): string {
   if (descMatch) return descMatch[0];
   const evtId = uid.replace(/@events\.lu\.ma$/, "");
   if (evtId.startsWith("evt-")) return `https://luma.com/event/${evtId}`;
-  return "https://lu.ma/superteammy";
+  return "https://luma.com/superteammy";
 }
 
 function unescapeICS(text: string): string {
@@ -112,7 +112,7 @@ export async function fetchLumaICSEvents(): Promise<Event[]> {
           date: parsed.date!,
           end_date: parsed.end_date,
           location: parsed.location || "Check event page",
-          luma_url: parsed.luma_url || "https://lu.ma/superteammy",
+          luma_url: parsed.luma_url || "https://luma.com/superteammy",
           image_url: parsed.image_url || "",
           is_upcoming: parsed.is_upcoming ?? false,
           created_at: new Date().toISOString(),
