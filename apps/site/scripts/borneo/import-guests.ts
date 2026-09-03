@@ -12,7 +12,7 @@ import { closeDb, getDb } from "../../src/borneo/lib/db";
 import { participants } from "../../src/borneo/lib/db/schema";
 import { normalizeEmail } from "../../src/borneo/lib/auth/session";
 
-const CSV_DEFAULT = resolve(__dirname, "../../data/imports/guests-2026-08-19.csv");
+const CSV_DEFAULT = resolve(__dirname, "../../data/imports/guests-2026-09-03.csv");
 
 const COL = {
   telegram: "What is your Telegram username?",

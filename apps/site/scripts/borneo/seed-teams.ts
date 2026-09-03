@@ -458,6 +458,152 @@ const SEED_TEAMS: SeedTeam[] = [
     proofUrl: "https://sanctum.so",
     members: [{ email: "nicfuryyy@gmail.com", role: "owner" }],
   },
+  {
+    slug: "soda",
+    name: "SODA",
+    tagline: "Solana-owned derived authority for cross-chain assets",
+    description:
+      "Solana-Owned Derived Authority — a cross-chain signing primitive that lets Solana programs directly own and control native assets such as BTC and ETH through a simple CPI call, without wrapped tokens, bridges, or custodial wallets.",
+    category: "DeFi",
+    proofUrl: "https://github.com/derek2403/frontier",
+    members: [
+      { email: "jingyuan0926@gmail.com", role: "owner" },
+      { email: "14leeren@gmail.com", role: "editor" },
+      { email: "derekliew0@gmail.com", role: "editor" },
+    ],
+  },
+  {
+    slug: "socoe-impact",
+    name: "SOCOE Impact",
+    tagline: "On-chain verification for Sarawak events and agriculture",
+    description:
+      "Walletless event-impact verification for BESarawak and agencies, digital micro-credentialing for rural farm skills, and on-chain traceability helping independent palm oil smallholders achieve MSPO certification.",
+    category: "Consumer",
+    members: [
+      { email: "yiethin.socoe@gmail.com", role: "owner" },
+      { email: "ivan.sim@socoe.co", role: "editor" },
+      { email: "michaeltan.socoe@gmail.com", role: "editor" },
+    ],
+  },
+  {
+    slug: "roadwatch",
+    name: "RoadWatch",
+    tagline: "Community road degradation audits from dashcam telemetry",
+    description:
+      "Passive telemetry that turns routine commutes into continuous infrastructure audits — smartphone dashcam AI plus gyroscope data to detect, grade, and geotag road degradation on an immutable ledger.",
+    category: "Consumer",
+    proofUrl: "https://github.com/drnkgn",
+    members: [{ email: "jameswong9562@gmail.com", role: "owner" }],
+  },
+  {
+    slug: "reifydb",
+    name: "ReifyDB",
+    tagline: "Live Web3 market data infrastructure",
+    description: "Web3 infrastructure delivering live market data for builders and traders.",
+    category: "DeFi",
+    proofUrl: "https://github.com/reifydb/reifydb",
+    members: [{ email: "dominique@reifydb.com", role: "owner" }],
+  },
+  {
+    slug: "kuasai",
+    name: "Kuasai",
+    tagline: "AI sales training for field reps",
+    description:
+      "AI sales training app for sales managers and business owners — solving the black box of what happens on field sales calls.",
+    category: "Consumer",
+    websiteUrl: "https://www.kuasai.ai",
+    proofUrl: "https://www.kuasai.ai",
+    members: [{ email: "devwannabe420@gmail.com", role: "owner" }],
+  },
+  {
+    slug: "getblock",
+    name: "GetBlock",
+    tagline: "Blockchain node infrastructure",
+    description: "Access to blockchain networks — GetBlock node infrastructure for builders.",
+    category: "Consumer",
+    websiteUrl: "https://getblock.io",
+    proofUrl: "https://getblock.io",
+    members: [{ email: "cyberwider@gmail.com", role: "owner" }],
+  },
+  {
+    slug: "analytrix",
+    name: "Analytrix",
+    tagline: "AI motion capture for technician teams",
+    description:
+      "Use AI to capture and understand motion of human workers — consolidating field recordings to improve planning, speed up technician work, and eliminate repeat mistakes.",
+    category: "Consumer",
+    websiteUrl: "https://analytrix.ai",
+    proofUrl: "https://analytrix.ai",
+    members: [{ email: "marcusyeokh2796@gmail.com", role: "owner" }],
+  },
+  {
+    slug: "civic-connect",
+    name: "Civic Connect",
+    tagline: "Trusted local communities into real initiatives",
+    description:
+      "A civic-tech platform that connects people with trusted local communities and helps those communities turn practical needs into real initiatives.",
+    category: "Consumer",
+    proofUrl: "https://mvp-overall-design-build.vercel.app",
+    members: [{ email: "leo3010@hotmail.com", role: "owner" }],
+  },
+  {
+    slug: "tokenfresh",
+    name: "TokenFresh",
+    tagline: "Student burnout early-warning app",
+    description:
+      "A mobile app that helps students identify when academic, personal, and social workload is becoming overwhelming and take action before burnout hits.",
+    category: "Consumer",
+    proofUrl: "https://github.com/CHplus2/grocery-ordering",
+    members: [{ email: "heroch94@gmail.com", role: "owner" }],
+  },
+  {
+    slug: "wintel",
+    name: "Wintel",
+    tagline: "Agentic stack for trading",
+    description: "Agentic trading stack — Wintel and Canopy Finance agent tooling.",
+    category: "DeFi",
+    websiteUrl: "https://wintel.site",
+    proofUrl: "https://agent.canopy.finance",
+    members: [{ email: "razhaziq@gmail.com", role: "owner" }],
+  },
+  {
+    slug: "world-trading-tournament",
+    name: "World Trading Tournament",
+    tagline: "Finance esports",
+    description: "Finance esport platform and competitive trading tournaments.",
+    category: "Consumer",
+    proofUrl: "https://worldtradingtournament",
+    members: [{ email: "brandonkongbk@gmail.com", role: "owner" }],
+  },
+  {
+    slug: "circle-of-care",
+    name: "Circle of Care",
+    tagline: "Home-care coordination for Sarawak seniors",
+    description:
+      "A pilot home-care support coordination hub for seniors — personalised care plans, skilled caregivers, and dignified ageing-in-place support as Sarawak becomes an ageing state.",
+    category: "Consumer",
+    members: [{ email: "mariamhii@gmail.com", role: "owner" }],
+  },
+  {
+    slug: "konrad-gnat",
+    name: "Soulbound Subscriptions",
+    tagline: "Soulbound NFT subscriptions and treasury on Solana",
+    description:
+      "Soulbound NFT and payment infrastructure for subscriptions and treasuries on Solana.",
+    category: "Consumer",
+    proofUrl: "https://linkedin.com/in/konrad-gnat",
+    members: [{ email: "konradmgnat@gmail.com", role: "owner" }],
+  },
+  {
+    slug: "thomas-vault",
+    name: "Institutional Vault",
+    tagline: "Private vault and escrow for high-volume settlement",
+    description:
+      "A private vault and escrow for high-volume transactions — holding funds until a deal is complete so ETF issuers and institutions can settle large trades safely and quickly.",
+    category: "DeFi",
+    proofUrl: "https://github.com/superteam-malaysia/superteam-malaysia.git",
+    members: [{ email: "scottspeedster502015isthebest@gmail.com", role: "owner" }],
+  },
 ];
 
 async function participantIdByEmail(db: ReturnType<typeof getDb>, email: string) {
