@@ -45,7 +45,7 @@
 .meteora-hero__title {
   margin: 0;
   max-width: 14ch;
-  font-family: var(--font-display), var(--font-sans);
+  font-family: var(--font-display);
   font-size: clamp(2.5rem, 7vw, 4.25rem);
   font-weight: 800;
   letter-spacing: -0.04em;
@@ -84,7 +84,7 @@
 }
 
 .meteora-hero__stat-value {
-  font-family: var(--font-display), var(--font-sans);
+  font-family: var(--font-display);
   font-size: 1.75rem;
   font-weight: 800;
   line-height: 1;
@@ -169,7 +169,7 @@
 
 .meteora-steps__title {
   margin: 0;
-  font-family: var(--font-display), var(--font-sans);
+  font-family: var(--font-display);
   font-size: 1.15rem;
   font-weight: 700;
   line-height: 1.15;
@@ -225,7 +225,7 @@
 
 .meteora-wallet__title {
   margin: 0;
-  font-family: var(--font-display), var(--font-sans);
+  font-family: var(--font-display);
   font-size: 1.35rem;
   font-weight: 700;
   color: var(--color-wisp);

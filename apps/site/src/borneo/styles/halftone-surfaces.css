@@ -268,7 +268,7 @@
   border: 0;
 }
 
-/* Data chrome stays mono; display headings use Syne via tokens */
+/* Data chrome uses Orbitron; body copy uses Archivo via tokens */
 .cta,
 .bp-card h3,
 .nav-mobile-link {

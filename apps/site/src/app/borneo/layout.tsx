@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Archivo, Orbitron } from "next/font/google";
 import "./globals.css";
 import { HalftoneShell } from "@borneo/components/halftone";
 import { SiteNav } from "@borneo/components/shell/SiteNav";
@@ -8,6 +9,16 @@ import { navAuthLink } from "@borneo/lib/auth/nav-auth-link";
 import { getParticipantForSession } from "@borneo/lib/auth/participant";
 import { rootMetadata } from "@borneo/lib/metadata";
 
+const archivo = Archivo({
+  subsets: ["latin"],
+  variable: "--font-archivo",
+});
+
+const orbitron = Orbitron({
+  subsets: ["latin"],
+  variable: "--font-orbitron",
+});
+
 export const metadata: Metadata = rootMetadata;
 
 export default async function BorneoLayout({ children }: { children: React.ReactNode }) {
@@ -15,7 +26,9 @@ export default async function BorneoLayout({ children }: { children: React.React
   const authLink = navAuthLink(participant);
 
   return (
-    <div className="borneo-root min-h-full flex flex-col text-[var(--color-wisp)] antialiased">
+    <div
+      className={`borneo-root ${archivo.variable} ${orbitron.variable} min-h-full flex flex-col text-[var(--color-wisp)] antialiased`}
+    >
       <HalftoneShell>
         <ScrollToTop />
         <SiteNav authLink={authLink} />
