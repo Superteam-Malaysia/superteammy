@@ -1,6 +1,5 @@
 import { createServerClient } from "./server";
 import type { Member, Event, Partner, Stat, Testimonial, FAQ, Profile, Invite, LookupTag, SubskillTag, Project, Perk, CommunityTweet, SiteContent, NewsletterSubscriber, EventPhoto } from "../types";
-import { applyMemberSubscriptOverrides } from "../member-subscript-overrides";
 
 export async function getMembers(): Promise<Member[]> {
   const supabase = await createServerClient();
@@ -260,15 +259,13 @@ async function attachProfileRelations(
   const skillsMap = groupByProfile<LookupTag>(skillsRes.data, "skills");
   const subskillsMap = groupByProfile<SubskillTag>(subskillsRes.data, "subskills");
 
-  return applyMemberSubscriptOverrides(
-    profiles.map((p) => ({
-      ...p,
-      roles: rolesMap[p.id] ?? [],
-      companies: companiesMap[p.id] ?? [],
-      skills: skillsMap[p.id] ?? [],
-      subskills: subskillsMap[p.id] ?? [],
-    })),
-  );
+  return profiles.map((p) => ({
+    ...p,
+    roles: rolesMap[p.id] ?? [],
+    companies: companiesMap[p.id] ?? [],
+    skills: skillsMap[p.id] ?? [],
+    subskills: subskillsMap[p.id] ?? [],
+  }));
 }
 
 function groupByProfile<T>(

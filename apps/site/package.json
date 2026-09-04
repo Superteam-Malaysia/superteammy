@@ -17,7 +17,6 @@
     "seed": "tsx scripts/seed.ts",
     "seed:dashboard": "tsx scripts/seed-dashboard.ts",
     "bootstrap:admin": "tsx scripts/bootstrap-super-admin.ts",
-    "patch:member-subscripts": "tsx scripts/patch-member-subscripts.ts",
     "borneo:generate-ics": "tsx scripts/borneo/generate-schedule-ics.ts",
     "borneo:db:migrate": "tsx scripts/borneo/migrate.ts",
     "borneo:db:import-guests": "tsx scripts/borneo/import-guests.ts",
