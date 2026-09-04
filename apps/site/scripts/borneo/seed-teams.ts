@@ -8,6 +8,7 @@ import { eq, sql, and } from "drizzle-orm";
 import { closeDb, getDb } from "../../src/borneo/lib/db";
 import { participants, teamMembers, teams } from "../../src/borneo/lib/db/schema";
 import { slugifyTeamName } from "../../src/borneo/lib/teams/slug";
+import { isMentorTeamSlug } from "../../src/borneo/data/mentors";
 
 type SeedMember = { email: string; role: "owner" | "editor" | "member" };
 
@@ -606,8 +607,16 @@ const SEED_TEAMS: SeedTeam[] = [
   },
 ];
 
-/** Teams removed from the directory — deleted on each seed run. */
-const REMOVED_TEAM_SLUGS = ["nikki"];
+/** Mentor directory slugs — not hackathon teams; deleted on each seed run. */
+async function removeMentorTeams(db: ReturnType<typeof getDb>) {
+  const rows = await db.select({ id: teams.id, slug: teams.slug, name: teams.name }).from(teams);
+  for (const team of rows) {
+    if (!isMentorTeamSlug(team.slug, team.name)) continue;
+    await db.delete(teamMembers).where(eq(teamMembers.teamId, team.id));
+    await db.delete(teams).where(eq(teams.id, team.id));
+    console.log(`Removed mentor team: ${team.slug}`);
+  }
+}
 
 async function participantIdByEmail(db: ReturnType<typeof getDb>, email: string) {
   const normalized = email.trim().toLowerCase();
@@ -618,16 +627,6 @@ async function participantIdByEmail(db: ReturnType<typeof getDb>, email: string)
     .limit(1);
   if (!row || row.approvalStatus !== "approved") return null;
   return row.id;
-}
-
-async function removeRetiredTeams(db: ReturnType<typeof getDb>) {
-  for (const slug of REMOVED_TEAM_SLUGS) {
-    const [team] = await db.select().from(teams).where(eq(teams.slug, slug)).limit(1);
-    if (!team) continue;
-    await db.delete(teamMembers).where(eq(teamMembers.teamId, team.id));
-    await db.delete(teams).where(eq(teams.id, team.id));
-    console.log(`Removed team: ${slug}`);
-  }
 }
 
 async function pruneDeclinedTeamMembers(db: ReturnType<typeof getDb>) {
@@ -653,7 +652,7 @@ async function pruneDeclinedTeamMembers(db: ReturnType<typeof getDb>) {
 async function main() {
   const db = getDb();
 
-  await removeRetiredTeams(db);
+  await removeMentorTeams(db);
   await pruneDeclinedTeamMembers(db);
 
   for (const seed of SEED_TEAMS) {

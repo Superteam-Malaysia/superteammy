@@ -1,5 +1,6 @@
 import { and, asc, eq, inArray, sql } from "drizzle-orm";
 import { cache } from "react";
+import { isMentorTeamSlug } from "@borneo/data/mentors";
 import { getDb } from "@borneo/lib/db";
 import { participants, teamMembers, teams } from "@borneo/lib/db/schema";
 import { participantInitials } from "@borneo/lib/participants/team-categories";
@@ -90,9 +91,15 @@ export async function getPublicTeams(): Promise<PublicTeam[]> {
   const teamRows = await db.select().from(teams).orderBy(asc(teams.name));
   if (teamRows.length === 0) return [];
 
-  const membersByTeam = await fetchMembersByTeamIds(teamRows.map((team) => team.id));
+  const hackathonTeams = teamRows.filter(
+    (team) => !isMentorTeamSlug(team.slug, team.name),
+  );
 
-  return teamRows.map((team) =>
+  const membersByTeam = await fetchMembersByTeamIds(
+    hackathonTeams.map((team) => team.id),
+  );
+
+  return hackathonTeams.map((team) =>
     mapTeamRow(team, membersByTeam.get(team.id) ?? []),
   );
 }
@@ -102,7 +109,7 @@ export const getPublicTeamBySlug = cache(async (slug: string): Promise<PublicTea
 
   const db = getDb();
   const [team] = await db.select().from(teams).where(eq(teams.slug, slug)).limit(1);
-  if (!team) return null;
+  if (!team || isMentorTeamSlug(team.slug, team.name)) return null;
 
   const membersByTeam = await fetchMembersByTeamIds([team.id]);
   return mapTeamRow(team, membersByTeam.get(team.id) ?? []);

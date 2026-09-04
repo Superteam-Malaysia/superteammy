@@ -69,12 +69,27 @@ const MENTOR_CONTACT: Record<
   },
 };
 
-function mentorSlug(name: string): string {
+export function mentorSlug(name: string): string {
   return name
     .toLowerCase()
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+/** Mentor directory ids — never shown as hackathon team cards. */
+export function getMentorDirectoryIds(): ReadonlySet<string> {
+  return new Set(getPublicMentors().map((mentor) => mentor.id));
+}
+
+export function isMentorTeamSlug(slug: string, teamName?: string | null): boolean {
+  const mentorIds = getMentorDirectoryIds();
+  if (mentorIds.has(slug)) return true;
+  if (teamName) {
+    const fromName = mentorSlug(teamName);
+    if (fromName && mentorIds.has(fromName)) return true;
+  }
+  return false;
 }
 
 function twitterHref(handle: string | null): string | null {
