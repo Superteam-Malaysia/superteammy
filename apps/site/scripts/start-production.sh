@@ -13,19 +13,19 @@ echo "[startup] generate schedule ics"
 npm run borneo:generate-ics
 echo "[startup] migrate"
 npm run borneo:db:migrate
-echo "[startup] import guests"
-npm run borneo:db:import-guests
-echo "[startup] patch telegram handles"
-npm run borneo:db:patch-telegram-handles || echo "[startup] telegram patch skipped"
-echo "[startup] seed teams"
-npm run borneo:db:seed-teams
-echo "[startup] seed race submissions"
-npm run borneo:db:seed-race-submissions || echo "[startup] race submission seed skipped"
-echo "[startup] seed staff"
-npm run borneo:db:seed-staff
-echo "[startup] backfill telegram avatars"
-npm run borneo:db:backfill-telegram-avatars || echo "[startup] telegram avatar backfill skipped"
 echo "[startup] telegram webhook"
 npm run borneo:telegram:setup-webhook || echo "[startup] telegram webhook setup skipped"
+
+# Data sync can take 30s+ — run after the server is listening so deploys don't 502 login.
+echo "[startup] background data sync"
+(
+  npm run borneo:db:import-guests || echo "[startup] import guests skipped"
+  npm run borneo:db:patch-telegram-handles || echo "[startup] telegram patch skipped"
+  npm run borneo:db:seed-teams || echo "[startup] seed teams skipped"
+  npm run borneo:db:seed-race-submissions || echo "[startup] race submission seed skipped"
+  npm run borneo:db:seed-staff || echo "[startup] seed staff skipped"
+  npm run borneo:db:backfill-telegram-avatars || echo "[startup] telegram avatar backfill skipped"
+) &
+
 echo "[startup] next start"
 NODE_ENV=production exec next start -H 0.0.0.0 -p "${PORT:-3000}"

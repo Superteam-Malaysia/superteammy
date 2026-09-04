@@ -24,6 +24,7 @@
     "borneo:db:seed-race-submissions": "tsx scripts/borneo/seed-race-submissions.ts",
     "borneo:db:seed-staff": "tsx scripts/borneo/seed-staff.ts",
     "borneo:db:patch-telegram-handles": "tsx scripts/borneo/patch-telegram-handles.ts",
+    "borneo:db:backfill-telegram-avatars": "tsx scripts/borneo/backfill-telegram-avatars.ts",
     "borneo:telegram:setup-webhook": "tsx scripts/borneo/setup-telegram-webhook.ts"
   },
   "dependencies": {
