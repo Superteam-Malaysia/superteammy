@@ -1,6 +1,7 @@
 import { mentorSocialUrls, type PublicMentor } from "@borneo/data/mentors";
 import type { PublicParticipant } from "@borneo/lib/participants/types";
 import { telegramHref } from "@borneo/lib/participants/types";
+import type { PublicTeam } from "@borneo/lib/teams/types";
 import type { Profile } from "@/lib/types";
 
 function emptyProfile(id: string): Profile {
@@ -67,5 +68,40 @@ export function mentorToProfile(mentor: PublicMentor): Profile {
     companies: mentor.organization ? [{ id: mentor.id, name: mentor.organization }] : [],
     roles,
     bio: workshopBio,
+  };
+}
+
+function twitterFromProofUrl(proofUrl: string | null): string {
+  if (!proofUrl?.trim()) return "";
+  const match = proofUrl.match(/https?:\/\/(?:www\.)?(?:x\.com|twitter\.com)\/[^\s,)\"']+/i);
+  return match?.[0] ?? "";
+}
+
+export function teamToProfile(team: PublicTeam): Profile {
+  const description = team.description?.trim() || team.tagline?.trim() || "";
+  const memberLines = team.members
+    .map((member) => member.name)
+    .join("\n");
+
+  return {
+    ...emptyProfile(`borneo-team-${team.id}`),
+    nickname: team.name,
+    real_name: team.name,
+    avatar_url: team.logoUrl ?? "",
+    twitter_url: twitterFromProofUrl(team.proofUrl),
+    website_url: team.websiteUrl ?? "",
+    companies: team.category ? [{ id: `${team.slug}-category`, name: team.category }] : [],
+    roles: [
+      {
+        id: `${team.id}-size`,
+        name: `${team.memberCount} ${team.memberCount === 1 ? "member" : "members"}`,
+      },
+    ],
+    bio: description,
+    achievements: memberLines,
+    talk_to_me_about:
+      team.tagline && team.description && team.tagline.trim() !== team.description.trim()
+        ? team.tagline
+        : "",
   };
 }

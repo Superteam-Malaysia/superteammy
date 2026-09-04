@@ -16,6 +16,11 @@ interface MemberProfileCardProps {
   index?: number;
   /** When true (members page), click opens enlarged overlay with front+back side by side */
   expandOnClick?: boolean;
+  /** Optional internal link — e.g. Borneo team detail page */
+  detailHref?: string;
+  detailLabel?: string;
+  /** Override back-face list heading (default: Achievements) */
+  achievementsLabel?: string;
 }
 
 
@@ -23,6 +28,9 @@ export function MemberProfileCard({
   profile,
   index = 0,
   expandOnClick = false,
+  detailHref,
+  detailLabel = "View profile",
+  achievementsLabel = "Achievements",
 }: MemberProfileCardProps) {
   const displayName = (
     profile.nickname ||
@@ -44,6 +52,17 @@ export function MemberProfileCard({
     profile.website_url;
 
   const cardGradient = cardGradientFor(profile.badges);
+
+  const detailLink =
+    detailHref ? (
+      <a
+        href={detailHref}
+        onClick={(e) => e.stopPropagation()}
+        className="mt-3 block text-center text-[10px] font-bold uppercase tracking-wider text-white/70 hover:text-white transition-colors"
+      >
+        {detailLabel} →
+      </a>
+    ) : null;
 
   const [isFlipped, setIsFlipped] = useState(false);
   // Latches on the first flip so the back face stays mounted afterwards.
@@ -233,7 +252,7 @@ export function MemberProfileCard({
           })()}
           {profile.achievements && (
             <div className="mb-3">
-              <p className="text-[10px] font-bold text-white/90 uppercase tracking-wider mb-1.5">Achievements</p>
+              <p className="text-[10px] font-bold text-white/90 uppercase tracking-wider mb-1.5">{achievementsLabel}</p>
               <ul className="text-xs text-white/80 space-y-1">
                 {profile.achievements.split(/\n+/).map((s) => s.replace(/^[•\-\*]\s*/, "").trim()).filter(Boolean).map((line, i) => (
                   <li key={i} className="flex gap-1.5">
@@ -250,6 +269,7 @@ export function MemberProfileCard({
               <p className="text-xs text-white/80">{profile.talk_to_me_about}</p>
             </div>
           )}
+          {detailLink}
         </div>
       </div>
     </div>
@@ -512,7 +532,7 @@ export function MemberProfileCard({
 
               {profile.achievements && (
                 <div className="mb-3">
-                  <p className="text-[10px] font-bold text-white/90 uppercase tracking-wider mb-1.5">Achievements</p>
+                  <p className="text-[10px] font-bold text-white/90 uppercase tracking-wider mb-1.5">{achievementsLabel}</p>
                   <ul className="text-xs text-white/80 space-y-1">
                     {profile.achievements
                       .split(/\n+/)
@@ -534,6 +554,8 @@ export function MemberProfileCard({
                   <p className="text-xs text-white/80">{profile.talk_to_me_about}</p>
                 </div>
               )}
+
+              {detailLink}
 
               {hasAnyLink && (
                 <div className="flex items-center justify-center gap-4 mt-auto pt-3">
