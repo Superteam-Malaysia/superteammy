@@ -32,18 +32,23 @@ type RaceFeedPostProps = {
 
 export function RaceFeedPost({ item }: RaceFeedPostProps) {
   const tweetId = extractTweetIdFromUrl(item.threadUrl);
+  const displayName = item.submitterName || "Participant";
+  const avatarLetter = displayName.slice(0, 1).toUpperCase();
 
   return (
     <article className="race-feed-post">
       <header className="race-feed-post__header">
         <div className="race-feed-post__avatar" aria-hidden>
-          {item.teamName.slice(0, 1).toUpperCase()}
+          {avatarLetter}
         </div>
         <div className="race-feed-post__meta">
-          <p className="race-feed-post__team">
-            <Link href={withBasePath(`/teams/${item.teamSlug}`)} className="race-feed-post__team-link">
-              {item.teamName}
-            </Link>
+          <p className="race-feed-post__person">
+            <span className="race-feed-post__person-name">{displayName}</span>
+            {item.teamName && item.teamSlug ? (
+              <Link href={withBasePath(`/teams/${item.teamSlug}`)} className="race-feed-post__team-tag">
+                {item.teamName}
+              </Link>
+            ) : null}
           </p>
           <p className="race-feed-post__milestone">
             {item.taskTitle}

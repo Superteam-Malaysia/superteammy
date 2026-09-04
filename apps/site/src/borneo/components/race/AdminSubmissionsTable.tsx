@@ -14,7 +14,7 @@ export function AdminSubmissionsTable({ submissions }: { submissions: AdminRaceS
   if (!submissions.length) {
     return (
       <p className="text-sm text-[var(--color-wisp)]/60">
-        No race thread submissions yet. Teams paste links on the Amazing Race page.
+        No race thread submissions yet. Participants paste links on the Amazing Race page.
       </p>
     );
   }
@@ -24,10 +24,10 @@ export function AdminSubmissionsTable({ submissions }: { submissions: AdminRaceS
       <table className="admin-submissions-table">
         <thead>
           <tr>
-            <th>Team</th>
+            <th>Participant</th>
+            <th>Team tag</th>
             <th>Task</th>
             <th>Thread</th>
-            <th>Submitted by</th>
             <th>When</th>
           </tr>
         </thead>
@@ -35,9 +35,19 @@ export function AdminSubmissionsTable({ submissions }: { submissions: AdminRaceS
           {submissions.map((row) => (
             <tr key={row.id}>
               <td>
-                <Link href={withBasePath(`/teams/${row.teamSlug}`)} className="admin-submissions-table__team">
-                  {row.teamName}
-                </Link>
+                {row.submitterName ?? "—"}
+                {row.submitterEmail ? (
+                  <span className="admin-submissions-table__email">{row.submitterEmail}</span>
+                ) : null}
+              </td>
+              <td>
+                {row.teamSlug && row.teamName ? (
+                  <Link href={withBasePath(`/teams/${row.teamSlug}`)} className="admin-submissions-table__team">
+                    {row.teamName}
+                  </Link>
+                ) : (
+                  "—"
+                )}
               </td>
               <td>
                 <span className="admin-submissions-table__task-num">#{row.taskNumber}</span>{" "}
@@ -52,12 +62,6 @@ export function AdminSubmissionsTable({ submissions }: { submissions: AdminRaceS
                 >
                   Open thread ↗
                 </a>
-              </td>
-              <td>
-                {row.submitterName ?? "—"}
-                {row.submitterEmail ? (
-                  <span className="admin-submissions-table__email">{row.submitterEmail}</span>
-                ) : null}
               </td>
               <td className="admin-submissions-table__when">{formatWhen(row.submittedAt)}</td>
             </tr>

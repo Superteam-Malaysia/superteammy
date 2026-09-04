@@ -3,9 +3,9 @@ import { RacePageContent } from "@borneo/components/race";
 import { getParticipantForSession } from "@borneo/lib/auth/participant";
 import { isOrganizer } from "@borneo/lib/auth/organizer";
 import {
+  listParticipantRaceSubmissions,
   listParticipantTeams,
   listPublicRaceFeed,
-  listTeamRaceSubmissions,
 } from "@borneo/lib/race/submissions";
 import { isRaceCutoffPassed } from "@borneo/lib/race/validation";
 
@@ -28,13 +28,12 @@ export default async function AmazingRacePage() {
   if (participant) {
     const teams = await listParticipantTeams(participant.id);
     const initialTeam = teams[0] ?? null;
-    const initialSubmissions = initialTeam
-      ? await listTeamRaceSubmissions(initialTeam.teamId)
-      : [];
+    const initialSubmissions = await listParticipantRaceSubmissions(participant.id);
 
     submission = {
+      participantName: participant.name ?? participant.firstName ?? "You",
       teams,
-      initialTeamSlug: initialTeam?.slug ?? null,
+      tagTeamSlug: initialTeam?.slug ?? null,
       initialSubmissions,
       cutoffPassed: isRaceCutoffPassed(),
     };

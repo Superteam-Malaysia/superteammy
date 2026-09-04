@@ -6,13 +6,13 @@ import { RACE_CUTOFF } from "@borneo/data/race-tasks";
 import { CtaButton } from "@borneo/components/ui";
 import { RaceFeed } from "./RaceFeed";
 import { MilestoneSubmitGate } from "./MilestoneSubmitDrawer";
-import type { ParticipantTeamOption } from "./RaceSubmissionsPanel";
-import type { PublicRaceSubmission, RaceFeedItem } from "@borneo/lib/race/submissions";
+import type { ParticipantTeamOption, PublicRaceSubmission, RaceFeedItem } from "@borneo/lib/race/submissions";
 import { withBasePath } from "@borneo/lib/base-path";
 
 type RaceSubmissionContext = {
+  participantName: string;
   teams: ParticipantTeamOption[];
-  initialTeamSlug: string | null;
+  tagTeamSlug: string | null;
   initialSubmissions: PublicRaceSubmission[];
   cutoffPassed: boolean;
 };
@@ -39,7 +39,7 @@ export function RacePageContent({
   const prependFeedItem = useCallback((item: RaceFeedItem) => {
     setFeed((prev) => {
       const withoutDup = prev.filter(
-        (row) => !(row.teamSlug === item.teamSlug && row.taskId === item.taskId),
+        (row) => !(row.submitterId === item.submitterId && row.taskId === item.taskId),
       );
       return [item, ...withoutDup];
     });

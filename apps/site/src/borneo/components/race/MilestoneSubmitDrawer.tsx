@@ -5,14 +5,18 @@ import { useEffect, useMemo, useState } from "react";
 import { RACE_TASKS } from "@borneo/data/race-tasks";
 import { CtaButton } from "@borneo/components/ui";
 import { withBasePath } from "@borneo/lib/base-path";
-import type { PublicRaceSubmission, RaceFeedItem } from "@borneo/lib/race/submissions";
-import type { ParticipantTeamOption } from "./RaceSubmissionsPanel";
+import type {
+  ParticipantTeamOption,
+  PublicRaceSubmission,
+  RaceFeedItem,
+} from "@borneo/lib/race/submissions";
 
 type MilestoneSubmitDrawerProps = {
   open: boolean;
   onClose: () => void;
+  participantName: string;
   teams: ParticipantTeamOption[];
-  initialTeamSlug: string | null;
+  tagTeamSlug: string | null;
   initialSubmissions: PublicRaceSubmission[];
   cutoffPassed: boolean;
   onSubmitted: (item: RaceFeedItem) => void;
@@ -21,14 +25,15 @@ type MilestoneSubmitDrawerProps = {
 export function MilestoneSubmitDrawer({
   open,
   onClose,
+  participantName,
   teams,
-  initialTeamSlug,
+  tagTeamSlug,
   initialSubmissions,
   cutoffPassed,
   onSubmitted,
 }: MilestoneSubmitDrawerProps) {
-  const [teamSlug, setTeamSlug] = useState(initialTeamSlug ?? teams[0]?.slug ?? "");
   const [submissions, setSubmissions] = useState<PublicRaceSubmission[]>(initialSubmissions);
+  const [teamSlug, setTeamSlug] = useState<string>(tagTeamSlug ?? teams[0]?.slug ?? "");
   const [step, setStep] = useState<"pick" | "link">("pick");
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [threadUrl, setThreadUrl] = useState("");
@@ -44,6 +49,9 @@ export function MilestoneSubmitDrawer({
   const selectedTask = RACE_TASKS.find((task) => task.id === selectedTaskId) ?? null;
   const completedCount = submissions.length;
   const totalCount = RACE_TASKS.length;
+  const taggedTeam = teamSlug
+    ? (teams.find((team) => team.slug === teamSlug) ?? null)
+    : null;
 
   useEffect(() => {
     if (!open) {
@@ -56,8 +64,8 @@ export function MilestoneSubmitDrawer({
 
   useEffect(() => {
     setSubmissions(initialSubmissions);
-    setTeamSlug(initialTeamSlug ?? teams[0]?.slug ?? "");
-  }, [initialSubmissions, initialTeamSlug, teams]);
+    setTeamSlug(tagTeamSlug ?? teams[0]?.slug ?? "");
+  }, [initialSubmissions, tagTeamSlug, teams]);
 
   useEffect(() => {
     if (!open) return;
@@ -71,20 +79,6 @@ export function MilestoneSubmitDrawer({
       document.body.style.overflow = "";
     };
   }, [open, onClose]);
-
-  async function loadTeam(nextSlug: string) {
-    setError(null);
-    const res = await fetch(withBasePath(`/api/teams/${nextSlug}/submissions`));
-    const data = (await res.json()) as {
-      error?: string;
-      submissions?: PublicRaceSubmission[];
-    };
-    if (!res.ok) {
-      setError(data.error ?? "Could not load submissions.");
-      return;
-    }
-    setSubmissions(data.submissions ?? []);
-  }
 
   function pickTask(taskId: string) {
     const saved = submissionByTask.get(taskId);
@@ -102,7 +96,7 @@ export function MilestoneSubmitDrawer({
   }
 
   async function submitLink() {
-    if (!teamSlug || !selectedTaskId || cutoffPassed) return;
+    if (!selectedTaskId || cutoffPassed) return;
     if (!threadUrl.trim()) {
       setError("Paste your X post link first.");
       return;
@@ -111,10 +105,14 @@ export function MilestoneSubmitDrawer({
     setSaving(true);
     setError(null);
 
-    const res = await fetch(withBasePath(`/api/teams/${teamSlug}/submissions`), {
+    const res = await fetch(withBasePath("/api/race/submissions"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ taskId: selectedTaskId, threadUrl }),
+      body: JSON.stringify({
+        taskId: selectedTaskId,
+        threadUrl,
+        teamSlug: taggedTeam?.slug ?? null,
+      }),
     });
     const data = (await res.json()) as {
       error?: string;
@@ -128,7 +126,6 @@ export function MilestoneSubmitDrawer({
     }
 
     if (data.submission && selectedTask) {
-      const team = teams.find((t) => t.slug === teamSlug) ?? teams[0];
       const next: RaceFeedItem = {
         id: data.submission.id,
         taskId: data.submission.taskId,
@@ -136,9 +133,10 @@ export function MilestoneSubmitDrawer({
         submittedAt: data.submission.submittedAt,
         taskTitle: selectedTask.title,
         taskNumber: selectedTask.number,
-        teamSlug: team.slug,
-        teamName: team.name,
-        submitterName: null,
+        submitterId: "self",
+        submitterName: participantName,
+        teamSlug: taggedTeam?.slug ?? null,
+        teamName: taggedTeam?.name ?? null,
       };
       setSubmissions((prev) => {
         const rest = prev.filter((row) => row.taskId !== selectedTaskId);
@@ -187,18 +185,19 @@ export function MilestoneSubmitDrawer({
           </button>
         </header>
 
+        <p className="race-drawer__team-note">
+          Submitting as <strong>{participantName}</strong>
+        </p>
+
         {teams.length > 1 ? (
           <label className="race-drawer__team-field">
-            <span className="race-drawer__team-label">Submitting as</span>
+            <span className="race-drawer__team-label">Team tag (optional)</span>
             <select
               className="team-form__select"
               value={teamSlug}
-              onChange={(e) => {
-                const next = e.target.value;
-                setTeamSlug(next);
-                void loadTeam(next);
-              }}
+              onChange={(e) => setTeamSlug(e.target.value)}
             >
+              <option value="">No team tag</option>
               {teams.map((team) => (
                 <option key={team.slug} value={team.slug}>
                   {team.name}
@@ -206,9 +205,9 @@ export function MilestoneSubmitDrawer({
               ))}
             </select>
           </label>
-        ) : teams[0] ? (
+        ) : teams.length === 1 ? (
           <p className="race-drawer__team-note">
-            Submitting for <strong>{teams[0].name}</strong>
+            Team tag: <strong>{teams[0].name}</strong>
           </p>
         ) : null}
 
@@ -216,7 +215,7 @@ export function MilestoneSubmitDrawer({
           <>
             <div className="race-drawer__progress">
               <p className="race-drawer__progress-label">
-                {completedCount} of {totalCount} completed
+                {completedCount} of {totalCount} completed by you
               </p>
               <div className="race-drawer__progress-bar" aria-hidden>
                 <span
@@ -227,7 +226,7 @@ export function MilestoneSubmitDrawer({
             </div>
 
             <p className="race-drawer__hint">
-              Pick a milestone, then paste the X link — photos and video come from your post.
+              Pick a milestone, then paste your X link — one post per person per milestone.
             </p>
 
             <ul className="race-drawer__milestones list-none">
@@ -270,7 +269,7 @@ export function MilestoneSubmitDrawer({
               <input
                 type="url"
                 className="team-form__input"
-                placeholder="https://x.com/yourteam/status/…"
+                placeholder="https://x.com/you/status/…"
                 value={threadUrl}
                 disabled={cutoffPassed}
                 onChange={(e) => setThreadUrl(e.target.value)}
@@ -300,8 +299,9 @@ type MilestoneSubmitGateProps = {
   open: boolean;
   onClose: () => void;
   submission: {
+    participantName: string;
     teams: ParticipantTeamOption[];
-    initialTeamSlug: string | null;
+    tagTeamSlug: string | null;
     initialSubmissions: PublicRaceSubmission[];
     cutoffPassed: boolean;
   } | null;
@@ -329,7 +329,7 @@ export function MilestoneSubmitGate({
             </button>
           </header>
           <p className="race-drawer__hint">
-            Sign in with your registration email, join a team, then pick a milestone and paste your X link.
+            Sign in with your registration email, pick a milestone, and paste your X link.
           </p>
           <CtaButton href="/login" variant="byte" size="md" showArrow={false}>
             Sign in
@@ -339,34 +339,15 @@ export function MilestoneSubmitGate({
     );
   }
 
-  if (!submission?.teams.length) {
-    return (
-      <div className="race-drawer" role="presentation" onClick={onClose}>
-        <div className="race-drawer__sheet" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
-          <div className="race-drawer__handle" aria-hidden />
-          <header className="race-drawer__header">
-            <p className="race-drawer__title">Join a team first</p>
-            <button type="button" className="race-drawer__close" onClick={onClose} aria-label="Close">
-              ×
-            </button>
-          </header>
-          <p className="race-drawer__hint">
-            Milestone posts are submitted per team. Browse teams and join one to add your X links.
-          </p>
-          <CtaButton href={withBasePath("/teams")} variant="byte" size="md" showArrow={false}>
-            Browse teams
-          </CtaButton>
-        </div>
-      </div>
-    );
-  }
+  if (!submission) return null;
 
   return (
     <MilestoneSubmitDrawer
       open={open}
       onClose={onClose}
+      participantName={submission.participantName}
       teams={submission.teams}
-      initialTeamSlug={submission.initialTeamSlug}
+      tagTeamSlug={submission.tagTeamSlug}
       initialSubmissions={submission.initialSubmissions}
       cutoffPassed={submission.cutoffPassed}
       onSubmitted={onSubmitted}

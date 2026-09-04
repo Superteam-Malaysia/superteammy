@@ -5,14 +5,9 @@ import { useMemo, useState } from "react";
 import { RACE_TASKS } from "@borneo/data/race-tasks";
 import { CtaButton, StatusChip } from "@borneo/components/ui";
 import { withBasePath } from "@borneo/lib/base-path";
-import type { PublicRaceSubmission } from "@borneo/lib/race/submissions";
+import type { ParticipantTeamOption, PublicRaceSubmission } from "@borneo/lib/race/submissions";
 
-export type ParticipantTeamOption = {
-  teamId: string;
-  slug: string;
-  name: string;
-  role: string;
-};
+export type { ParticipantTeamOption };
 
 type RaceSubmissionsPanelProps = {
   teams: ParticipantTeamOption[];

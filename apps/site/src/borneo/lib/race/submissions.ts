@@ -13,19 +13,95 @@ export type PublicRaceSubmission = {
 };
 
 export type RaceFeedItem = PublicRaceSubmission & {
-  teamSlug: string;
-  teamName: string;
-  submitterName: string | null;
+  submitterId: string;
+  submitterName: string;
+  teamSlug: string | null;
+  teamName: string | null;
 };
 
 export type AdminRaceSubmission = PublicRaceSubmission & {
-  teamId: string;
-  teamSlug: string;
-  teamName: string;
+  submitterId: string;
+  teamId: string | null;
+  teamSlug: string | null;
+  teamName: string | null;
   submitterName: string | null;
   submitterEmail: string | null;
 };
 
+export type ParticipantTeamOption = {
+  teamId: string;
+  slug: string;
+  name: string;
+  role: string;
+};
+
+function mapSubmissionRow(row: {
+  id: string;
+  taskId: string;
+  threadUrl: string;
+  submittedAt: Date;
+}) {
+  const task = getRaceTask(row.taskId);
+  if (!task) return null;
+  return {
+    id: row.id,
+    taskId: row.taskId,
+    threadUrl: row.threadUrl,
+    submittedAt: row.submittedAt.toISOString(),
+    taskTitle: task.title,
+    taskNumber: task.number,
+  };
+}
+
+export async function listParticipantRaceSubmissions(
+  participantId: string,
+): Promise<PublicRaceSubmission[]> {
+  const db = getDb();
+  const rows = await db
+    .select()
+    .from(raceSubmissions)
+    .where(eq(raceSubmissions.submittedBy, participantId))
+    .orderBy(desc(raceSubmissions.submittedAt));
+
+  return rows.flatMap((row) => {
+    const mapped = mapSubmissionRow(row);
+    return mapped ? [mapped] : [];
+  });
+}
+
+export async function upsertParticipantRaceSubmission(input: {
+  participantId: string;
+  taskId: string;
+  threadUrl: string;
+  teamId?: string | null;
+}) {
+  const db = getDb();
+  const now = new Date();
+
+  const [row] = await db
+    .insert(raceSubmissions)
+    .values({
+      teamId: input.teamId ?? null,
+      taskId: input.taskId,
+      threadUrl: input.threadUrl,
+      submittedBy: input.participantId,
+      submittedAt: now,
+      updatedAt: now,
+    })
+    .onConflictDoUpdate({
+      target: [raceSubmissions.submittedBy, raceSubmissions.taskId],
+      set: {
+        threadUrl: input.threadUrl,
+        teamId: input.teamId ?? null,
+        updatedAt: now,
+      },
+    })
+    .returning();
+
+  return row;
+}
+
+/** @deprecated Team-scoped listing — use listParticipantRaceSubmissions. */
 export async function listTeamRaceSubmissions(teamId: string): Promise<PublicRaceSubmission[]> {
   const db = getDb();
   const rows = await db
@@ -35,51 +111,9 @@ export async function listTeamRaceSubmissions(teamId: string): Promise<PublicRac
     .orderBy(desc(raceSubmissions.submittedAt));
 
   return rows.flatMap((row) => {
-    const task = getRaceTask(row.taskId);
-    if (!task) return [];
-    return [
-      {
-        id: row.id,
-        taskId: row.taskId,
-        threadUrl: row.threadUrl,
-        submittedAt: row.submittedAt.toISOString(),
-        taskTitle: task.title,
-        taskNumber: task.number,
-      },
-    ];
+    const mapped = mapSubmissionRow(row);
+    return mapped ? [mapped] : [];
   });
-}
-
-export async function upsertTeamRaceSubmission(input: {
-  teamId: string;
-  taskId: string;
-  threadUrl: string;
-  submittedBy: string;
-}) {
-  const db = getDb();
-  const now = new Date();
-
-  const [row] = await db
-    .insert(raceSubmissions)
-    .values({
-      teamId: input.teamId,
-      taskId: input.taskId,
-      threadUrl: input.threadUrl,
-      submittedBy: input.submittedBy,
-      submittedAt: now,
-      updatedAt: now,
-    })
-    .onConflictDoUpdate({
-      target: [raceSubmissions.teamId, raceSubmissions.taskId],
-      set: {
-        threadUrl: input.threadUrl,
-        submittedBy: input.submittedBy,
-        updatedAt: now,
-      },
-    })
-    .returning();
-
-  return row;
 }
 
 export async function listAllRaceSubmissionsForAdmin(): Promise<AdminRaceSubmission[]> {
@@ -91,30 +125,27 @@ export async function listAllRaceSubmissionsForAdmin(): Promise<AdminRaceSubmiss
       taskId: raceSubmissions.taskId,
       threadUrl: raceSubmissions.threadUrl,
       submittedAt: raceSubmissions.submittedAt,
+      submitterId: raceSubmissions.submittedBy,
       teamSlug: teams.slug,
       teamName: teams.name,
       submitterName: participants.name,
       submitterEmail: participants.email,
     })
     .from(raceSubmissions)
-    .innerJoin(teams, eq(raceSubmissions.teamId, teams.id))
-    .leftJoin(participants, eq(raceSubmissions.submittedBy, participants.id))
+    .innerJoin(participants, eq(raceSubmissions.submittedBy, participants.id))
+    .leftJoin(teams, eq(raceSubmissions.teamId, teams.id))
     .orderBy(desc(raceSubmissions.submittedAt));
 
   return rows.flatMap((row) => {
-    const task = getRaceTask(row.taskId);
-    if (!task) return [];
+    const mapped = mapSubmissionRow(row);
+    if (!mapped) return [];
     return [
       {
-        id: row.id,
+        ...mapped,
+        submitterId: row.submitterId,
         teamId: row.teamId,
         teamSlug: row.teamSlug,
         teamName: row.teamName,
-        taskId: row.taskId,
-        threadUrl: row.threadUrl,
-        submittedAt: row.submittedAt.toISOString(),
-        taskTitle: task.title,
-        taskNumber: task.number,
         submitterName: row.submitterName,
         submitterEmail: row.submitterEmail,
       },
@@ -129,15 +160,16 @@ export const SEED_RACE_FEED: Omit<RaceFeedItem, "id">[] = [
     submittedAt: "2026-09-04T06:00:00.000Z",
     taskTitle: "Landed in Kuching",
     taskNumber: 1,
-    teamSlug: "nikki",
-    teamName: "Nikki",
+    submitterId: "seed-nikki",
     submitterName: "Nikki",
+    teamSlug: null,
+    teamName: null,
   },
 ];
 
 export async function listPublicRaceFeed(): Promise<RaceFeedItem[]> {
   const seedItems: RaceFeedItem[] = SEED_RACE_FEED.map((seed) => ({
-    id: `seed-${seed.teamSlug}-${seed.taskId}`,
+    id: `seed-${seed.submitterId}-${seed.taskId}`,
     ...seed,
   }));
 
@@ -146,40 +178,38 @@ export async function listPublicRaceFeed(): Promise<RaceFeedItem[]> {
     const rows = await db
       .select({
         id: raceSubmissions.id,
-        teamId: raceSubmissions.teamId,
         taskId: raceSubmissions.taskId,
         threadUrl: raceSubmissions.threadUrl,
         submittedAt: raceSubmissions.submittedAt,
+        submitterId: raceSubmissions.submittedBy,
         teamSlug: teams.slug,
         teamName: teams.name,
         submitterName: participants.name,
       })
       .from(raceSubmissions)
-      .innerJoin(teams, eq(raceSubmissions.teamId, teams.id))
-      .leftJoin(participants, eq(raceSubmissions.submittedBy, participants.id))
+      .innerJoin(participants, eq(raceSubmissions.submittedBy, participants.id))
+      .leftJoin(teams, eq(raceSubmissions.teamId, teams.id))
       .orderBy(desc(raceSubmissions.submittedAt));
 
-    const dbItems = rows.flatMap((row) => {
-      const task = getRaceTask(row.taskId);
-      if (!task) return [];
+    const dbItems: RaceFeedItem[] = rows.flatMap((row) => {
+      const mapped = mapSubmissionRow(row);
+      if (!mapped) return [];
       return [
         {
-          id: row.id,
-          taskId: row.taskId,
-          threadUrl: row.threadUrl,
-          submittedAt: row.submittedAt.toISOString(),
-          taskTitle: task.title,
-          taskNumber: task.number,
+          ...mapped,
+          submitterId: row.submitterId,
+          submitterName: row.submitterName ?? "Participant",
           teamSlug: row.teamSlug,
           teamName: row.teamName,
-          submitterName: row.submitterName,
         },
       ];
     });
 
     const mergedSeeds = seedItems.filter(
       (seed) =>
-        !rows.some((row) => row.teamSlug === seed.teamSlug && row.taskId === seed.taskId),
+        !dbItems.some(
+          (row) => row.submitterId === seed.submitterId && row.taskId === seed.taskId,
+        ),
     );
 
     return [...dbItems, ...mergedSeeds].sort(
@@ -192,7 +222,7 @@ export async function listPublicRaceFeed(): Promise<RaceFeedItem[]> {
   }
 }
 
-export async function listParticipantTeams(participantId: string) {
+export async function listParticipantTeams(participantId: string): Promise<ParticipantTeamOption[]> {
   const db = getDb();
   return db
     .select({

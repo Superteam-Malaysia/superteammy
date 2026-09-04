@@ -869,6 +869,36 @@
   min-width: 0;
 }
 
+.race-feed-post__person {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.race-feed-post__person-name {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-wisp);
+}
+
+.race-feed-post__team-tag {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--color-byte) 35%, transparent);
+  color: var(--color-byte);
+  text-decoration: none;
+}
+
+.race-feed-post__team-tag:hover {
+  background: color-mix(in srgb, var(--color-byte) 12%, transparent);
+}
+
 .race-feed-post__team-link {
   font-family: var(--font-display);
   font-size: 0.9375rem;

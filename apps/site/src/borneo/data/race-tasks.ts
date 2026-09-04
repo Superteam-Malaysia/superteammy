@@ -411,7 +411,7 @@ export function groupRaceTasksByTheme(): Record<TaskTheme, RaceTask[]> {
 }
 
 export const RACE_SUBMISSION_RULES = [
-  "Submit via one Twitter thread per task, tagging every team member.",
+  "One X post per milestone per person — your team name can show as a tag on the feed.",
   "Amazing Race and deck cutoff: Day 4 at 18:00 — nothing accepted after.",
   "Teach wallet users; never pressure anyone about money or investment.",
   "Content posts must tag @superteamMY, @solana, and @socoe_s.",
