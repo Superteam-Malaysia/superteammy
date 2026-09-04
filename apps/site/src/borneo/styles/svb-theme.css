@@ -75,6 +75,9 @@
   --font-sans: var(--font-archivo), system-ui, sans-serif;
   --font-display: var(--font-orbitron), system-ui, sans-serif;
   --font-mono: var(--font-orbitron), system-ui, sans-serif;
+  /* Fixed-width — glitch tickers / decode animations (Orbitron is proportional) */
+  --font-scramble: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
 
   --space-xs: 1rem;
   --space-s: 1.5rem;

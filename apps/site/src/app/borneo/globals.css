@@ -28,6 +28,8 @@
   --font-sans: var(--font-archivo);
   --font-display: var(--font-orbitron);
   --font-mono: var(--font-orbitron);
+  --font-scramble: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
   --color-surface: #1a1a2e;
   --color-muted: #a0a0b0;
   --color-muted-dark: #64748b;

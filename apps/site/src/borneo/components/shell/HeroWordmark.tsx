@@ -50,7 +50,7 @@ function ScrambleGlyph({
         y={box.y + box.height / 2}
         fill={color}
         fontSize={fontSize}
-        fontFamily="var(--font-mono)"
+        fontFamily="var(--font-scramble)"
         fontWeight={500}
         textAnchor="middle"
         dominantBaseline="central"
