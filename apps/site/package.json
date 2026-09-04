@@ -21,6 +21,7 @@
     "borneo:db:migrate": "tsx scripts/borneo/migrate.ts",
     "borneo:db:import-guests": "tsx scripts/borneo/import-guests.ts",
     "borneo:db:seed-teams": "tsx scripts/borneo/seed-teams.ts",
+    "borneo:db:seed-race-submissions": "tsx scripts/borneo/seed-race-submissions.ts",
     "borneo:db:seed-staff": "tsx scripts/borneo/seed-staff.ts",
     "borneo:db:patch-telegram-handles": "tsx scripts/borneo/patch-telegram-handles.ts",
     "borneo:telegram:setup-webhook": "tsx scripts/borneo/setup-telegram-webhook.ts"

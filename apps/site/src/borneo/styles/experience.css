@@ -769,11 +769,21 @@
   color: color-mix(in srgb, var(--color-byte) 85%, transparent);
 }
 
+.race-page__actions {
+  display: flex;
+  justify-content: center;
+}
+
+.race-page__add-btn {
+  width: 100%;
+  justify-content: center;
+}
+
 .race-page__fab {
   position: fixed;
   right: max(1rem, env(safe-area-inset-right));
-  bottom: max(1.25rem, env(safe-area-inset-bottom));
-  z-index: 40;
+  bottom: max(5.5rem, calc(env(safe-area-inset-bottom) + 4.5rem));
+  z-index: 100;
   width: 3.25rem;
   height: 3.25rem;
   border-radius: 999px;
@@ -807,6 +817,10 @@
   border-radius: 1rem;
   padding: 2rem 1.25rem;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .race-feed__empty-title {

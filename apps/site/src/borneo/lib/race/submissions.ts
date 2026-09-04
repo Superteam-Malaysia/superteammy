@@ -122,6 +122,19 @@ export async function listAllRaceSubmissionsForAdmin(): Promise<AdminRaceSubmiss
   });
 }
 
+export const SEED_RACE_FEED: Omit<RaceFeedItem, "id">[] = [
+  {
+    taskId: "race-landed-in-kuching",
+    threadUrl: "https://x.com/nikkideyy/status/2095386028551065890",
+    submittedAt: "2026-09-04T06:00:00.000Z",
+    taskTitle: "Landed in Kuching",
+    taskNumber: 1,
+    teamSlug: "nikki",
+    teamName: "Nikki",
+    submitterName: "Nikki",
+  },
+];
+
 export async function listPublicRaceFeed(): Promise<RaceFeedItem[]> {
   const db = getDb();
   const rows = await db
@@ -140,7 +153,7 @@ export async function listPublicRaceFeed(): Promise<RaceFeedItem[]> {
     .leftJoin(participants, eq(raceSubmissions.submittedBy, participants.id))
     .orderBy(desc(raceSubmissions.submittedAt));
 
-  return rows.flatMap((row) => {
+  const dbItems = rows.flatMap((row) => {
     const task = getRaceTask(row.taskId);
     if (!task) return [];
     return [
@@ -157,6 +170,18 @@ export async function listPublicRaceFeed(): Promise<RaceFeedItem[]> {
       },
     ];
   });
+
+  const seedItems: RaceFeedItem[] = SEED_RACE_FEED.filter(
+    (seed) =>
+      !rows.some((row) => row.teamSlug === seed.teamSlug && row.taskId === seed.taskId),
+  ).map((seed) => ({
+    id: `seed-${seed.teamSlug}-${seed.taskId}`,
+    ...seed,
+  }));
+
+  return [...dbItems, ...seedItems].sort(
+    (a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime(),
+  );
 }
 
 export async function listParticipantTeams(participantId: string) {

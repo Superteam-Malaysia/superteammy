@@ -3,6 +3,7 @@
 import Link from "@borneo/components/Link";
 import { useCallback, useState } from "react";
 import { RACE_CUTOFF } from "@borneo/data/race-tasks";
+import { CtaButton } from "@borneo/components/ui";
 import { RaceFeed } from "./RaceFeed";
 import { MilestoneSubmitGate } from "./MilestoneSubmitDrawer";
 import type { ParticipantTeamOption } from "./RaceSubmissionsPanel";
@@ -32,6 +33,9 @@ export function RacePageContent({
   const [feed, setFeed] = useState(initialFeed);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  const openDrawer = useCallback(() => setDrawerOpen(true), []);
+  const closeDrawer = useCallback(() => setDrawerOpen(false), []);
+
   const prependFeedItem = useCallback((item: RaceFeedItem) => {
     setFeed((prev) => {
       const withoutDup = prev.filter(
@@ -55,13 +59,25 @@ export function RacePageContent({
         {RACE_CUTOFF.label} · {RACE_CUTOFF.time} cutoff
       </p>
 
-      <RaceFeed items={feed} />
+      <div className="race-page__actions">
+        <CtaButton
+          variant="byte"
+          size="md"
+          showArrow={false}
+          className="race-page__add-btn"
+          onClick={openDrawer}
+        >
+          + Add milestone
+        </CtaButton>
+      </div>
+
+      <RaceFeed items={feed} onAdd={openDrawer} />
 
       <button
         type="button"
         className="race-page__fab"
         aria-label="Add milestone"
-        onClick={() => setDrawerOpen(true)}
+        onClick={openDrawer}
       >
         +
       </button>
@@ -69,7 +85,7 @@ export function RacePageContent({
       <MilestoneSubmitGate
         isSignedIn={isSignedIn}
         open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
+        onClose={closeDrawer}
         submission={submission}
         onSubmitted={prependFeedItem}
       />

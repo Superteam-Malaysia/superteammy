@@ -70,6 +70,24 @@ export const CONTENT_TASKS: RaceTask[] = [
 
 export const RACE_TASKS: RaceTask[] = [
   {
+    id: "race-landed-in-kuching",
+    number: 1,
+    title: "Landed in Kuching",
+    shortDescription:
+      "Share your first take on the city — video or photos on X when you arrive.",
+    details: [
+      "Post on X when you land — arrival energy, street scenes, or first bites.",
+      "Tag @superteamMY, @solana, and @socoe_s.",
+      "Due by 6 September 2026.",
+      "Quality over polish — authentic reactions beat produced reels.",
+    ],
+    pointsBase: 10,
+    pointsNote: "10 pts per qualifying team post",
+    category: "race",
+    theme: "content",
+    deadline: "6 Sept 2026",
+  },
+  {
     id: "race-bourdain",
     number: 3,
     title: "The Bourdain pilgrimage",

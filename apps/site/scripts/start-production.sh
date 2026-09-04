@@ -19,6 +19,8 @@ echo "[startup] patch telegram handles"
 npm run borneo:db:patch-telegram-handles || echo "[startup] telegram patch skipped"
 echo "[startup] seed teams"
 npm run borneo:db:seed-teams
+echo "[startup] seed race submissions"
+npm run borneo:db:seed-race-submissions || echo "[startup] race submission seed skipped"
 echo "[startup] seed staff"
 npm run borneo:db:seed-staff
 echo "[startup] backfill telegram avatars"

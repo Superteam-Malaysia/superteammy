@@ -24,6 +24,15 @@ type SeedTeam = {
 
 const SEED_TEAMS: SeedTeam[] = [
   {
+    slug: "nikki",
+    name: "Nikki",
+    tagline: "Content · SVB",
+    description: "Content lead — first milestone posts from Kuching.",
+    category: "Consumer",
+    proofUrl: "https://x.com/nikkideyy",
+    members: [],
+  },
+  {
     slug: "imperial-perps",
     name: "Imperial Perps",
     tagline: "Perpetuals trading on Solana",
