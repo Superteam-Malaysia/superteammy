@@ -33,6 +33,8 @@ function TeamLogo({ team }: { team: PublicTeam }) {
 
 function TeamCard({ team }: { team: PublicTeam }) {
   const category = team.category ?? "Other";
+  const visibleMembers = team.members.slice(0, 8);
+  const overflowCount = team.memberCount - visibleMembers.length;
 
   return (
     <Link href={`/teams/${team.slug}`} className="team-card">
@@ -53,6 +55,18 @@ function TeamCard({ team }: { team: PublicTeam }) {
           </div>
         </div>
         <p className="team-card__desc">{cardDescription(team)}</p>
+        {team.memberCount > 0 ? (
+          <div className="team-card__members" aria-label={`${team.name} members`}>
+            {visibleMembers.map((member) => (
+              <span key={member.id} className="team-card__member-cell" title={member.name}>
+                {member.initials}
+              </span>
+            ))}
+            {overflowCount > 0 ? (
+              <span className="team-card__member-cell team-card__member-cell--more">+{overflowCount}</span>
+            ) : null}
+          </div>
+        ) : null}
       </div>
     </Link>
   );
