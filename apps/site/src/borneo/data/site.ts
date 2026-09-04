@@ -16,6 +16,9 @@ export const SITE = {
   lumaEventId: "evt-PNnLJgncbcmYquI",
   announcementTweetUrl:
     "https://x.com/SuperteamMY/status/2082421174773178540",
+  beforeYouLandTweetUrl:
+    "https://x.com/SuperteamMY/status/2091704403573313540",
+  beforeYouLandTweetId: "2091704403573313540",
   announcementVideoSrc: withBasePath("/hero/svb-announce-9s.mp4"),
   announcementVideoPoster: withBasePath("/hero/svb-announce-poster.jpg"),
 };

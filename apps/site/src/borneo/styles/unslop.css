@@ -177,3 +177,59 @@
   color: color-mix(in srgb, var(--color-wisp) 78%, transparent);
   text-shadow: none;
 }
+
+.before-you-land__grid {
+  display: grid;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .before-you-land__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 3rem;
+  }
+}
+
+.before-you-land__faq {
+  max-width: 42rem;
+}
+
+.before-you-land__media {
+  width: 100%;
+  max-width: 34rem;
+}
+
+@media (min-width: 1024px) {
+  .before-you-land__media {
+    justify-self: end;
+    position: sticky;
+    top: 6rem;
+  }
+}
+
+.before-you-land__tweet-link {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: color-mix(in srgb, var(--color-wisp) 60%, transparent);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.before-you-land__tweet-link:hover {
+  color: var(--color-byte);
+}
+
+.embedded-tweet-card .react-tweet-theme {
+  --tweet-container-margin: 0;
+  margin: 0;
+  max-width: 100%;
+}
+
+.embedded-tweet-card .react-tweet-theme article {
+  border-radius: 0;
+  border: 1px solid color-mix(in srgb, var(--color-wisp) 14%, transparent);
+  background: color-mix(in srgb, var(--color-ink) 88%, transparent);
+}

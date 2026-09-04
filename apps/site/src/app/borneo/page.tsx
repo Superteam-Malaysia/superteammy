@@ -3,6 +3,7 @@ import { PartnerLogoWall } from "@borneo/components/partners";
 import { PrizeTracksPanel } from "@borneo/components/prizes";
 import { FooterScrambleTicker } from "@borneo/components/shell/FooterScrambleTicker";
 import { HeroVideoBackdrop } from "@borneo/components/shell/HeroVideoBackdrop";
+import { EmbeddedTweetCard } from "@borneo/components/shell/EmbeddedTweetCard";
 import { HeroWordmark } from "@borneo/components/shell/HeroWordmark";
 import { LumaApplyButton } from "@borneo/components/shell/LumaApplyButton";
 import { PreFooterBand } from "@borneo/components/shell/PreFooterBand";
@@ -126,19 +127,32 @@ export default function HomePage() {
         <div className="max-w-[90rem] mx-auto px-4 md:px-8 pt-16 md:pt-24 pb-8 md:pb-10">
           <SectionArticle>
             <SectionIntro title="Before you land" accent="green" />
-            <div className="mt-10 max-w-2xl">
-              <Accordion
-                items={previewFaq.map((f) => ({
-                  id: f.id,
-                  title: f.question,
-                  content: f.answer,
-                }))}
-              />
-            </div>
-            <div className="mt-8">
-              <CtaButton href="/faq" variant="ghost-wisp" size="sm" showArrow={false}>
-                All questions
-              </CtaButton>
+            <div className="before-you-land__grid mt-10">
+              <div className="before-you-land__faq">
+                <Accordion
+                  items={previewFaq.map((f) => ({
+                    id: f.id,
+                    title: f.question,
+                    content: f.answer,
+                  }))}
+                />
+                <div className="mt-8">
+                  <CtaButton href="/faq" variant="ghost-wisp" size="sm" showArrow={false}>
+                    All questions
+                  </CtaButton>
+                </div>
+              </div>
+              <div className="before-you-land__media">
+                <EmbeddedTweetCard tweetId={SITE.beforeYouLandTweetId} />
+                <a
+                  href={SITE.beforeYouLandTweetUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="before-you-land__tweet-link"
+                >
+                  Watch on X
+                </a>
+              </div>
             </div>
           </SectionArticle>
         </div>
