@@ -1,38 +1,26 @@
 "use client";
 
-import Image from "next/image";
-import { ConnectLink } from "@borneo/components/directory/ConnectLink";
-import { mentorConnectHref, mentorConnectLabel, type PublicMentor } from "@borneo/data/mentors";
+import { PeopleCard } from "@borneo/components/directory/PeopleCard";
+import { mentorSocialUrls, type PublicMentor } from "@borneo/data/mentors";
 
-function MentorAvatar({ mentor }: { mentor: PublicMentor }) {
-  if (mentor.avatar) {
-    return (
-      <div className="builder-card__avatar builder-card__avatar--photo">
-        <Image src={mentor.avatar} alt="" width={88} height={88} className="mentor-card__photo" />
-      </div>
-    );
+function MentorCard({ mentor }: { mentor: PublicMentor }) {
+  const subtitleLines: string[] = [];
+  if (mentor.organization) subtitleLines.push(mentor.organization);
+  if (mentor.isWorkshopLeader && mentor.workshops.length > 0) {
+    subtitleLines.push("Workshop leader");
+  }
+  if (mentor.isJudge && mentor.judgeRole) {
+    subtitleLines.push(mentor.judgeRole);
   }
 
   return (
-    <div className="builder-card__avatar" aria-hidden="true">
-      {mentor.initials}
-    </div>
-  );
-}
-
-function MentorCard({ mentor }: { mentor: PublicMentor }) {
-  return (
-    <article className="builder-card mentor-card">
-      <div className="builder-card__top">
-        <MentorAvatar mentor={mentor} />
-        <ConnectLink href={mentorConnectHref(mentor)} label={mentorConnectLabel(mentor)} />
-      </div>
-
-      <h2 className="builder-card__name">{mentor.name}</h2>
-      {mentor.organization ? (
-        <p className="mentor-card__role">{mentor.organization}</p>
-      ) : null}
-    </article>
+    <PeopleCard
+      name={mentor.name}
+      avatarUrl={mentor.avatar}
+      initials={mentor.initials}
+      subtitleLines={subtitleLines}
+      social={mentorSocialUrls(mentor)}
+    />
   );
 }
 

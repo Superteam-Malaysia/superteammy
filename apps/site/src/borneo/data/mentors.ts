@@ -113,6 +113,15 @@ export function mentorConnectLabel(mentor: PublicMentor): string {
   return "Connect";
 }
 
+export function mentorSocialUrls(mentor: PublicMentor) {
+  return {
+    twitter: twitterHref(mentor.twitter),
+    linkedin: linkedinHref(mentor.linkedin),
+    telegram: telegramHref(mentor.telegram),
+    email: mentor.email ? `mailto:${mentor.email}` : null,
+  };
+}
+
 /** Workshop leaders + Demo Day judges for the mentors directory. */
 export function getPublicMentors(): PublicMentor[] {
   const byId = new Map<string, PublicMentor>();

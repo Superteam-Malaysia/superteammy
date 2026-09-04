@@ -1,41 +1,45 @@
 "use client";
 
+import { PeopleCard } from "@borneo/components/directory/PeopleCard";
 import Link from "@borneo/components/Link";
-import { ConnectLink } from "@borneo/components/directory/ConnectLink";
-import { ParticipantAvatar } from "@borneo/components/directory/ParticipantAvatar";
-import {
-  builderConnectHref,
-  builderConnectLabel,
-} from "@borneo/lib/participants/social-links";
 import type { PublicParticipant } from "@borneo/lib/participants/types";
+import { telegramHref } from "@borneo/lib/participants/types";
 
 export type BuilderCardProps = {
   person: PublicParticipant;
+  badge?: string | null;
 };
 
-export function BuilderCard({ person }: BuilderCardProps) {
+export function BuilderCard({ person, badge = null }: BuilderCardProps) {
   const teams = person.hackathonTeams;
 
-  return (
-    <article className="builder-card mentor-card" id={`builder-${person.id}`}>
-      <div className="builder-card__top">
-        <ParticipantAvatar avatarUrl={person.avatarUrl} initials={person.initials} />
-        <ConnectLink href={builderConnectHref(person)} label={builderConnectLabel(person)} />
-      </div>
-
-      <h2 className="builder-card__name">{person.name}</h2>
-      {teams.length > 0 ? (
-        <p className="mentor-card__role builder-card__team-subtext">
-          {teams.map((team, index) => (
+  const subtitleLines =
+    teams.length > 0
+      ? [
+          teams.map((team, index) => (
             <span key={team.slug}>
               {index > 0 ? ", " : null}
-              <Link href={`/teams/${team.slug}`} className="builder-card__team-link">
+              <Link href={`/teams/${team.slug}`} className="people-card__inline-link">
                 {team.name}
               </Link>
             </span>
-          ))}
-        </p>
-      ) : null}
-    </article>
+          )),
+        ]
+      : [];
+
+  return (
+    <PeopleCard
+      id={`builder-${person.id}`}
+      name={person.name}
+      avatarUrl={person.avatarUrl}
+      initials={person.initials}
+      badge={badge}
+      subtitleLines={subtitleLines}
+      social={{
+        twitter: person.twitter,
+        linkedin: person.linkedin,
+        telegram: telegramHref(person.telegram),
+      }}
+    />
   );
 }
