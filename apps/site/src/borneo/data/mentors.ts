@@ -16,7 +16,7 @@ const STANDALONE_MENTORS: PublicMentor[] = [
     judgeRole: null,
     workshops: [],
     avatar: null,
-    twitter: "semiii",
+    twitter: null,
     linkedin: null,
     telegram: "semi_infiknight",
     email: "semi@sendarcade.fun",
