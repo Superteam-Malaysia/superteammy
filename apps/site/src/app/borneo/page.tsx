@@ -15,7 +15,7 @@ import {
   SectionArticle,
   SectionIntro,
 } from "@borneo/components/ui";
-import { FAQ_ITEMS } from "@borneo/data/faq";
+import { BEFORE_YOU_LAND_FAQ_IDS, faqById } from "@borneo/data/faq";
 import {
   ANCHOR_PARTNERS,
   PENDING_PARTNERS,
@@ -26,7 +26,9 @@ import { WORKSHOP_SESSIONS } from "@borneo/data/speakers";
 import { SITE } from "@borneo/data/site";
 
 export default function HomePage() {
-  const previewFaq = FAQ_ITEMS.slice(0, 4);
+  const previewFaq = BEFORE_YOU_LAND_FAQ_IDS.map((id) => faqById(id)).filter(
+    (item): item is NonNullable<typeof item> => item != null,
+  );
 
   return (
     <main>

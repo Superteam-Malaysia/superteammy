@@ -6,7 +6,10 @@ const nextConfig: NextConfig = {
   // production build. Add your own LAN IP if it differs.
   allowedDevOrigins: ["192.168.100.18", "*.local"],
   async redirects() {
-    return [{ source: "/borneo/venue", destination: "/borneo/travel", permanent: true }];
+    return [
+      { source: "/borneo/travel", destination: "/borneo/faq", permanent: true },
+      { source: "/borneo/venue", destination: "/borneo/faq", permanent: true },
+    ];
   },
   images: {
     remotePatterns: [

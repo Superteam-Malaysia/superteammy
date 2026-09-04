@@ -13,7 +13,7 @@ export const FAQ_ITEMS: FaqItem[] = [
     category: "general",
     question: "Where is the event?",
     answer:
-      "Sheraton Kuching for accommodation and evening building. Workshop days (Day 2–5) start with breakfast at Sheraton then move to Voco for sessions.",
+      "Sheraton Kuching (downtown waterfront) is your hotel — check-in from 15:00, welcome dinner Day 1, evening building, and breakfast each morning. Workshop days (Day 2–5): breakfast at Sheraton, then the 09:30 bus to voco Kuching (near the airport) for 10:00 sessions. Day 5: check out of Sheraton, then bus to Voco for Demo Day. All times are Malaysia Time (UTC+8).",
   },
   {
     id: "teams",
@@ -69,7 +69,7 @@ export const FAQ_ITEMS: FaqItem[] = [
     category: "general",
     question: "What happens in the evenings?",
     answer:
-      "Sessions hard-stop by 17:30. Evenings are free for building at the hotel. The Amazing Race runs in gaps — your product build comes first.",
+      "Sessions hard-stop by 17:30. Evenings are free for building at the hotel. The Amazing Race runs in gaps — your product build comes first. Waterfront race stations are a five-minute walk from Sheraton — plan evenings, not workshop hours.",
   },
   {
     id: "mdac",
@@ -90,13 +90,50 @@ export const FAQ_ITEMS: FaqItem[] = [
     category: "travel",
     question: "How do I get from KCH to Sheraton?",
     answer:
-      "Kuching International Airport is ~11 km south of downtown — about 15 minutes in light traffic. Download Grab before you land and pin KCH for pickup outside arrivals. Airport taxis also run from the official counter. Save Sheraton Kuching as a favourite before Day 1.",
+      "Fly into Kuching International Airport (KCH) — one terminal for domestic and international flights. Sheraton is ~11 km north (~15 min in light traffic). Download Grab before you land and pin KCH for pickup outside arrivals; airport taxis also run from the official counter. voco (workshop venue) is only ~5 min from the airport if you need it first. Save Sheraton Kuching as a favourite before Day 1.",
+  },
+  {
+    id: "sheraton-voco",
+    category: "travel",
+    question: "How do I get between Sheraton and Voco?",
+    answer:
+      "Workshop days (Day 2–5): breakfast at Sheraton before 09:00, meet in the lobby, then the 09:30 organizer bus to voco Kuching (~15–20 min) for a 10:00 start. After sessions wrap (~17:30), return to Sheraton for evening building. Grab works too — pin both hotels and use GrabCar (not GrabShare) when travelling with teammates or demo gear.",
+  },
+  {
+    id: "grab",
+    category: "travel",
+    question: "How do I get around Kuching?",
+    answer:
+      "Grab is the default — download the app before you land. It's reliable across Kuching and cheaper than hailing taxis. Pay with card or GrabPay. Amazing Race tasks spread across the city; the waterfront loop near Sheraton is walkable.",
+  },
+  {
+    id: "money-sim",
+    category: "travel",
+    question: "What about money, SIMs, and ops?",
+    answer:
+      "Malaysian Ringgit (MYR) — ATMs and cards work widely. Celcom, Digi, and Maxis counters in KCH arrivals sell local SIMs and eSIMs. Join your team WhatsApp group before leaving the airport; SVB ops (shuttles, race brief, mentor hours) run on WhatsApp, not email.",
   },
   {
     id: "travel-whatsapp",
     category: "travel",
-    question: "What should I do before leaving the airport?",
+    question: "What should I do when I land on Day 1?",
     answer:
-      "Join your team WhatsApp group, grab a local SIM or eSIM at arrivals (Celcom, Digi, Maxis), and confirm your MDAC if required. The Amazing Race brief drops on arrival — ops run on WhatsApp, not email.",
+      "Check in at Sheraton, join your team WhatsApp group, and the Amazing Race starts immediately — the race brief drops on arrival. All teams back by 18:00; welcome dinner at the Sheraton Rooftop Bar with RedotsClub at 18:30.",
   },
 ];
+
+/** FAQ ids surfaced on the homepage “Before you land” preview. */
+export const BEFORE_YOU_LAND_FAQ_IDS = [
+  "what",
+  "where",
+  "teams",
+  "mdac",
+  "kch-sheraton",
+  "sheraton-voco",
+  "grab",
+  "money-sim",
+] as const;
+
+export function faqById(id: string): FaqItem | undefined {
+  return FAQ_ITEMS.find((item) => item.id === id);
+}
