@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@borneo/components/Link";
 import { BrandLogosPanel } from "@borneo/components/brand";
 import {
   Accordion,

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@borneo/components/Link";
 import { notFound } from "next/navigation";
 import { TeamDetailActions } from "@borneo/components/teams/TeamDetailActions";
 import { TeamDetailPublicView } from "@borneo/components/teams/TeamDetailPublicView";

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@borneo/components/Link";
 import { PageHeader } from "@borneo/components/shell";
 import { CtaButton } from "@borneo/components/ui";
 
