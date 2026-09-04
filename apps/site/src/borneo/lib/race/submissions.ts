@@ -136,52 +136,60 @@ export const SEED_RACE_FEED: Omit<RaceFeedItem, "id">[] = [
 ];
 
 export async function listPublicRaceFeed(): Promise<RaceFeedItem[]> {
-  const db = getDb();
-  const rows = await db
-    .select({
-      id: raceSubmissions.id,
-      teamId: raceSubmissions.teamId,
-      taskId: raceSubmissions.taskId,
-      threadUrl: raceSubmissions.threadUrl,
-      submittedAt: raceSubmissions.submittedAt,
-      teamSlug: teams.slug,
-      teamName: teams.name,
-      submitterName: participants.name,
-    })
-    .from(raceSubmissions)
-    .innerJoin(teams, eq(raceSubmissions.teamId, teams.id))
-    .leftJoin(participants, eq(raceSubmissions.submittedBy, participants.id))
-    .orderBy(desc(raceSubmissions.submittedAt));
-
-  const dbItems = rows.flatMap((row) => {
-    const task = getRaceTask(row.taskId);
-    if (!task) return [];
-    return [
-      {
-        id: row.id,
-        taskId: row.taskId,
-        threadUrl: row.threadUrl,
-        submittedAt: row.submittedAt.toISOString(),
-        taskTitle: task.title,
-        taskNumber: task.number,
-        teamSlug: row.teamSlug,
-        teamName: row.teamName,
-        submitterName: row.submitterName,
-      },
-    ];
-  });
-
-  const seedItems: RaceFeedItem[] = SEED_RACE_FEED.filter(
-    (seed) =>
-      !rows.some((row) => row.teamSlug === seed.teamSlug && row.taskId === seed.taskId),
-  ).map((seed) => ({
+  const seedItems: RaceFeedItem[] = SEED_RACE_FEED.map((seed) => ({
     id: `seed-${seed.teamSlug}-${seed.taskId}`,
     ...seed,
   }));
 
-  return [...dbItems, ...seedItems].sort(
-    (a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime(),
-  );
+  try {
+    const db = getDb();
+    const rows = await db
+      .select({
+        id: raceSubmissions.id,
+        teamId: raceSubmissions.teamId,
+        taskId: raceSubmissions.taskId,
+        threadUrl: raceSubmissions.threadUrl,
+        submittedAt: raceSubmissions.submittedAt,
+        teamSlug: teams.slug,
+        teamName: teams.name,
+        submitterName: participants.name,
+      })
+      .from(raceSubmissions)
+      .innerJoin(teams, eq(raceSubmissions.teamId, teams.id))
+      .leftJoin(participants, eq(raceSubmissions.submittedBy, participants.id))
+      .orderBy(desc(raceSubmissions.submittedAt));
+
+    const dbItems = rows.flatMap((row) => {
+      const task = getRaceTask(row.taskId);
+      if (!task) return [];
+      return [
+        {
+          id: row.id,
+          taskId: row.taskId,
+          threadUrl: row.threadUrl,
+          submittedAt: row.submittedAt.toISOString(),
+          taskTitle: task.title,
+          taskNumber: task.number,
+          teamSlug: row.teamSlug,
+          teamName: row.teamName,
+          submitterName: row.submitterName,
+        },
+      ];
+    });
+
+    const mergedSeeds = seedItems.filter(
+      (seed) =>
+        !rows.some((row) => row.teamSlug === seed.teamSlug && row.taskId === seed.taskId),
+    );
+
+    return [...dbItems, ...mergedSeeds].sort(
+      (a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime(),
+    );
+  } catch {
+    return seedItems.sort(
+      (a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime(),
+    );
+  }
 }
 
 export async function listParticipantTeams(participantId: string) {
