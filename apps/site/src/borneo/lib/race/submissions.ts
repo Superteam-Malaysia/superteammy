@@ -12,6 +12,12 @@ export type PublicRaceSubmission = {
   taskNumber: number;
 };
 
+export type RaceFeedItem = PublicRaceSubmission & {
+  teamSlug: string;
+  teamName: string;
+  submitterName: string | null;
+};
+
 export type AdminRaceSubmission = PublicRaceSubmission & {
   teamId: string;
   teamSlug: string;
@@ -111,6 +117,43 @@ export async function listAllRaceSubmissionsForAdmin(): Promise<AdminRaceSubmiss
         taskNumber: task.number,
         submitterName: row.submitterName,
         submitterEmail: row.submitterEmail,
+      },
+    ];
+  });
+}
+
+export async function listPublicRaceFeed(): Promise<RaceFeedItem[]> {
+  const db = getDb();
+  const rows = await db
+    .select({
+      id: raceSubmissions.id,
+      teamId: raceSubmissions.teamId,
+      taskId: raceSubmissions.taskId,
+      threadUrl: raceSubmissions.threadUrl,
+      submittedAt: raceSubmissions.submittedAt,
+      teamSlug: teams.slug,
+      teamName: teams.name,
+      submitterName: participants.name,
+    })
+    .from(raceSubmissions)
+    .innerJoin(teams, eq(raceSubmissions.teamId, teams.id))
+    .leftJoin(participants, eq(raceSubmissions.submittedBy, participants.id))
+    .orderBy(desc(raceSubmissions.submittedAt));
+
+  return rows.flatMap((row) => {
+    const task = getRaceTask(row.taskId);
+    if (!task) return [];
+    return [
+      {
+        id: row.id,
+        taskId: row.taskId,
+        threadUrl: row.threadUrl,
+        submittedAt: row.submittedAt.toISOString(),
+        taskTitle: task.title,
+        taskNumber: task.number,
+        teamSlug: row.teamSlug,
+        teamName: row.teamName,
+        submitterName: row.submitterName,
       },
     ];
   });

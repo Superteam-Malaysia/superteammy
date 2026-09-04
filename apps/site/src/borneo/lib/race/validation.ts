@@ -16,6 +16,14 @@ export function isRaceCutoffPassed(now = new Date()): boolean {
   return now.getTime() > new Date(RACE_CUTOFF.iso).getTime();
 }
 
+/** Pull numeric tweet id from an x.com / twitter.com status URL. */
+export function extractTweetIdFromUrl(raw: string): string | null {
+  const normalized = normalizeThreadUrl(raw);
+  if (!normalized) return null;
+  const match = normalized.match(/\/status\/(\d+)/);
+  return match?.[1] ?? null;
+}
+
 /** Accept x.com / twitter.com status URLs. Returns canonical https URL or null. */
 export function normalizeThreadUrl(raw: string): string | null {
   const trimmed = raw.trim();

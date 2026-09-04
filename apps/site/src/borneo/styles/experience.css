@@ -719,6 +719,380 @@
   margin-bottom: 0.5rem;
 }
 
+/* Amazing Race — milestone feed */
+.race-page-main {
+  padding-bottom: 5rem;
+}
+
+.race-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 32rem;
+  margin-inline: auto;
+}
+
+.race-page__hero {
+  text-align: center;
+  padding-top: 0.5rem;
+}
+
+.race-page__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-wisp) 50%, transparent);
+}
+
+.race-page__title {
+  margin-top: 0.5rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 5vw, 2.25rem);
+  font-weight: 700;
+  color: var(--color-wisp);
+}
+
+.race-page__lead {
+  margin-top: 0.75rem;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--color-wisp) 65%, transparent);
+}
+
+.race-page__cutoff {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-byte) 85%, transparent);
+}
+
+.race-page__fab {
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
+  z-index: 40;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 999px;
+  border: none;
+  background: var(--color-byte);
+  color: var(--color-ink);
+  font-size: 1.75rem;
+  line-height: 1;
+  font-weight: 400;
+  cursor: pointer;
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-byte) 35%, transparent);
+}
+
+.race-page__fab:hover {
+  filter: brightness(1.05);
+}
+
+.race-page__admin {
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.race-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.race-feed--empty {
+  border: 1px solid var(--color-transparent-wisp-10);
+  border-radius: 1rem;
+  padding: 2rem 1.25rem;
+  text-align: center;
+}
+
+.race-feed__empty-title {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  color: var(--color-wisp);
+}
+
+.race-feed__empty-copy {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--color-wisp) 55%, transparent);
+}
+
+.race-feed-post {
+  border: 1px solid var(--color-transparent-wisp-10);
+  border-radius: 1rem;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--color-ink) 92%, transparent);
+}
+
+.race-feed-post__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--color-transparent-wisp-10);
+}
+
+.race-feed-post__avatar {
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  background: color-mix(in srgb, var(--color-byte) 18%, transparent);
+  color: var(--color-byte);
+}
+
+.race-feed-post__meta {
+  min-width: 0;
+}
+
+.race-feed-post__team-link {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-wisp);
+  text-decoration: none;
+}
+
+.race-feed-post__team-link:hover {
+  color: var(--color-byte);
+}
+
+.race-feed-post__milestone {
+  margin-top: 0.125rem;
+  font-size: 0.8125rem;
+  color: color-mix(in srgb, var(--color-wisp) 60%, transparent);
+}
+
+.race-feed-post__time {
+  color: color-mix(in srgb, var(--color-wisp) 45%, transparent);
+}
+
+.race-feed-post__tweet {
+  padding: 0.75rem;
+}
+
+.race-feed-post__fallback {
+  display: block;
+  padding: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--color-byte);
+}
+
+/* Milestone submit drawer */
+.race-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--color-ink) 55%, transparent);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.race-drawer__sheet {
+  width: 100%;
+  max-width: 32rem;
+  max-height: min(88vh, 720px);
+  overflow-y: auto;
+  background: var(--color-ink);
+  border-top-left-radius: 1.25rem;
+  border-top-right-radius: 1.25rem;
+  border: 1px solid var(--color-transparent-wisp-10);
+  border-bottom: none;
+  padding: 0.75rem 1rem 1.5rem;
+}
+
+.race-drawer__handle {
+  width: 2.5rem;
+  height: 0.25rem;
+  margin: 0 auto 0.75rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-wisp) 25%, transparent);
+}
+
+.race-drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.race-drawer__title {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-wisp);
+}
+
+.race-drawer__back {
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-byte);
+  cursor: pointer;
+}
+
+.race-drawer__close {
+  border: none;
+  background: none;
+  width: 2rem;
+  height: 2rem;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: color-mix(in srgb, var(--color-wisp) 60%, transparent);
+  cursor: pointer;
+}
+
+.race-drawer__team-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+}
+
+.race-drawer__team-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-wisp) 50%, transparent);
+}
+
+.race-drawer__team-note {
+  margin-bottom: 0.75rem;
+  font-size: 0.8125rem;
+  color: color-mix(in srgb, var(--color-wisp) 60%, transparent);
+}
+
+.race-drawer__progress {
+  margin-bottom: 0.75rem;
+}
+
+.race-drawer__progress-label {
+  font-size: 0.8125rem;
+  color: color-mix(in srgb, var(--color-wisp) 70%, transparent);
+  margin-bottom: 0.35rem;
+}
+
+.race-drawer__progress-bar {
+  height: 0.35rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-wisp) 12%, transparent);
+  overflow: hidden;
+}
+
+.race-drawer__progress-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-byte);
+}
+
+.race-drawer__hint {
+  margin-bottom: 0.75rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: color-mix(in srgb, var(--color-wisp) 55%, transparent);
+}
+
+.race-drawer__milestones {
+  display: flex;
+  flex-direction: column;
+}
+
+.race-drawer__milestone {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  width: 100%;
+  padding: 0.875rem 0;
+  border: none;
+  border-top: 1px solid var(--color-transparent-wisp-10);
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+}
+
+.race-drawer__milestone:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.race-drawer__milestone-num {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: color-mix(in srgb, var(--color-wisp) 45%, transparent);
+}
+
+.race-drawer__milestone-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.race-drawer__milestone-title {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  color: var(--color-wisp);
+}
+
+.race-drawer__milestone-desc {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: color-mix(in srgb, var(--color-wisp) 55%, transparent);
+}
+
+.race-drawer__milestone-action {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-transparent-wisp-10);
+  display: grid;
+  place-items: center;
+  font-size: 0.875rem;
+  color: var(--color-byte);
+}
+
+.race-drawer__link-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.race-drawer__link-title {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  color: var(--color-wisp);
+}
+
+.race-drawer__link-desc {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: color-mix(in srgb, var(--color-wisp) 60%, transparent);
+}
+
+.race-drawer__submit {
+  width: 100%;
+  justify-content: center;
+}
+
 .admin-submissions-table-wrap {
   overflow-x: auto;
 }
