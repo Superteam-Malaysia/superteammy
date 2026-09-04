@@ -819,15 +819,9 @@
   flex-direction: column;
   gap: 1.25rem;
   width: 100%;
-  max-width: 32rem;
+  /* Match native X embed width — don't stretch posts on desktop */
+  max-width: min(100%, 550px);
   margin-inline: auto;
-}
-
-@media (min-width: 768px) {
-  .race-feed {
-    max-width: none;
-    margin-inline: 0;
-  }
 }
 
 .race-feed--empty {
@@ -943,21 +937,17 @@
   padding: 0.75rem;
 }
 
-@media (min-width: 768px) {
-  .race-feed-post__tweet {
-    padding: 0;
-  }
+.race-feed-post__tweet .embedded-tweet-card,
+.race-feed-post__tweet .react-tweet-theme {
+  width: 100%;
+  max-width: 550px;
+  margin-inline: auto;
+}
 
-  .race-feed-post__tweet .embedded-tweet-card,
-  .race-feed-post__tweet .react-tweet-theme {
-    width: 100%;
-    max-width: none;
-  }
-
-  .race-feed-post__tweet .react-tweet-theme article {
-    max-width: none;
-    width: 100%;
-  }
+.race-feed-post__tweet .react-tweet-theme article {
+  max-width: 550px;
+  width: 100%;
+  margin-inline: auto;
 }
 
 .race-feed-post__fallback {
