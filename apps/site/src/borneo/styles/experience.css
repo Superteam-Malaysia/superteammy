@@ -728,6 +728,14 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  width: 100%;
+}
+
+.race-page__hero,
+.race-page__cutoff,
+.race-page__actions,
+.race-page__admin {
+  width: 100%;
   max-width: 32rem;
   margin-inline: auto;
 }
@@ -810,6 +818,16 @@
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  width: 100%;
+  max-width: 32rem;
+  margin-inline: auto;
+}
+
+@media (min-width: 768px) {
+  .race-feed {
+    max-width: none;
+    margin-inline: 0;
+  }
 }
 
 .race-feed--empty {
@@ -923,6 +941,23 @@
 
 .race-feed-post__tweet {
   padding: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .race-feed-post__tweet {
+    padding: 0;
+  }
+
+  .race-feed-post__tweet .embedded-tweet-card,
+  .race-feed-post__tweet .react-tweet-theme {
+    width: 100%;
+    max-width: none;
+  }
+
+  .race-feed-post__tweet .react-tweet-theme article {
+    max-width: none;
+    width: 100%;
+  }
 }
 
 .race-feed-post__fallback {
