@@ -4,7 +4,7 @@
  * Usage: DATABASE_URL=... npm run db:seed-teams
  */
 import "dotenv/config";
-import { eq, sql } from "drizzle-orm";
+import { eq, sql, and } from "drizzle-orm";
 import { closeDb, getDb } from "../../src/borneo/lib/db";
 import { participants, teamMembers, teams } from "../../src/borneo/lib/db/schema";
 import { slugifyTeamName } from "../../src/borneo/lib/teams/slug";
@@ -23,15 +23,6 @@ type SeedTeam = {
 };
 
 const SEED_TEAMS: SeedTeam[] = [
-  {
-    slug: "nikki",
-    name: "Nikki",
-    tagline: "Content · SVB",
-    description: "Content lead — first milestone posts from Kuching.",
-    category: "Consumer",
-    proofUrl: "https://x.com/nikkideyy",
-    members: [],
-  },
   {
     slug: "imperial-perps",
     name: "Imperial Perps",
@@ -615,18 +606,55 @@ const SEED_TEAMS: SeedTeam[] = [
   },
 ];
 
+/** Teams removed from the directory — deleted on each seed run. */
+const REMOVED_TEAM_SLUGS = ["nikki"];
+
 async function participantIdByEmail(db: ReturnType<typeof getDb>, email: string) {
   const normalized = email.trim().toLowerCase();
   const [row] = await db
-    .select({ id: participants.id })
+    .select({ id: participants.id, approvalStatus: participants.approvalStatus })
     .from(participants)
     .where(eq(participants.emailNormalized, normalized))
     .limit(1);
-  return row?.id ?? null;
+  if (!row || row.approvalStatus !== "approved") return null;
+  return row.id;
+}
+
+async function removeRetiredTeams(db: ReturnType<typeof getDb>) {
+  for (const slug of REMOVED_TEAM_SLUGS) {
+    const [team] = await db.select().from(teams).where(eq(teams.slug, slug)).limit(1);
+    if (!team) continue;
+    await db.delete(teamMembers).where(eq(teamMembers.teamId, team.id));
+    await db.delete(teams).where(eq(teams.id, team.id));
+    console.log(`Removed team: ${slug}`);
+  }
+}
+
+async function pruneDeclinedTeamMembers(db: ReturnType<typeof getDb>) {
+  const declinedMembers = await db
+    .select({ teamId: teamMembers.teamId, participantId: teamMembers.participantId })
+    .from(teamMembers)
+    .innerJoin(participants, eq(teamMembers.participantId, participants.id))
+    .where(sql`${participants.approvalStatus} IS DISTINCT FROM 'approved'`);
+
+  for (const row of declinedMembers) {
+    await db
+      .delete(teamMembers)
+      .where(
+        and(eq(teamMembers.teamId, row.teamId), eq(teamMembers.participantId, row.participantId)),
+      );
+  }
+
+  if (declinedMembers.length > 0) {
+    console.log(`Pruned ${declinedMembers.length} team membership(s) for non-approved guests`);
+  }
 }
 
 async function main() {
   const db = getDb();
+
+  await removeRetiredTeams(db);
+  await pruneDeclinedTeamMembers(db);
 
   for (const seed of SEED_TEAMS) {
     const ownerEmail = seed.members.find((m) => m.role === "owner")?.email;

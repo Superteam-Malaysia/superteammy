@@ -1,4 +1,4 @@
-import { asc, eq, inArray, sql } from "drizzle-orm";
+import { and, asc, eq, inArray, sql } from "drizzle-orm";
 import { cache } from "react";
 import { getDb } from "@borneo/lib/db";
 import { participants, teamMembers, teams } from "@borneo/lib/db/schema";
@@ -70,7 +70,7 @@ async function fetchMembersByTeamIds(teamIds: string[]) {
     })
     .from(teamMembers)
     .innerJoin(participants, eq(teamMembers.participantId, participants.id))
-    .where(inArray(teamMembers.teamId, teamIds))
+    .where(and(inArray(teamMembers.teamId, teamIds), eq(participants.approvalStatus, "approved")))
     .orderBy(asc(participants.name));
 
   const membersByTeam = new Map<string, PublicTeamMember[]>();
