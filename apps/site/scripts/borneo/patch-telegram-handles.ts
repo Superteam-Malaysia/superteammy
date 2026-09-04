@@ -19,6 +19,12 @@ const TELEGRAM_PATCHES: Record<string, string> = {
   "53845tianbelulok@gmail.com": "https://t.me/sebestdebest",
   "kuehtzenan1995@gmail.com": "https://t.me/artist_dream7",
   "yudhishthra@aqua0.xyz": "https://t.me/yudhishthra",
+  "venessa@madisevents.com": "https://t.me/venessaamen",
+  "emailsolah@gmail.com": "https://t.me/solahidris",
+  "luma@mvn.xyz": "https://t.me/BrittInTech",
+  "skky5687@gmail.com": "https://t.me/skyyy0x",
+  "rafieqrafizie@gmail.com": "https://t.me/rrafieq",
+  "chinbingyong@gmail.com": "https://t.me/mage777",
 };
 
 function toTelegramField(value: string): string {
