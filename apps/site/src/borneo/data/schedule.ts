@@ -443,7 +443,7 @@ export const SCHEDULE_DAYS: ScheduleDay[] = [
         title: "Judging deliberation",
         start: "12:30",
         end: "12:45",
-        description: "Judges: SOCOE (Sam), Solana Foundation (Chaerin, Seraphim), No Limit Holdings (Anatoly), + one more.",
+        description: "Judges: SOCOE (Sam), Solana Foundation (Chaerin), Cradle (Faiz), No Limit Holdings (Anatoly), + one more.",
         color: "wisp",
       },
       {
