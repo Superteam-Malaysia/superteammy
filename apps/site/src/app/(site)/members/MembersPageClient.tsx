@@ -1,45 +1,11 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { MemberProfileCard } from "@/components/members/MemberProfileCard";
+import { ScalableCardWrapper } from "@/components/members/ScalableCardWrapper";
 import { MemberFilters } from "@/components/members/MemberFilters";
 import type { Profile, SubskillTag } from "@/lib/types";
-
-const CARD_WIDTH = 320;
-
-function ScalableCardWrapper({ children }: { children: React.ReactNode }) {
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(1);
-
-  useEffect(() => {
-    const el = wrapperRef.current;
-    if (!el) return;
-    const updateScale = () => {
-      const width = el.offsetWidth;
-      setScale(Math.min(1, width / CARD_WIDTH));
-    };
-    updateScale();
-    const ro = new ResizeObserver(updateScale);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  return (
-    <div
-      ref={wrapperRef}
-      className="relative w-full "
-      style={{ aspectRatio: `${CARD_WIDTH}/470` }}
-    >
-      <div
-        className="absolute left-1/2 top-0 w-[320px] origin-top"
-        style={{ transform: `translateX(-50%) scale(${scale})` }}
-      >
-        {children}
-      </div>
-    </div>
-  );
-}
 
 interface MembersPageClientProps {
   profiles: Profile[];

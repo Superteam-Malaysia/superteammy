@@ -1,45 +1,25 @@
 "use client";
 
-import { PeopleCard } from "@borneo/components/directory/PeopleCard";
-import Link from "@borneo/components/Link";
+import { MemberProfileCard } from "@/components/members/MemberProfileCard";
+import { ScalableCardWrapper } from "@/components/members/ScalableCardWrapper";
+import { participantToProfile } from "@borneo/lib/directory/to-profile-card";
 import type { PublicParticipant } from "@borneo/lib/participants/types";
-import { telegramHref } from "@borneo/lib/participants/types";
 
 export type BuilderCardProps = {
   person: PublicParticipant;
-  badge?: string | null;
+  index?: number;
 };
 
-export function BuilderCard({ person, badge = null }: BuilderCardProps) {
-  const teams = person.hackathonTeams;
-
-  const subtitleLines =
-    teams.length > 0
-      ? [
-          teams.map((team, index) => (
-            <span key={team.slug}>
-              {index > 0 ? ", " : null}
-              <Link href={`/teams/${team.slug}`} className="people-card__inline-link">
-                {team.name}
-              </Link>
-            </span>
-          )),
-        ]
-      : [];
-
+export function BuilderCard({ person, index = 0 }: BuilderCardProps) {
   return (
-    <PeopleCard
-      id={`builder-${person.id}`}
-      name={person.name}
-      avatarUrl={person.avatarUrl}
-      initials={person.initials}
-      badge={badge}
-      subtitleLines={subtitleLines}
-      social={{
-        twitter: person.twitter,
-        linkedin: person.linkedin,
-        telegram: telegramHref(person.telegram),
-      }}
-    />
+    <ScalableCardWrapper>
+      <div id={`builder-${person.id}`}>
+        <MemberProfileCard
+          profile={participantToProfile(person)}
+          index={index}
+          expandOnClick
+        />
+      </div>
+    </ScalableCardWrapper>
   );
 }

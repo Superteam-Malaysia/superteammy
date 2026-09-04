@@ -10,9 +10,9 @@ export function TeamMemberCards({ members }: TeamMemberCardsProps) {
 
   return (
     <ul className="builder-directory__grid">
-      {members.map((person) => (
+      {members.map((person, index) => (
         <li key={person.id}>
-          <BuilderCard person={person} />
+          <BuilderCard person={person} index={index} />
         </li>
       ))}
     </ul>
