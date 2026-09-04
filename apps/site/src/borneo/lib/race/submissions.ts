@@ -156,6 +156,17 @@ export async function listAllRaceSubmissionsForAdmin(): Promise<AdminRaceSubmiss
 export const SEED_RACE_FEED: Omit<RaceFeedItem, "id">[] = [
   {
     taskId: "race-landed-in-kuching",
+    threadUrl: "https://x.com/hanstmy/status/2095499835495600142",
+    submittedAt: "2026-09-04T07:15:00.000Z",
+    taskTitle: "Landed in Kuching",
+    taskNumber: 1,
+    submitterId: "seed-han",
+    submitterName: "Han",
+    teamSlug: null,
+    teamName: null,
+  },
+  {
+    taskId: "race-landed-in-kuching",
     threadUrl: "https://x.com/nikkideyy/status/2095386028551065890",
     submittedAt: "2026-09-04T06:00:00.000Z",
     taskTitle: "Landed in Kuching",
