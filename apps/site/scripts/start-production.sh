@@ -15,6 +15,8 @@ echo "[startup] migrate"
 npm run borneo:db:migrate
 echo "[startup] import guests"
 npm run borneo:db:import-guests
+echo "[startup] patch telegram handles"
+npm run borneo:db:patch-telegram-handles || echo "[startup] telegram patch skipped"
 echo "[startup] seed teams"
 npm run borneo:db:seed-teams
 echo "[startup] seed staff"
