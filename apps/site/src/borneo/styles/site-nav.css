@@ -271,6 +271,19 @@
   gap: 4rem;
 }
 
+.site-main--directory {
+  max-width: none;
+  padding-top: 1.5rem;
+  padding-bottom: 4rem;
+}
+
+@media (min-width: 768px) {
+  .site-main--directory {
+    padding-top: 2rem;
+    padding-bottom: 5rem;
+  }
+}
+
 @media (min-width: 768px) {
   .site-main--stack {
     gap: 5rem;

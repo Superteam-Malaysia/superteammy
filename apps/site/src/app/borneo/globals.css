@@ -28,6 +28,11 @@
   --font-sans: var(--font-archivo);
   --font-display: var(--font-orbitron);
   --font-mono: var(--font-orbitron);
+  --color-surface: #1a1a2e;
+  --color-muted: #a0a0b0;
+  --color-muted-dark: #64748b;
+  --color-solana-purple: #9945ff;
+  --color-solana-green: #14f195;
 }
 
 @keyframes accordion-slide-down {
