@@ -5,6 +5,25 @@ import type { PublicMentor, PublicMentorWorkshop } from "@borneo/lib/mentors/typ
 
 export type { PublicMentor, PublicMentorWorkshop } from "@borneo/lib/mentors/types";
 
+/** Organizers / mentors shown in the directory but not tied to a workshop slot. */
+const STANDALONE_MENTORS: PublicMentor[] = [
+  {
+    id: "semi",
+    name: "Semi",
+    organization: "Superteam Malaysia",
+    isWorkshopLeader: false,
+    isJudge: false,
+    judgeRole: null,
+    workshops: [],
+    avatar: null,
+    twitter: "semiii",
+    linkedin: null,
+    telegram: "semi_infiknight",
+    email: "semi@sendarcade.fun",
+    initials: participantInitials("Semi"),
+  },
+];
+
 /** Extra contact / directory fields not in the speakers schedule export. */
 const MENTOR_CONTACT: Record<
   string,
@@ -134,6 +153,11 @@ export function getPublicMentors(): PublicMentor[] {
       email: contact?.email ?? null,
       initials: participantInitials(judge.name),
     });
+  }
+
+  for (const mentor of STANDALONE_MENTORS) {
+    if (byId.has(mentor.id)) continue;
+    byId.set(mentor.id, mentor);
   }
 
   for (const mentor of byId.values()) {
