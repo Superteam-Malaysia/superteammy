@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { RacePageContent } from "@borneo/components/race";
 import { getParticipantForSession } from "@borneo/lib/auth/participant";
-import { isOrganizer } from "@borneo/lib/auth/organizer";
 import {
   listParticipantRaceSubmissions,
   listParticipantTeams,
@@ -49,7 +48,6 @@ export default async function AmazingRacePage() {
     <main className="site-main site-main--stack race-page-main">
       <RacePageContent
         isSignedIn={!!participant}
-        isOrganizer={participant ? isOrganizer(participant) : false}
         initialFeed={feed}
         initialGroup={initialGroup}
         submission={submission}

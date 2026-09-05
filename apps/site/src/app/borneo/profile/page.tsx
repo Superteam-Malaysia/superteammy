@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { SectionArticle, SectionIntro } from "@borneo/components/ui";
 import { LogoutButton } from "@borneo/components/auth/LogoutButton";
 import { ProfileEditForm } from "@borneo/components/profile/ProfileEditForm";
+import { ProfileAdminLinks } from "@borneo/components/profile/ProfileAdminLinks";
 import { ProfileTeamsPanel } from "@borneo/components/profile/ProfileTeamsPanel";
 import { requireParticipant } from "@borneo/lib/auth/participant";
+import { isOrganizer } from "@borneo/lib/auth/organizer";
 import { getPublicParticipantsByIds } from "@borneo/lib/participants/public-directory";
 import { participantInitials } from "@borneo/lib/participants/team-categories";
 import { participantToProfileForm } from "@borneo/lib/profile/form";
@@ -59,7 +61,8 @@ export default async function ProfilePage() {
             />
           </div>
 
-          <div className="mt-10 flex flex-wrap gap-4">
+          <div className="mt-10 flex flex-wrap items-center gap-4">
+            {isOrganizer(participant) ? <ProfileAdminLinks /> : null}
             <LogoutButton />
           </div>
         </SectionArticle>

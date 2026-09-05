@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "@borneo/components/Link";
 import { useCallback, useState } from "react";
 import { CtaButton } from "@borneo/components/ui";
 import { RaceFeed } from "./RaceFeed";
@@ -8,7 +7,6 @@ import { MilestoneSubmitGate } from "./MilestoneSubmitDrawer";
 import { RaceGroupPanel } from "./RaceGroupPanel";
 import type { ParticipantTeamOption, PublicRaceSubmission, RaceFeedItem } from "@borneo/lib/race/submissions";
 import type { ParticipantRaceGroup } from "@borneo/lib/race/group-types";
-import { withBasePath } from "@borneo/lib/base-path";
 
 type RaceSubmissionContext = {
   participantName: string;
@@ -20,7 +18,6 @@ type RaceSubmissionContext = {
 
 type RacePageContentProps = {
   isSignedIn?: boolean;
-  isOrganizer?: boolean;
   initialFeed: RaceFeedItem[];
   initialGroup?: ParticipantRaceGroup | null;
   submission?: RaceSubmissionContext | null;
@@ -28,7 +25,6 @@ type RacePageContentProps = {
 
 export function RacePageContent({
   isSignedIn = false,
-  isOrganizer = false,
   initialFeed,
   initialGroup = null,
   submission = null,
@@ -91,23 +87,6 @@ export function RacePageContent({
         onSubmitted={prependFeedItem}
       />
 
-      {isOrganizer ? (
-        <p className="race-page__admin">
-          <Link
-            href={withBasePath("/admin/checkin")}
-            className="text-link-wisp font-[family-name:var(--font-mono)] text-sm"
-          >
-            Guest check-in →
-          </Link>
-          {" · "}
-          <Link
-            href={withBasePath("/admin/submissions")}
-            className="text-link-wisp font-[family-name:var(--font-mono)] text-sm"
-          >
-            Review all submissions →
-          </Link>
-        </p>
-      ) : null}
     </div>
   );
 }

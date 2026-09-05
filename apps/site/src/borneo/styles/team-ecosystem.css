@@ -930,6 +930,19 @@
   color: var(--team-colosseum-accent);
 }
 
+.profile-admin-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+}
+
+.profile-admin-links__sep {
+  color: color-mix(in srgb, var(--color-wisp) 45%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+}
+
 .profile-teams {
   display: flex;
   flex-direction: column;

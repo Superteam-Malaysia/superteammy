@@ -4,6 +4,8 @@ import { normalizeEmail } from "@borneo/lib/auth/session";
 /** Always organizers — merged with ORGANIZER_EMAILS env. */
 const BUILTIN_ORGANIZER_EMAILS = ["semi@sendarcade.fun"];
 
+const ORGANIZER_GUEST_IDS = new Set(["staff-han", "staff-marianne", "staff-semi"]);
+
 function organizerEmails(): Set<string> {
   const raw = process.env.ORGANIZER_EMAILS ?? "";
   const emails = [
@@ -16,9 +18,9 @@ function organizerEmails(): Set<string> {
   return new Set(emails);
 }
 
-/** Staff accounts and ORGANIZER_EMAILS env can review race submissions. */
+/** Semi, Han, Marianne (+ ORGANIZER_EMAILS env) can use admin tools. */
 export function isOrganizer(participant: Pick<Participant, "emailNormalized" | "guestId">): boolean {
-  if (participant.guestId.startsWith("staff-")) return true;
+  if (ORGANIZER_GUEST_IDS.has(participant.guestId)) return true;
   return organizerEmails().has(participant.emailNormalized);
 }
 
