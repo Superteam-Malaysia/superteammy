@@ -19,6 +19,7 @@
     "bootstrap:admin": "tsx scripts/bootstrap-super-admin.ts",
     "borneo:generate-ics": "tsx scripts/borneo/generate-schedule-ics.ts",
     "borneo:db:migrate": "tsx scripts/borneo/migrate.ts",
+    "borneo:db:migrate-race-task-ids": "tsx scripts/borneo/migrate-race-task-ids.ts",
     "borneo:db:import-guests": "tsx scripts/borneo/import-guests.ts",
     "borneo:db:seed-teams": "tsx scripts/borneo/seed-teams.ts",
     "borneo:db:seed-race-submissions": "tsx scripts/borneo/seed-race-submissions.ts",
