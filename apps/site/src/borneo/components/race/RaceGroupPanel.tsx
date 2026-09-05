@@ -169,7 +169,8 @@ export function RaceGroupPanel({
                 </option>
                 {joinOptions.map((number) => {
                   const summary = group.groups.find((item) => item.number === number);
-                  const count = summary?.memberCount ?? 0;
+                  if (!summary?.leaderName) return null;
+                  const count = summary.memberCount;
                   const label = raceTeamLabel(summary.leaderName)!;
                   return (
                     <option key={number} value={number}>

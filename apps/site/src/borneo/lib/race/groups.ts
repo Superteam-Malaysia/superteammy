@@ -70,16 +70,6 @@ async function countGroupMembers(db: ReturnType<typeof getDb>, raceTeamId: strin
   return row?.count ?? 0;
 }
 
-async function groupHasLeader(db: ReturnType<typeof getDb>, raceTeamId: string): Promise<boolean> {
-  const [row] = await db
-    .select({ id: participants.id })
-    .from(participants)
-    .where(and(eq(participants.raceTeamId, raceTeamId), eq(participants.amazingRaceLeader, true)))
-    .limit(1);
-
-  return Boolean(row);
-}
-
 async function groupLeaderName(
   db: ReturnType<typeof getDb>,
   raceTeamId: string,
