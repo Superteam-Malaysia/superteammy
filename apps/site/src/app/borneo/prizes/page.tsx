@@ -1,7 +1,9 @@
 import { ActionCard, CtaButton, SectionArticle, SectionIntro } from "@borneo/components/ui";
 import { JudgesPanel } from "@borneo/components/prizes";
 import { PageHeader } from "@borneo/components/shell";
+import { METEORA_CHALLENGE } from "@borneo/data/meteora-challenge";
 import { PRIZE_ROWS, PRIZE_TOTAL } from "@borneo/data/prizes";
+import { REDOTPAY_QUIZ } from "@borneo/data/redotpay-quiz";
 import { CONTENT_AWARD, SUSTAINABILITY_TRACK } from "@borneo/data/tracks";
 import { pageMetadata } from "@borneo/lib/metadata";
 
@@ -40,7 +42,7 @@ export default function PrizesPage() {
         </table>
         <div className="mt-16">
           <h3 className="text-label">Program tracks</h3>
-          <ul className="mt-8 grid gap-6 md:grid-cols-3 list-none">
+          <ul className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3 list-none">
             <li>
               <ActionCard
                 tone="azure"
@@ -64,6 +66,22 @@ export default function PrizesPage() {
                 title="Amazing Race"
                 description="2×$500"
                 cta={{ label: "Race tasks", href: "/amazing-race" }}
+              />
+            </li>
+            <li>
+              <ActionCard
+                tone="azure"
+                title="Meteora challenge"
+                description={`${METEORA_CHALLENGE.prize} · $25 match, best PnL`}
+                cta={{ label: "Challenge details", href: "/meteora" }}
+              />
+            </li>
+            <li>
+              <ActionCard
+                tone="mint"
+                title="RedotPay Card Quiz"
+                description={`${REDOTPAY_QUIZ.prize} · 2 questions/day`}
+                cta={{ label: "Take the quiz", href: "/redotpay" }}
               />
             </li>
           </ul>
