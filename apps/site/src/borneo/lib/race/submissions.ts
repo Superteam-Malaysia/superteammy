@@ -1,7 +1,7 @@
 import { desc, eq } from "drizzle-orm";
 import { getDb } from "@borneo/lib/db";
 import { participants, raceSubmissions, teamMembers, teams } from "@borneo/lib/db/schema";
-import { getRaceTask, raceThreadUrlsMatch } from "@borneo/lib/race/validation";
+import { getRaceTask, raceThreadUrlsMatch, extractTweetIdFromUrl } from "@borneo/lib/race/validation";
 
 export type PublicRaceSubmission = {
   id: string;
@@ -196,18 +196,18 @@ export const SEED_RACE_FEED: Omit<RaceFeedItem, "id">[] = [
     teamSlug: null,
     teamName: null,
   },
-  {
-    taskId: "race-landed-in-kuching",
-    threadUrl: "https://x.com/nikkideyy/status/2095386028551065890",
-    submittedAt: "2026-09-04T06:00:00.000Z",
-    taskTitle: "Landed in Kuching",
-    taskNumber: 1,
-    submitterId: "seed-nikki",
-    submitterName: "Nikki",
-    teamSlug: null,
-    teamName: null,
-  },
 ];
+
+function dedupeRaceFeedByThread(items: RaceFeedItem[]): RaceFeedItem[] {
+  const seen = new Set<string>();
+  return items.filter((item) => {
+    const tweetId = extractTweetIdFromUrl(item.threadUrl);
+    const key = tweetId ?? `${item.submitterId}:${item.taskId}:${item.threadUrl}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
 
 export async function listPublicRaceFeed(): Promise<RaceFeedItem[]> {
   const seedItems: RaceFeedItem[] = SEED_RACE_FEED.map((seed) => ({
@@ -250,15 +250,18 @@ export async function listPublicRaceFeed(): Promise<RaceFeedItem[]> {
     const mergedSeeds = seedItems.filter(
       (seed) =>
         !dbItems.some(
-          (row) => row.submitterId === seed.submitterId && row.taskId === seed.taskId,
+          (row) =>
+            row.taskId === seed.taskId &&
+            (row.submitterId === seed.submitterId ||
+              raceThreadUrlsMatch(row.threadUrl, seed.threadUrl)),
         ),
     );
 
-    return [...dbItems, ...mergedSeeds].sort(
+    return dedupeRaceFeedByThread([...dbItems, ...mergedSeeds]).sort(
       (a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime(),
     );
   } catch {
-    return seedItems.sort(
+    return dedupeRaceFeedByThread(seedItems).sort(
       (a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime(),
     );
   }
