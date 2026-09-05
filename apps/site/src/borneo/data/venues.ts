@@ -133,9 +133,12 @@ export const VENUE_DAY_PLAN: VenueDayPlan[] = [
 
 export const WATERFRONT_RACE_STATIONS: WaterfrontStation[] = [
   { id: "race-word-sign", name: "Kuching Word Sign", points: "4 pts", href: "/amazing-race#race-word-sign" },
-  { id: "race-sampan-ride", name: "Waterfront sampan ride", points: "8 pts", href: "/amazing-race#race-sampan-ride" },
-  { id: "race-flagpole-lean", name: "Lean on the flagpole", points: "2 pts", href: "/amazing-race#race-flagpole-lean" },
-  { id: "race-flagpole-group", name: "Group under the flagpole", points: "3 pts", href: "/amazing-race#race-flagpole-group" },
+  {
+    id: "race-kuching-waterfront",
+    name: "Kuching Waterfront",
+    points: "max 8 pts",
+    href: "/amazing-race#race-kuching-waterfront",
+  },
   { id: "race-darul-hana-bridge", name: "Darul Hana Bridge", points: "3 pts", href: "/amazing-race#race-darul-hana-bridge" },
   { id: "race-old-court-house", name: "Old Court House", points: "3 pts", href: "/amazing-race#race-old-court-house" },
 ];

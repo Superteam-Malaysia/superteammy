@@ -1,6 +1,5 @@
 /**
- * Amazing Race task catalog — sourced from the official Startup Village Borneo agenda
- * (see docs/blueprint/01-event-context.md).
+ * Amazing Race task catalog — 16 milestones from the official Startup Village Borneo agenda.
  */
 
 export type TaskCategory = "content" | "race" | "wallet";
@@ -29,21 +28,21 @@ export const RACE_CUTOFF = {
   iso: "2026-09-08T18:00:00+08:00",
 } as const;
 
+/** Milestones #1–#2 — individual X posts (Content Award). */
 export const CONTENT_TASKS: RaceTask[] = [
   {
-    id: "content-first-impressions",
+    id: "race-landed-in-kuching",
     number: 1,
-    title: "First impressions of Kuching",
+    title: "Landed in Kuching",
     shortDescription:
-      "Share your team's first take on the city — video or collage on X before the opening day wraps.",
+      "Video or picture collage on X — due 6 September. Tag @superteamMY, @solana, and @socoe_s.",
     details: [
-      "Each team member posts individually; each qualifying post earns 10 points for the team.",
-      "Tag @superteamMY, @solana, and @socoe_s on every post.",
-      "Due by 6 September 2026 — capture arrival energy, street scenes, or first bites.",
-      "Quality over polish — authentic reactions beat produced reels.",
+      "Can be a video or a picture collage and post on X!",
+      "Due by 6 September 2026.",
+      "Tag @superteamMY, @solana, and @socoe_s.",
     ],
     pointsBase: 10,
-    pointsNote: "10 pts per qualifying member post",
+    pointsNote: "10 pts",
     category: "content",
     theme: "content",
     deadline: "6 Sept 2026",
@@ -51,14 +50,13 @@ export const CONTENT_TASKS: RaceTask[] = [
   {
     id: "content-overall-impressions",
     number: 2,
-    title: "Overall impressions",
+    title: "Overall impressions of Kuching and Startup Village Borneo",
     shortDescription:
-      "Reflect on the full SVB week — a final video or collage posted after Demo Day.",
+      "Video or picture collage on X — due 10 September. Tag @superteamMY, @solana, and @socoe_s.",
     details: [
-      "Posted on 10 September 2026 with the same partner tags: @superteamMY, @solana, @socoe_s.",
-      "No race points — submissions count toward the Content Award ($100 × 10 prizes).",
-      "Show what you built, who you met, and what Kuching meant to your team.",
-      "Judged remotely within 24 hours after the event.",
+      "Can be a video or a picture collage and post on X!",
+      "Due on 10 September 2026.",
+      "Tag @superteamMY, @solana, and @socoe_s.",
     ],
     pointsBase: 0,
     pointsNote: "Content Award — no race points",
@@ -68,6 +66,7 @@ export const CONTENT_TASKS: RaceTask[] = [
   },
 ];
 
+/** Milestones #3–#16 — race stations. */
 export const RACE_TASKS: RaceTask[] = [
   {
     id: "race-bourdain",
@@ -103,8 +102,8 @@ export const RACE_TASKS: RaceTask[] = [
     title: "Sam's ice cream",
     shortDescription: "Photo eating ice cream and name the flavour of the day.",
     details: [
-      "Try different flavoured ice cream.",
-      "Take a picture eating, and tell us what's the flavour of the day.",
+      "Try different flavored ice cream.",
+      "Take a picture eating, and tell us what's the flavor of the day.",
     ],
     pointsBase: 3,
     category: "race",
@@ -114,11 +113,10 @@ export const RACE_TASKS: RaceTask[] = [
   {
     id: "race-ceylonese-naan",
     number: 6,
-    title: "Ceylonese cheese naan",
-    shortDescription:
-      "Visit the Ceylonese restaurant and film the longest cheese pull in town.",
+    title: "Ceylonese restaurant",
+    shortDescription: 'Try the "Best cheese naan in town" and film the longest cheese pull.',
     details: [
-      "Try the \"Best cheese naan in town\".",
+      'Try the "Best cheese naan in town".',
       "Record yourself stretching the cheese as long as possible — extra points for the longest cheese pull.",
     ],
     pointsBase: 4,
@@ -137,25 +135,70 @@ export const RACE_TASKS: RaceTask[] = [
     ],
     pointsBase: 2,
     pointsMax: 10,
-    pointsNote: "2 points + 1 bonus per additional cat statue",
+    pointsNote: "2 pts + 1 bonus per additional cat statue",
     category: "race",
     theme: "culture",
     location: "Cat statues, Kuching",
   },
   {
+    id: "race-word-sign",
+    number: 8,
+    title: "Kuching Word Sign",
+    shortDescription: "Creative team photo at the waterfront KUCHING letter sign.",
+    details: [
+      "Search for the Kuching Word Sign at the Waterfront area.",
+      "Take a picture in front of it in the most creative way.",
+    ],
+    pointsBase: 4,
+    category: "race",
+    theme: "waterfront",
+    location: "Kuching Waterfront",
+  },
+  {
     id: "race-carpenter-street",
     number: 9,
-    title: "Carpenter Street murals",
+    title: "Carpenter Street",
     shortDescription: "Three unique murals, three photos — one point each.",
     details: [
       "Explore Carpenter Street and take a picture with 3 unique murals.",
     ],
     pointsBase: 1,
     pointsMax: 3,
-    pointsNote: "3 points — 1 per mural",
+    pointsNote: "3 pts — 1 per mural",
     category: "race",
     theme: "culture",
     location: "Carpenter Street",
+  },
+  {
+    id: "race-kuching-waterfront",
+    number: 10,
+    title: "Kuching Waterfront",
+    shortDescription: "Pick at least one waterfront activity — max 8 points from this station.",
+    details: [
+      "Pick at least one, and max 8 points from this station.",
+      "Take a sampan over to the Astana or Fort Margherita side. Film the ride. [8 points]",
+      "Take a photo \"leaning\" against the giant flagpole. [2 points]",
+      "Take a group picture under the giant flagpole. [3 points]",
+    ],
+    pointsBase: 2,
+    pointsMax: 8,
+    pointsNote: "Pick at least 1 — max 8 pts from this station",
+    category: "race",
+    theme: "waterfront",
+    location: "Kuching Waterfront",
+  },
+  {
+    id: "race-darul-hana-bridge",
+    number: 11,
+    title: "Darul Hana bridge",
+    shortDescription: "Best mid-span team photo on the golden bridge.",
+    details: [
+      "Cross on foot, take your best photo mid-span.",
+    ],
+    pointsBase: 3,
+    category: "race",
+    theme: "waterfront",
+    location: "Darul Hana Bridge",
   },
   {
     id: "race-old-court-house",
@@ -173,7 +216,7 @@ export const RACE_TASKS: RaceTask[] = [
   {
     id: "race-brookes-dockyard",
     number: 13,
-    title: "Brooke's Dockyard Heritage Museum",
+    title: "Brooke's Dockyard Industrial Heritage Museum",
     shortDescription: "Team photo with the biggest anchor on display.",
     details: [
       "Take a picture with the biggest anchor you can find.",
@@ -186,85 +229,16 @@ export const RACE_TASKS: RaceTask[] = [
   {
     id: "race-traditional-attire",
     number: 14,
-    title: "Traditional Sarawakian attire",
+    title: "Traditional attire",
     shortDescription: "Photograph five distinct Sarawakian outfits — one point each.",
     details: [
       "Photograph five different Sarawakian traditional outfits in the waterfront shops.",
     ],
     pointsBase: 1,
     pointsMax: 5,
-    pointsNote: "5 points — 1 per attire",
+    pointsNote: "5 pts — 1 per attire",
     category: "race",
     theme: "culture",
-  },
-  {
-    id: "race-word-sign",
-    number: 8,
-    title: "Kuching Word Sign",
-    shortDescription: "Creative team photo at the waterfront KUCHING letter sign.",
-    details: [
-      "Search for the Kuching Word Sign at the Waterfront area.",
-      "Take a picture in front of it in the most creative way.",
-    ],
-    pointsBase: 4,
-    category: "race",
-    theme: "waterfront",
-    location: "Kuching Waterfront",
-  },
-  {
-    id: "race-sampan-ride",
-    number: 10,
-    title: "Waterfront sampan ride",
-    shortDescription: "Film your team on a sampan ride along the Sarawak River.",
-    details: [
-      "Kuching Waterfront — pick at least one waterfront task; max 8 points total from this station.",
-      "Take a sampan over to the Astana or Fort Margherita side. Film the ride.",
-    ],
-    pointsBase: 8,
-    category: "race",
-    theme: "waterfront",
-    location: "Kuching Waterfront",
-  },
-  {
-    id: "race-flagpole-lean",
-    number: 10,
-    title: "Lean on the flagpole",
-    shortDescription: "Team photo leaning on the waterfront flagpole.",
-    details: [
-      "Kuching Waterfront — pick at least one waterfront task; max 8 points total from this station.",
-      "Take a photo \"leaning\" against the giant flagpole.",
-    ],
-    pointsBase: 2,
-    category: "race",
-    theme: "waterfront",
-    location: "Kuching Waterfront",
-  },
-  {
-    id: "race-flagpole-group",
-    number: 10,
-    title: "Group photo under the flagpole",
-    shortDescription: "Full team grouped under the waterfront flagpole.",
-    details: [
-      "Kuching Waterfront — pick at least one waterfront task; max 8 points total from this station.",
-      "Take a group picture under the giant flagpole.",
-    ],
-    pointsBase: 3,
-    category: "race",
-    theme: "waterfront",
-    location: "Kuching Waterfront",
-  },
-  {
-    id: "race-darul-hana-bridge",
-    number: 11,
-    title: "Darul Hana Bridge",
-    shortDescription: "Best mid-span team photo on the golden bridge.",
-    details: [
-      "Cross on foot, take your best photo mid-span.",
-    ],
-    pointsBase: 3,
-    category: "race",
-    theme: "waterfront",
-    location: "Darul Hana Bridge",
   },
   {
     id: "race-onboard-user",
@@ -285,7 +259,7 @@ export const RACE_TASKS: RaceTask[] = [
     number: 16,
     title: "Photobooth",
     shortDescription:
-      "Team photo at the Superteam MY x Solana x SOCOE photobooth at Voco — Day 2 only.",
+      "Team photo at the Superteam MY x Solana x SOCOE photobooth at Voco — 6 Sept.",
     details: [
       "Take a picture at the Superteam MY × Solana × SOCOE photobooth at VOCO hotel on 6 Sept.",
     ],
@@ -299,7 +273,7 @@ export const RACE_TASKS: RaceTask[] = [
 
 export const ALL_TASKS: RaceTask[] = [...CONTENT_TASKS, ...RACE_TASKS];
 
-/** Full milestone list for the submit drawer — content posts first, then race stations. */
+/** Exactly 16 milestones for the submit drawer — content posts first, then race stations. */
 export const MILESTONE_SUBMIT_TASKS: RaceTask[] = [...CONTENT_TASKS, ...RACE_TASKS].sort(
   (a, b) => a.number - b.number,
 );

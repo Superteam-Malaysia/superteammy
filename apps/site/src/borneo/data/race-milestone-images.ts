@@ -19,6 +19,7 @@ const RACE_MILESTONE_IMAGES: Record<string, string> = {
   "race-brookes-dockyard": milestoneAsset("race-brookes-dockyard.jpg"),
   "race-traditional-attire": milestoneAsset("race-traditional-attire.jpg"),
   "race-word-sign": milestoneAsset("race-word-sign.jpg"),
+  "race-kuching-waterfront": milestoneAsset("race-sampan-ride.jpg"),
   "race-sampan-ride": milestoneAsset("race-sampan-ride.jpg"),
   "race-flagpole-lean": milestoneAsset("race-flagpole-lean.jpg"),
   "race-flagpole-group": milestoneAsset("race-flagpole-group.jpg"),

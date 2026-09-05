@@ -8,17 +8,59 @@ import {
 
 const THREAD_HOSTS = new Set(["twitter.com", "x.com", "www.twitter.com", "mobile.twitter.com"]);
 
-/** Retired milestone ids — still resolve for early feed rows and link updates. */
+/**
+ * Retired milestone ids — still resolve for existing feed rows and link updates.
+ * Waterfront was split into one station; early posts used per-activity ids.
+ */
 const RETIRED_RACE_TASKS: RaceTask[] = [
   {
-    id: "race-landed-in-kuching",
+    id: "content-first-impressions",
     number: 1,
-    title: "First impressions of Kuching",
+    title: "Landed in Kuching",
     shortDescription: "Individual content post — see Content Award.",
     details: [],
     pointsBase: 10,
     category: "content",
     theme: "content",
+  },
+  {
+    id: "race-sampan-ride",
+    number: 10,
+    title: "Waterfront sampan ride",
+    shortDescription: "Film your team on a sampan ride along the Sarawak River.",
+    details: [
+      "Take a sampan over to the Astana or Fort Margherita side. Film the ride.",
+    ],
+    pointsBase: 8,
+    category: "race",
+    theme: "waterfront",
+    location: "Kuching Waterfront",
+  },
+  {
+    id: "race-flagpole-lean",
+    number: 10,
+    title: "Lean on the flagpole",
+    shortDescription: "Team photo leaning on the waterfront flagpole.",
+    details: [
+      "Take a photo \"leaning\" against the giant flagpole.",
+    ],
+    pointsBase: 2,
+    category: "race",
+    theme: "waterfront",
+    location: "Kuching Waterfront",
+  },
+  {
+    id: "race-flagpole-group",
+    number: 10,
+    title: "Group photo under the flagpole",
+    shortDescription: "Full team grouped under the waterfront flagpole.",
+    details: [
+      "Take a group picture under the giant flagpole.",
+    ],
+    pointsBase: 3,
+    category: "race",
+    theme: "waterfront",
+    location: "Kuching Waterfront",
   },
 ];
 
