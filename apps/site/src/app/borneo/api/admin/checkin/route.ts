@@ -52,24 +52,38 @@ export async function PATCH(request: Request) {
     typeof body === "object" && body && "raceTeamId" in body
       ? (body as { raceTeamId: unknown }).raceTeamId
       : undefined;
+  const groupNumber =
+    typeof body === "object" && body && "groupNumber" in body
+      ? (body as { groupNumber: unknown }).groupNumber
+      : undefined;
 
   if (!participantId) {
     return NextResponse.json({ error: "participantId is required" }, { status: 400 });
   }
 
   const hasRaceTeamUpdate = raceTeamId !== undefined;
+  const hasGroupNumberUpdate = groupNumber !== undefined;
   const normalizedRaceTeamId =
     raceTeamId === null || raceTeamId === ""
       ? null
       : typeof raceTeamId === "string"
         ? raceTeamId
         : undefined;
+  const normalizedGroupNumber =
+    groupNumber === null || groupNumber === ""
+      ? null
+      : typeof groupNumber === "number"
+        ? groupNumber
+        : typeof groupNumber === "string" && groupNumber.trim()
+          ? Number.parseInt(groupNumber, 10)
+          : undefined;
 
   if (
     typeof checkedIn !== "boolean" &&
     typeof merchReceived !== "boolean" &&
     typeof amazingRaceLeader !== "boolean" &&
-    !hasRaceTeamUpdate
+    !hasRaceTeamUpdate &&
+    !hasGroupNumberUpdate
   ) {
     return NextResponse.json(
       { error: "No checklist updates provided" },
@@ -81,12 +95,21 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "raceTeamId must be a string or null" }, { status: 400 });
   }
 
+  if (
+    hasGroupNumberUpdate &&
+    normalizedGroupNumber !== null &&
+    (normalizedGroupNumber === undefined || !Number.isFinite(normalizedGroupNumber) || normalizedGroupNumber < 1)
+  ) {
+    return NextResponse.json({ error: "groupNumber must be a positive integer or null" }, { status: 400 });
+  }
+
   try {
     const guests = await updateGuestChecklist(participantId, {
       ...(typeof checkedIn === "boolean" ? { checkedIn } : {}),
       ...(typeof merchReceived === "boolean" ? { merchReceived } : {}),
       ...(typeof amazingRaceLeader === "boolean" ? { amazingRaceLeader } : {}),
       ...(hasRaceTeamUpdate ? { raceTeamId: normalizedRaceTeamId ?? null } : {}),
+      ...(hasGroupNumberUpdate ? { groupNumber: normalizedGroupNumber ?? null } : {}),
     });
 
     const guest = guests.find((row) => row.id === participantId);

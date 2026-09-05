@@ -1,7 +1,8 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { CheckInGuest, RaceTeamOption } from "@borneo/lib/checkin/admin";
+import { parseGroupNumber } from "@borneo/lib/checkin/group-number";
 import { withBasePath } from "@borneo/lib/base-path";
 
 type CheckInFilter =
@@ -14,7 +15,7 @@ type CheckInFilter =
   | "no-race-leader"
   | "all";
 
-type PendingAction = "checkIn" | "merch" | "raceLeader" | "raceTeam";
+type PendingAction = "checkIn" | "merch" | "raceLeader" | "groupNumber";
 
 function formatWhen(iso: string) {
   return new Date(iso).toLocaleString("en-MY", {
@@ -33,7 +34,7 @@ function matchesSearch(guest: CheckInGuest, query: string): boolean {
     guest.ticketName,
     guest.guestId,
     guest.approvalStatus,
-    guest.raceTeam?.name,
+    guest.groupNumber != null ? String(guest.groupNumber) : null,
   ]
     .filter(Boolean)
     .join(" ")
@@ -44,7 +45,7 @@ function matchesSearch(guest: CheckInGuest, query: string): boolean {
 function matchesFilter(
   guest: CheckInGuest,
   filter: CheckInFilter,
-  raceTeamsWithLeader: Set<string>,
+  groupsWithLeader: Set<number>,
 ): boolean {
   const isApproved = guest.approvalStatus === "approved";
   const isCheckedIn = Boolean(guest.checkedInAt);
@@ -67,8 +68,8 @@ function matchesFilter(
     case "no-race-leader":
       return (
         isApproved &&
-        Boolean(guest.raceTeam) &&
-        !raceTeamsWithLeader.has(guest.raceTeam!.id)
+        guest.groupNumber != null &&
+        !groupsWithLeader.has(guest.groupNumber)
       );
     case "all":
       return true;
@@ -94,6 +95,13 @@ function mergeGuests(prev: CheckInGuest[], updated: CheckInGuest[]): CheckInGues
   return [...byId.values()].sort((a, b) => a.name.localeCompare(b.name));
 }
 
+function groupNumbersFromTeams(teams: RaceTeamOption[]): number[] {
+  return teams
+    .map((team) => parseGroupNumber(team.name))
+    .filter((n): n is number => n != null)
+    .sort((a, b) => a - b);
+}
+
 type AdminCheckInClientProps = {
   initialGuests: CheckInGuest[];
   initialRaceTeams: RaceTeamOption[];
@@ -107,8 +115,6 @@ export function AdminCheckInClient({
   const [raceTeams, setRaceTeams] = useState(initialRaceTeams);
   const [filter, setFilter] = useState<CheckInFilter>("approved");
   const [search, setSearch] = useState("");
-  const [newRaceTeamName, setNewRaceTeamName] = useState("");
-  const [creatingTeam, setCreatingTeam] = useState(false);
   const [pending, setPending] = useState<{ id: string; action: PendingAction } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -119,27 +125,46 @@ export function AdminCheckInClient({
     [guests],
   );
 
-  const raceTeamLeaderState = useMemo(() => {
-    const raceTeamsWithLeader = new Set<string>();
-    const allRaceTeamIds = new Set(raceTeams.map((team) => team.id));
+  const existingGroupNumbers = useMemo(() => groupNumbersFromTeams(raceTeams), [raceTeams]);
+
+  const groupLeaderState = useMemo(() => {
+    const groupsWithLeader = new Set<number>();
 
     for (const guest of approvedGuests) {
-      if (guest.amazingRaceLeader && guest.raceTeam) {
-        raceTeamsWithLeader.add(guest.raceTeam.id);
+      if (guest.amazingRaceLeader && guest.groupNumber != null) {
+        groupsWithLeader.add(guest.groupNumber);
       }
     }
 
     return {
-      raceTeamsWithLeader,
-      raceTeamsWithoutLeader: allRaceTeamIds.size - raceTeamsWithLeader.size,
+      groupsWithLeader,
+      groupsWithoutLeader: existingGroupNumbers.filter((n) => !groupsWithLeader.has(n)).length,
     };
-  }, [approvedGuests, raceTeams]);
+  }, [approvedGuests, existingGroupNumbers]);
+
+  const groupPickerOptions = useMemo(() => {
+    const maxExisting = existingGroupNumbers.length ? Math.max(...existingGroupNumbers) : 0;
+    const maxAssigned = approvedGuests.reduce(
+      (max, guest) => (guest.groupNumber != null ? Math.max(max, guest.groupNumber) : max),
+      0,
+    );
+    const ceiling = Math.max(maxExisting, maxAssigned, 1) + 1;
+    return Array.from({ length: ceiling }, (_, i) => i + 1);
+  }, [approvedGuests, existingGroupNumbers]);
+
+  const nextGroupNumber = useMemo(() => {
+    const maxExisting = existingGroupNumbers.length ? Math.max(...existingGroupNumbers) : 0;
+    const maxAssigned = approvedGuests.reduce(
+      (max, guest) => (guest.groupNumber != null ? Math.max(max, guest.groupNumber) : max),
+      0,
+    );
+    return Math.max(maxExisting, maxAssigned, 0) + 1;
+  }, [approvedGuests, existingGroupNumbers]);
 
   const stats = useMemo(() => {
     const checkedIn = approvedGuests.filter((guest) => guest.checkedInAt).length;
     const merchReceived = approvedGuests.filter((guest) => guest.merchReceivedAt).length;
     const raceLeaders = approvedGuests.filter((guest) => guest.amazingRaceLeader).length;
-    const onRaceTeam = approvedGuests.filter((guest) => guest.raceTeam).length;
 
     return {
       approved: approvedGuests.length,
@@ -147,20 +172,34 @@ export function AdminCheckInClient({
       notCheckedIn: approvedGuests.length - checkedIn,
       merchReceived,
       raceLeaders,
-      onRaceTeam,
-      raceTeamsWithoutLeader: raceTeamLeaderState.raceTeamsWithoutLeader,
+      groupsWithoutLeader: groupLeaderState.groupsWithoutLeader,
     };
-  }, [approvedGuests, raceTeamLeaderState.raceTeamsWithoutLeader]);
+  }, [approvedGuests, groupLeaderState.groupsWithoutLeader]);
 
   const visibleGuests = useMemo(
     () =>
       guests.filter(
         (guest) =>
-          matchesFilter(guest, filter, raceTeamLeaderState.raceTeamsWithLeader) &&
+          matchesFilter(guest, filter, groupLeaderState.groupsWithLeader) &&
           matchesSearch(guest, query),
       ),
-    [guests, filter, query, raceTeamLeaderState.raceTeamsWithLeader],
+    [guests, filter, query, groupLeaderState.groupsWithLeader],
   );
+
+  function syncRaceTeamsFromGuests(updated: CheckInGuest[]) {
+    const next = new Map(raceTeams.map((team) => [team.id, team]));
+    for (const guest of updated) {
+      if (guest.raceTeam) {
+        next.set(guest.raceTeam.id, guest.raceTeam);
+      }
+    }
+    const merged = [...next.values()].sort(
+      (a, b) =>
+        (parseGroupNumber(a.name) ?? Number.MAX_SAFE_INTEGER) -
+        (parseGroupNumber(b.name) ?? Number.MAX_SAFE_INTEGER),
+    );
+    setRaceTeams(merged);
+  }
 
   async function patchGuest(
     guest: CheckInGuest,
@@ -169,7 +208,7 @@ export function AdminCheckInClient({
       checkedIn?: boolean;
       merchReceived?: boolean;
       amazingRaceLeader?: boolean;
-      raceTeamId?: string | null;
+      groupNumber?: number | null;
     },
   ) {
     setPending({ id: guest.id, action });
@@ -194,42 +233,11 @@ export function AdminCheckInClient({
 
       const updated = data.guests?.length ? data.guests : [data.guest];
       setGuests((prev) => mergeGuests(prev, updated));
+      syncRaceTeamsFromGuests(updated);
     } catch {
       setError("Could not save.");
     } finally {
       setPending(null);
-    }
-  }
-
-  async function createRaceTeam(event: FormEvent) {
-    event.preventDefault();
-    const name = newRaceTeamName.trim();
-    if (!name) return;
-
-    setCreatingTeam(true);
-    setError(null);
-
-    try {
-      const res = await fetch(withBasePath("/api/admin/race-teams"), {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name }),
-      });
-      const data = (await res.json()) as { error?: string; raceTeam?: RaceTeamOption };
-
-      if (!res.ok || !data.raceTeam) {
-        setError(data.error ?? "Could not create ops group.");
-        return;
-      }
-
-      setRaceTeams((prev) =>
-        [...prev, data.raceTeam!].sort((a, b) => a.name.localeCompare(b.name)),
-      );
-      setNewRaceTeamName("");
-    } catch {
-      setError("Could not create ops group.");
-    } finally {
-      setCreatingTeam(false);
     }
   }
 
@@ -241,36 +249,17 @@ export function AdminCheckInClient({
     void patchGuest(guest, "merch", { merchReceived: !guest.merchReceivedAt });
   }
 
-  function toggleRaceLeader(guest: CheckInGuest) {
+  function toggleGroupLeader(guest: CheckInGuest) {
     void patchGuest(guest, "raceLeader", { amazingRaceLeader: !guest.amazingRaceLeader });
   }
 
-  function assignRaceTeam(guest: CheckInGuest, raceTeamId: string | null) {
-    void patchGuest(guest, "raceTeam", { raceTeamId });
+  function assignGroupNumber(guest: CheckInGuest, raw: string) {
+    const groupNumber = raw ? Number.parseInt(raw, 10) : null;
+    void patchGuest(guest, "groupNumber", { groupNumber });
   }
 
   return (
     <div className="admin-checkin">
-      <form className="admin-checkin__create-team" onSubmit={(event) => void createRaceTeam(event)}>
-        <label className="admin-checkin__create-team-label">
-          <span className="team-form__label">New ops group (internal)</span>
-          <input
-            type="text"
-            value={newRaceTeamName}
-            onChange={(event) => setNewRaceTeamName(event.target.value)}
-            placeholder="e.g. WhatsApp group name — not published on site"
-            className="team-form__input"
-          />
-        </label>
-        <button
-          type="submit"
-          disabled={creatingTeam || !newRaceTeamName.trim()}
-          className="admin-checkin__action admin-checkin__action--race"
-        >
-          {creatingTeam ? "Creating…" : "Create group"}
-        </button>
-      </form>
-
       <div className="admin-checkin__stats admin-checkin__stats--grid">
         <div className="admin-checkin__stat">
           <span className="admin-checkin__stat-value">{stats.checkedIn}</span>
@@ -285,8 +274,8 @@ export function AdminCheckInClient({
           <span className="admin-checkin__stat-label">Group leaders</span>
         </div>
         <div className="admin-checkin__stat">
-          <span className="admin-checkin__stat-value">{stats.onRaceTeam}</span>
-          <span className="admin-checkin__stat-label">In ops groups</span>
+          <span className="admin-checkin__stat-value">{existingGroupNumbers.length}</span>
+          <span className="admin-checkin__stat-label">Groups</span>
         </div>
         <div className="admin-checkin__stat">
           <span className="admin-checkin__stat-value">{stats.approved}</span>
@@ -299,7 +288,7 @@ export function AdminCheckInClient({
           type="search"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search name, email, ops group…"
+          placeholder="Search name, email, group…"
           className="admin-checkin__search team-form__input"
           aria-label="Search guests"
         />
@@ -324,8 +313,8 @@ export function AdminCheckInClient({
       {error ? <p className="team-form__error">{error}</p> : null}
 
       <p className="admin-checkin__count">
-        Showing {visibleGuests.length} guest{visibleGuests.length === 1 ? "" : "s"} · {raceTeams.length} ops group
-        {raceTeams.length === 1 ? "" : "s"} (internal)
+        Showing {visibleGuests.length} guest{visibleGuests.length === 1 ? "" : "s"} ·{" "}
+        {existingGroupNumbers.length} group{existingGroupNumbers.length === 1 ? "" : "s"}
       </p>
 
       {visibleGuests.length === 0 ? (
@@ -336,7 +325,7 @@ export function AdminCheckInClient({
             <thead>
               <tr>
                 <th>Guest</th>
-                <th>Ops group</th>
+                <th>Group</th>
                 <th>Arrival</th>
                 <th>Merch</th>
                 <th>Leader</th>
@@ -351,7 +340,7 @@ export function AdminCheckInClient({
                 const checkInPending = pending?.id === guest.id && pending.action === "checkIn";
                 const merchPending = pending?.id === guest.id && pending.action === "merch";
                 const raceLeaderPending = pending?.id === guest.id && pending.action === "raceLeader";
-                const raceTeamPending = pending?.id === guest.id && pending.action === "raceTeam";
+                const groupNumberPending = pending?.id === guest.id && pending.action === "groupNumber";
 
                 return (
                   <tr key={guest.id} className={checkedIn && merchReceived ? "admin-checkin__row--done" : undefined}>
@@ -368,21 +357,19 @@ export function AdminCheckInClient({
                     <td>
                       <select
                         className="admin-checkin__select team-form__input"
-                        value={guest.raceTeam?.id ?? ""}
+                        value={guest.groupNumber ?? ""}
                         disabled={Boolean(pending)}
-                        onChange={(event) =>
-                          assignRaceTeam(guest, event.target.value ? event.target.value : null)
-                        }
-                        aria-label={`Ops group for ${guest.name}`}
+                        onChange={(event) => assignGroupNumber(guest, event.target.value)}
+                        aria-label={`Group for ${guest.name}`}
                       >
-                        <option value="">Unassigned</option>
-                        {raceTeams.map((team) => (
-                          <option key={team.id} value={team.id}>
-                            {team.name}
+                        <option value="">—</option>
+                        {groupPickerOptions.map((number) => (
+                          <option key={number} value={number}>
+                            {number}
                           </option>
                         ))}
                       </select>
-                      {raceTeamPending ? (
+                      {groupNumberPending ? (
                         <span className="admin-checkin__timestamp">Saving…</span>
                       ) : null}
                     </td>
@@ -416,7 +403,13 @@ export function AdminCheckInClient({
                             : "admin-checkin__badge admin-checkin__badge--out"
                         }
                       >
-                        {isRaceLeader ? "Leader" : guest.raceTeam ? "Member" : "—"}
+                        {isRaceLeader
+                          ? guest.groupNumber != null
+                            ? `Leader · ${guest.groupNumber}`
+                            : "Leader"
+                          : guest.groupNumber != null
+                            ? "Member"
+                            : "—"}
                       </span>
                     </td>
                     <td>
@@ -452,19 +445,23 @@ export function AdminCheckInClient({
                               ? "admin-checkin__action admin-checkin__action--undo"
                               : "admin-checkin__action admin-checkin__action--race"
                           }
-                          disabled={Boolean(pending) || !guest.raceTeam}
-                          onClick={() => toggleRaceLeader(guest)}
+                          disabled={Boolean(pending)}
+                          onClick={() => toggleGroupLeader(guest)}
                           title={
-                            guest.raceTeam
-                              ? "One leader per ops group — internal only"
-                              : "Assign an ops group first"
+                            isRaceLeader
+                              ? "Remove as group leader"
+                              : guest.groupNumber != null
+                                ? `Make leader of group ${guest.groupNumber}`
+                                : "Assign next group number and make leader"
                           }
                         >
                           {raceLeaderPending
                             ? "Saving…"
                             : isRaceLeader
                               ? "Remove leader"
-                              : "Group leader"}
+                              : guest.groupNumber != null
+                                ? "Group leader"
+                                : `Group leader → ${nextGroupNumber}`}
                         </button>
                       </div>
                     </td>

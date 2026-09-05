@@ -5,10 +5,11 @@
 import { and, asc, eq, ne } from "drizzle-orm";
 import { getDb } from "@borneo/lib/db";
 import { participants, raceTeams } from "@borneo/lib/db/schema";
-import { slugifyTeamName } from "@borneo/lib/teams/slug";
+import { parseGroupNumber } from "@borneo/lib/checkin/group-number";
 
 export type RaceTeamOption = {
   id: string;
+  /** Numeric group label, e.g. "1", "2", "3". */
   name: string;
 };
 
@@ -24,6 +25,8 @@ export type CheckInGuest = {
   merchReceivedAt: string | null;
   amazingRaceLeader: boolean;
   raceTeam: RaceTeamOption | null;
+  /** Parsed from race team name — null when unassigned. */
+  groupNumber: number | null;
 };
 
 function displayName(row: {
@@ -67,6 +70,7 @@ function mapRow(row: {
       row.raceTeamId && row.raceTeamName
         ? { id: row.raceTeamId, name: row.raceTeamName }
         : null,
+    groupNumber: parseGroupNumber(row.raceTeamName),
   };
 }
 
@@ -93,45 +97,51 @@ export async function listRaceTeams(): Promise<RaceTeamOption[]> {
   const db = getDb();
   const rows = await db
     .select({ id: raceTeams.id, name: raceTeams.name })
+    .from(raceTeams);
+
+  return rows.sort(
+    (a, b) => (parseGroupNumber(a.name) ?? Number.MAX_SAFE_INTEGER) - (parseGroupNumber(b.name) ?? Number.MAX_SAFE_INTEGER),
+  );
+}
+
+async function getOrCreateGroupByNumber(
+  db: ReturnType<typeof getDb>,
+  number: number,
+): Promise<RaceTeamOption> {
+  if (!Number.isFinite(number) || number < 1) {
+    throw new Error("Group number must be a positive integer.");
+  }
+
+  const name = String(number);
+  const [existing] = await db
+    .select({ id: raceTeams.id, name: raceTeams.name })
     .from(raceTeams)
-    .orderBy(asc(raceTeams.name));
+    .where(eq(raceTeams.name, name))
+    .limit(1);
+  if (existing) return existing;
 
-  return rows;
-}
-
-async function uniqueRaceTeamSlug(db: ReturnType<typeof getDb>, name: string): Promise<string> {
-  const base = slugifyTeamName(name) || "race-team";
-  let slug = base;
-  let attempt = 0;
-
-  while (attempt < 20) {
-    const [existing] = await db
-      .select({ id: raceTeams.id })
-      .from(raceTeams)
-      .where(eq(raceTeams.slug, slug))
-      .limit(1);
-    if (!existing) return slug;
-    attempt += 1;
-    slug = `${base}-${attempt + 1}`;
-  }
-
-  return `${base}-${Date.now().toString(36)}`;
-}
-
-export async function createRaceTeam(name: string): Promise<RaceTeamOption> {
-  const trimmed = name.trim();
-  if (!trimmed) {
-    throw new Error("Ops group name is required.");
-  }
-
-  const db = getDb();
-  const slug = await uniqueRaceTeamSlug(db, trimmed);
+  const slug = `group-${number}`;
   const [row] = await db
     .insert(raceTeams)
-    .values({ name: trimmed, slug })
+    .values({ name, slug })
     .returning({ id: raceTeams.id, name: raceTeams.name });
 
   return row;
+}
+
+async function getNextGroupNumber(db: ReturnType<typeof getDb>): Promise<number> {
+  const teams = await listRaceTeams();
+  const numbers = teams.map((team) => parseGroupNumber(team.name)).filter((n): n is number => n != null);
+  return numbers.length ? Math.max(...numbers) + 1 : 1;
+}
+
+async function resolveGroupNumberToTeamId(
+  db: ReturnType<typeof getDb>,
+  groupNumber: number | null,
+): Promise<string | null> {
+  if (groupNumber == null) return null;
+  const team = await getOrCreateGroupByNumber(db, groupNumber);
+  return team.id;
 }
 
 export async function listGuestsForCheckIn(): Promise<CheckInGuest[]> {
@@ -168,6 +178,7 @@ export async function updateGuestChecklist(
     merchReceived?: boolean;
     amazingRaceLeader?: boolean;
     raceTeamId?: string | null;
+    groupNumber?: number | null;
   },
 ): Promise<CheckInGuest[]> {
   const db = getDb();
@@ -194,7 +205,15 @@ export async function updateGuestChecklist(
     updatedAt: Date;
   } = { updatedAt: new Date() };
 
-  if (updates.raceTeamId !== undefined) {
+  let resolvedRaceTeamId: string | null | undefined;
+
+  if (updates.groupNumber !== undefined) {
+    resolvedRaceTeamId = await resolveGroupNumberToTeamId(db, updates.groupNumber);
+    patch.raceTeamId = resolvedRaceTeamId;
+    if (resolvedRaceTeamId !== current.raceTeamId) {
+      patch.amazingRaceLeader = false;
+    }
+  } else if (updates.raceTeamId !== undefined) {
     patch.raceTeamId = updates.raceTeamId;
     if (updates.raceTeamId !== current.raceTeamId) {
       patch.amazingRaceLeader = false;
@@ -208,12 +227,19 @@ export async function updateGuestChecklist(
     patch.merchReceivedAt = updates.merchReceived ? new Date() : null;
   }
 
-  const nextRaceTeamId =
-    updates.raceTeamId !== undefined ? updates.raceTeamId : current.raceTeamId;
+  let nextRaceTeamId =
+    resolvedRaceTeamId !== undefined
+      ? resolvedRaceTeamId
+      : updates.raceTeamId !== undefined
+        ? updates.raceTeamId
+        : current.raceTeamId;
 
   if (updates.amazingRaceLeader === true) {
     if (!nextRaceTeamId) {
-      throw new Error("Assign an ops group before marking a leader.");
+      const nextNumber = await getNextGroupNumber(db);
+      const team = await getOrCreateGroupByNumber(db, nextNumber);
+      patch.raceTeamId = team.id;
+      nextRaceTeamId = team.id;
     }
 
     const previousLeaders = await db

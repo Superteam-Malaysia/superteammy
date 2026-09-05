@@ -31,13 +31,13 @@ export default async function AdminCheckInPage() {
     <main className="site-main site-main--stack">
       <PageHeader
         title="Guest check-in"
-        lead="Organizer ops desk — check-in, merch, and internal group assignments. Nothing here is published to the public site."
+        lead="Amazing Race groups are numbered 1, 2, 3… for on-site coordination only. Tap Group leader to assign the next number. Nothing here is published on the public site."
       />
 
       <SectionArticle className="border border-[color:var(--color-transparent-wisp-10)] p-6 md:p-8">
         <SectionIntro
           title={`${checkedIn} / ${approved.length} checked in · ${merchReceived} / ${approved.length} merch · ${raceLeaders} group leaders`}
-          lead="Ops groups are for your WhatsApp / on-site coordination only. They do not appear on Amazing Race, the leaderboard, Teams & Mentors, or guest profiles."
+          lead="Groups are internal — they do not appear on Amazing Race, the leaderboard, Teams & Mentors, or guest profiles."
         />
         <p className="admin-checkin__links">
           <Link href={withBasePath("/admin/submissions")} className="admin-checkin__link">
