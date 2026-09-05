@@ -7,7 +7,7 @@ import { Link2, X } from "lucide-react";
 import type { Profile } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { XIcon, LinkedInIcon, TelegramIcon } from "@/components/icons/SocialIcons";
+import { XIcon, LinkedInIcon, TelegramIcon, GitHubIcon, InstagramIcon } from "@/components/icons/SocialIcons";
 import { useLenisRef } from "@/contexts/LenisContext";
 import { BADGE_PILL_CLASS, BADGE_PILL_FALLBACK, cardGradientFor } from "@/lib/badges";
 
@@ -25,6 +25,50 @@ interface MemberProfileCardProps {
   achievementsLabel?: string;
 }
 
+function ProfileSocialLinks({
+  profile,
+  className,
+}: {
+  profile: Profile;
+  className?: string;
+}) {
+  const linkClass = "text-white/70 hover:text-white transition-colors";
+
+  return (
+    <div className={cn("flex flex-wrap items-center justify-center gap-3", className)}>
+      {profile.twitter_url ? (
+        <a href={profile.twitter_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={linkClass} aria-label="X">
+          <XIcon className="shrink-0" />
+        </a>
+      ) : null}
+      {profile.instagram_url ? (
+        <a href={profile.instagram_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={linkClass} aria-label="Instagram">
+          <InstagramIcon className="shrink-0" />
+        </a>
+      ) : null}
+      {profile.github_url ? (
+        <a href={profile.github_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={linkClass} aria-label="GitHub">
+          <GitHubIcon className="shrink-0" />
+        </a>
+      ) : null}
+      {profile.linkedin_url ? (
+        <a href={profile.linkedin_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={linkClass} aria-label="LinkedIn">
+          <LinkedInIcon className="shrink-0" />
+        </a>
+      ) : null}
+      {profile.telegram_url ? (
+        <a href={profile.telegram_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={linkClass} aria-label="Telegram">
+          <TelegramIcon className="shrink-0" />
+        </a>
+      ) : null}
+      {profile.website_url ? (
+        <a href={profile.website_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={linkClass} aria-label="Website">
+          <Link2 className="w-4 h-4" />
+        </a>
+      ) : null}
+    </div>
+  );
+}
 
 export function MemberProfileCard({
   profile,
@@ -50,6 +94,8 @@ export function MemberProfileCard({
 
   const hasAnyLink =
     profile.twitter_url ||
+    profile.instagram_url ||
+    profile.github_url ||
     profile.linkedin_url ||
     profile.telegram_url ||
     profile.website_url;
@@ -186,28 +232,7 @@ export function MemberProfileCard({
             <div className="w-full h-0.25 bg-white/20" />
             <div className="w-1.5 h-1.5 bg-white/20" />
           </div>
-          <div className="flex items-center justify-center gap-4 mt-auto min-h-[28px]">
-            {profile.twitter_url && (
-              <a href={profile.twitter_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-white/70 hover:text-white transition-colors" aria-label="X">
-                <XIcon className="shrink-0" />
-              </a>
-            )}
-            {profile.linkedin_url && (
-              <a href={profile.linkedin_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-white/70 hover:text-white transition-colors" aria-label="LinkedIn">
-                <LinkedInIcon className="shrink-0" />
-              </a>
-            )}
-            {profile.telegram_url && (
-              <a href={profile.telegram_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-white/70 hover:text-white transition-colors" aria-label="Telegram">
-                <TelegramIcon className="shrink-0" />
-              </a>
-            )}
-            {profile.website_url && (
-              <a href={profile.website_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-white/70 hover:text-white transition-colors" aria-label="Portfolio">
-                <Link2 className="w-4 h-4" />
-              </a>
-            )}
-          </div>
+          <ProfileSocialLinks profile={profile} className="mt-auto min-h-[28px]" />
         </div>
       </div>
     </>
@@ -406,56 +431,7 @@ export function MemberProfileCard({
         </div>
 
         {/* Social links */}
-        <div className="flex items-center justify-center gap-4 mt-auto min-h-[28px]">
-          {profile.twitter_url && (
-            <a
-              href={profile.twitter_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="text-white/70 hover:text-white transition-colors"
-              aria-label="X"
-            >
-              <XIcon className="shrink-0" />
-            </a>
-          )}
-          {profile.linkedin_url && (
-            <a
-              href={profile.linkedin_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="text-white/70 hover:text-white transition-colors"
-              aria-label="LinkedIn"
-            >
-              <LinkedInIcon className="shrink-0" />
-            </a>
-          )}
-          {profile.telegram_url && (
-            <a
-              href={profile.telegram_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="text-white/70 hover:text-white transition-colors"
-              aria-label="Telegram"
-            >
-              <TelegramIcon className="shrink-0" />
-            </a>
-          )}
-          {profile.website_url && (
-            <a
-              href={profile.website_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="text-white/70 hover:text-white transition-colors"
-              aria-label="Portfolio"
-            >
-              <Link2 className="w-4 h-4" />
-            </a>
-          )}
-        </div>
+        <ProfileSocialLinks profile={profile} className="mt-auto min-h-[28px]" />
             </div>
           </div>
 
@@ -564,30 +540,7 @@ export function MemberProfileCard({
 
               {detailLink}
 
-              {hasAnyLink && (
-                <div className="flex items-center justify-center gap-4 mt-auto pt-3">
-                  {profile.twitter_url && (
-                    <a href={profile.twitter_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-white/70 hover:text-white transition-colors" aria-label="X">
-                      <XIcon className="shrink-0" />
-                    </a>
-                  )}
-                  {profile.linkedin_url && (
-                    <a href={profile.linkedin_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-white/70 hover:text-white transition-colors" aria-label="LinkedIn">
-                      <LinkedInIcon className="shrink-0" />
-                    </a>
-                  )}
-                  {profile.telegram_url && (
-                    <a href={profile.telegram_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-white/70 hover:text-white transition-colors" aria-label="Telegram">
-                      <TelegramIcon className="shrink-0" />
-                    </a>
-                  )}
-                  {profile.website_url && (
-                    <a href={profile.website_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-white/70 hover:text-white transition-colors" aria-label="Portfolio">
-                      <Link2 className="w-4 h-4" />
-                    </a>
-                  )}
-                </div>
-              )}
+              {hasAnyLink ? <ProfileSocialLinks profile={profile} className="mt-auto pt-3" /> : null}
 
               <div className="flex justify-center items-center mt-3">
                 <div className="w-1.5 h-1.5 bg-white/20" />

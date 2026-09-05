@@ -13,7 +13,10 @@ export type PublicParticipant = {
   teamCategory: TeamCategory;
   telegram: string | null;
   twitter: string | null;
+  instagram: string | null;
+  github: string | null;
   linkedin: string | null;
+  website: string | null;
   joinedAt: string | null;
   initials: string;
   avatarUrl: string | null;

@@ -30,6 +30,11 @@ type ParticipantRow = {
   teamSetup: string | null;
   telegram: string | null;
   proofOfWork: string | null;
+  twitterUrl: string | null;
+  instagramUrl: string | null;
+  githubUrl: string | null;
+  linkedinUrl: string | null;
+  websiteUrl: string | null;
   lumaCreatedAt: Date | null;
   avatarUrl: string | null;
 };
@@ -42,6 +47,11 @@ function toPublicParticipant(
   const social = builderSocialLinks({
     proofOfWork: row.proofOfWork,
     projectIdea: row.projectIdea,
+    twitterUrl: row.twitterUrl,
+    instagramUrl: row.instagramUrl,
+    githubUrl: row.githubUrl,
+    linkedinUrl: row.linkedinUrl,
+    websiteUrl: row.websiteUrl,
   });
   return {
     id: row.id,
@@ -51,7 +61,10 @@ function toPublicParticipant(
     teamCategory: normalizeTeamCategory(row.teamSetup),
     telegram: row.telegram,
     twitter: social.twitter,
+    instagram: social.instagram,
+    github: social.github,
     linkedin: social.linkedin,
+    website: social.website,
     joinedAt: row.lumaCreatedAt?.toISOString() ?? null,
     initials: participantInitials(name),
     avatarUrl: uploadPublicUrl(row.avatarUrl),
@@ -95,6 +108,11 @@ const participantSelect = {
   teamSetup: participants.teamSetup,
   telegram: participants.telegram,
   proofOfWork: participants.proofOfWork,
+  twitterUrl: participants.twitterUrl,
+  instagramUrl: participants.instagramUrl,
+  githubUrl: participants.githubUrl,
+  linkedinUrl: participants.linkedinUrl,
+  websiteUrl: participants.websiteUrl,
   lumaCreatedAt: participants.lumaCreatedAt,
   avatarUrl: participants.avatarUrl,
 };

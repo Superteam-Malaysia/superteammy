@@ -52,6 +52,11 @@ export const participants = pgTable("participants", {
   passportFirstName: text("passport_first_name"),
   passportLastName: text("passport_last_name"),
   telegram: text("telegram"),
+  twitterUrl: text("twitter_url"),
+  githubUrl: text("github_url"),
+  linkedinUrl: text("linkedin_url"),
+  instagramUrl: text("instagram_url"),
+  websiteUrl: text("website_url"),
   /** `/uploads/…` path, external HTTPS URL, or null. */
   avatarUrl: text("avatar_url"),
   /** Linked Telegram user id after first successful login. */

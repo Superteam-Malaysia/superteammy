@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MemberProfileCard } from "@/components/members/MemberProfileCard";
 import { ImageUploadField } from "@borneo/components/uploads/ImageUploadField";
+import { SocialLinkFields } from "@borneo/components/profile/SocialLinkFields";
 import { profileFormToProfile } from "@borneo/lib/directory/to-profile-card";
 import { withBasePath } from "@borneo/lib/base-path";
 import type { PublicParticipantTeam } from "@borneo/lib/participants/types";
@@ -140,26 +141,7 @@ export function ProfileEditForm({
           />
         </label>
 
-        <div className="profile-form__row">
-          <label className="team-form__field">
-            <span className="team-form__label">Passport / IC first name</span>
-            <input
-              type="text"
-              value={values.passportFirstName}
-              onChange={(e) => update("passportFirstName", e.target.value)}
-              className="team-form__input"
-            />
-          </label>
-          <label className="team-form__field">
-            <span className="team-form__label">Passport / IC last name</span>
-            <input
-              type="text"
-              value={values.passportLastName}
-              onChange={(e) => update("passportLastName", e.target.value)}
-              className="team-form__input"
-            />
-          </label>
-        </div>
+        <SocialLinkFields values={values} onChange={update} />
 
         <label className="team-form__field">
           <span className="team-form__label">Project idea</span>

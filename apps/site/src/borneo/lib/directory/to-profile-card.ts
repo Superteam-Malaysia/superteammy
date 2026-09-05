@@ -17,6 +17,7 @@ function emptyProfile(id: string): Profile {
     twitter_url: "",
     github_url: "",
     linkedin_url: "",
+    instagram_url: "",
     website_url: "",
     telegram_url: "",
     achievements: "",
@@ -35,7 +36,10 @@ export function participantToProfile(person: PublicParticipant): Profile {
     real_name: person.name,
     avatar_url: person.avatarUrl ?? "",
     twitter_url: person.twitter ?? "",
+    instagram_url: person.instagram ?? "",
+    github_url: person.github ?? "",
     linkedin_url: person.linkedin ?? "",
+    website_url: person.website ?? "",
     telegram_url: telegramHref(person.telegram) ?? "",
     companies: person.hackathonTeams.map((team) => ({
       id: team.slug,
@@ -56,6 +60,11 @@ export function profileFormToProfile(input: {
   const social = builderSocialLinks({
     proofOfWork: input.values.proofOfWork,
     projectIdea: input.values.projectIdea,
+    twitterUrl: input.values.twitterUrl,
+    instagramUrl: input.values.instagramUrl,
+    githubUrl: input.values.githubUrl,
+    linkedinUrl: input.values.linkedinUrl,
+    websiteUrl: input.values.websiteUrl,
   });
   const name = input.values.name.trim() || "Builder";
 
@@ -65,7 +74,10 @@ export function profileFormToProfile(input: {
     real_name: name,
     avatar_url: input.avatarUrl ?? "",
     twitter_url: social.twitter ?? "",
+    instagram_url: social.instagram ?? "",
+    github_url: social.github ?? "",
     linkedin_url: social.linkedin ?? "",
+    website_url: social.website ?? "",
     telegram_url: telegramHref(input.values.telegram) ?? "",
     companies: (input.hackathonTeams ?? []).map((team) => ({
       id: team.slug,

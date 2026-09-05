@@ -68,9 +68,14 @@ export default async function TeamDetailPage({ params }: TeamDetailPageProps) {
               <>
                 <h1 className="team-detail__title team-detail__title--manage">Edit {team.name}</h1>
                 <p className="team-detail__manage-lead">
-                  Update your team profile, logo, links, and members below.
+                  Update your team profile, logo, links, and members below. Each member fills social
+                  links on their own profile page.
                 </p>
                 <TeamManageSection slug={slug} team={team} />
+                <section className="team-detail__members">
+                  <h2 className="team-detail__section-label">Team cards</h2>
+                  <TeamMemberCards members={memberProfiles} />
+                </section>
               </>
             ) : (
               <TeamDetailPublicView team={team} />

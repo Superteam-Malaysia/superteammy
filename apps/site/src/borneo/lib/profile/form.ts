@@ -1,9 +1,14 @@
+import { nullableSocialUrl } from "./social-urls";
+
 export type ProfileFormValues = {
   name: string;
   phoneNumber: string;
   telegram: string;
-  passportFirstName: string;
-  passportLastName: string;
+  twitterUrl: string;
+  instagramUrl: string;
+  githubUrl: string;
+  linkedinUrl: string;
+  websiteUrl: string;
   projectIdea: string;
   proofOfWork: string;
   teamSetup: string;
@@ -27,8 +32,11 @@ export function participantToProfileForm(participant: {
   name: string | null;
   phoneNumber: string | null;
   telegram: string | null;
-  passportFirstName: string | null;
-  passportLastName: string | null;
+  twitterUrl?: string | null;
+  instagramUrl?: string | null;
+  githubUrl?: string | null;
+  linkedinUrl?: string | null;
+  websiteUrl?: string | null;
   projectIdea: string | null;
   proofOfWork: string | null;
   teamSetup: string | null;
@@ -40,8 +48,11 @@ export function participantToProfileForm(participant: {
     name: participant.name?.trim() ?? "",
     phoneNumber: participant.phoneNumber?.trim() ?? "",
     telegram: participant.telegram?.trim() ?? "",
-    passportFirstName: participant.passportFirstName?.trim() ?? "",
-    passportLastName: participant.passportLastName?.trim() ?? "",
+    twitterUrl: participant.twitterUrl?.trim() ?? "",
+    instagramUrl: participant.instagramUrl?.trim() ?? "",
+    githubUrl: participant.githubUrl?.trim() ?? "",
+    linkedinUrl: participant.linkedinUrl?.trim() ?? "",
+    websiteUrl: participant.websiteUrl?.trim() ?? "",
     projectIdea: participant.projectIdea?.trim() ?? "",
     proofOfWork: participant.proofOfWork?.trim() ?? "",
     teamSetup: participant.teamSetup?.trim() ?? "",
@@ -59,8 +70,11 @@ export function sanitizeProfileInput(body: Partial<ProfileFormValues>): ProfileF
     name: trim(body.name, PROFILE_FIELD_LIMITS.short),
     phoneNumber: trim(body.phoneNumber, PROFILE_FIELD_LIMITS.short),
     telegram: trim(body.telegram, PROFILE_FIELD_LIMITS.short),
-    passportFirstName: trim(body.passportFirstName, PROFILE_FIELD_LIMITS.short),
-    passportLastName: trim(body.passportLastName, PROFILE_FIELD_LIMITS.short),
+    twitterUrl: nullableSocialUrl("twitter", body.twitterUrl) ?? "",
+    instagramUrl: nullableSocialUrl("instagram", body.instagramUrl) ?? "",
+    githubUrl: nullableSocialUrl("github", body.githubUrl) ?? "",
+    linkedinUrl: nullableSocialUrl("linkedin", body.linkedinUrl) ?? "",
+    websiteUrl: nullableSocialUrl("website", body.websiteUrl) ?? "",
     projectIdea: trim(body.projectIdea, PROFILE_FIELD_LIMITS.long),
     proofOfWork: trim(body.proofOfWork, PROFILE_FIELD_LIMITS.long),
     teamSetup: trim(body.teamSetup, PROFILE_FIELD_LIMITS.long),

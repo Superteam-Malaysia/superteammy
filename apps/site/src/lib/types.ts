@@ -39,6 +39,7 @@ export interface Profile {
   twitter_url: string;
   github_url: string;
   linkedin_url: string;
+  instagram_url: string;
   website_url: string;
   telegram_url: string;
   achievements: string;
