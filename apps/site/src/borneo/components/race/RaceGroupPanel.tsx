@@ -28,13 +28,18 @@ export function RaceGroupPanel({
     setGroup(initialGroup);
   }, [initialGroup]);
 
-  const joinOptions = useMemo(() => {
+  const joinableGroups = useMemo(() => {
     if (!group) return [];
     return group.groups
       .filter((item) => !item.isFull && item.leaderName)
-      .map((item) => item.number)
-      .sort((a, b) => a - b);
+      .sort((a, b) => a.number - b.number);
   }, [group]);
+
+  useEffect(() => {
+    if (!selectedGroup) return;
+    const stillOpen = joinableGroups.some((item) => String(item.number) === selectedGroup);
+    if (!stillOpen) setSelectedGroup("");
+  }, [joinableGroups, selectedGroup]);
 
   async function patchGroup(payload: Record<string, unknown>) {
     setError(null);
@@ -156,34 +161,48 @@ export function RaceGroupPanel({
           </button>
 
           <form className="race-group-panel__join" onSubmit={(event) => void joinSelectedGroup(event)}>
-            <label className="race-group-panel__join-label">
-              <span>Join a group</span>
-              <select
-                className="race-group-panel__select team-form__select"
-                value={selectedGroup}
-                disabled={Boolean(pending) || joinOptions.length === 0}
-                onChange={(event) => setSelectedGroup(event.target.value)}
-              >
-                <option value="">
-                  {joinOptions.length === 0 ? "No open groups yet" : "Pick a number…"}
-                </option>
-                {joinOptions.map((number) => {
-                  const summary = group.groups.find((item) => item.number === number);
-                  if (!summary?.leaderName) return null;
-                  const count = summary.memberCount;
-                  const label = raceTeamLabel(summary.leaderName)!;
-                  return (
-                    <option key={number} value={number}>
-                      {label} ({count}/{MAX_RACE_GROUP_SIZE})
-                    </option>
-                  );
-                })}
-              </select>
-            </label>
+            <div className="race-group-panel__join-label">
+              <span className="race-group-panel__join-heading">Join a group</span>
+              {joinableGroups.length === 0 ? (
+                <span className="race-group-panel__join-empty">No open groups yet — become a leader to start one.</span>
+              ) : (
+                <ul
+                  className="race-group-panel__join-list"
+                  role="listbox"
+                  aria-label="Open Amazing Race groups"
+                >
+                  {joinableGroups.map((summary) => {
+                    const label = raceTeamLabel(summary.leaderName)!;
+                    const isSelected = selectedGroup === String(summary.number);
+                    return (
+                      <li key={summary.number} role="presentation">
+                        <button
+                          type="button"
+                          role="option"
+                          aria-selected={isSelected}
+                          className={
+                            isSelected
+                              ? "race-group-panel__join-option race-group-panel__join-option--selected"
+                              : "race-group-panel__join-option"
+                          }
+                          disabled={Boolean(pending)}
+                          onClick={() => setSelectedGroup(String(summary.number))}
+                        >
+                          <span className="race-group-panel__join-option-name">{label}</span>
+                          <span className="race-group-panel__join-option-meta">
+                            {summary.memberCount}/{MAX_RACE_GROUP_SIZE}
+                          </span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
             <button
               type="submit"
               className="race-group-panel__join-btn"
-              disabled={Boolean(pending) || !selectedGroup}
+              disabled={Boolean(pending) || !selectedGroup || joinableGroups.length === 0}
             >
               {pending === "join" ? "Joining…" : "Join group"}
             </button>
