@@ -130,12 +130,15 @@ export async function listRaceGroupSummaries(): Promise<RaceGroupSummary[]> {
     const memberCount = await countGroupMembers(db, team.id);
     if (memberCount === 0) continue;
 
+    const leaderName = await groupLeaderName(db, team.id);
+    if (!leaderName) continue;
+
     summaries.push({
       number,
       memberCount,
       isFull: memberCount >= MAX_RACE_GROUP_SIZE,
-      hasLeader: await groupHasLeader(db, team.id),
-      leaderName: await groupLeaderName(db, team.id),
+      hasLeader: true,
+      leaderName,
     });
   }
 

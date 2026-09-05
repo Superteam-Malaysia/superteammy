@@ -31,7 +31,7 @@ export function RaceGroupPanel({
   const joinOptions = useMemo(() => {
     if (!group) return [];
     return group.groups
-      .filter((item) => !item.isFull)
+      .filter((item) => !item.isFull && item.leaderName)
       .map((item) => item.number)
       .sort((a, b) => a - b);
   }, [group]);
@@ -123,10 +123,12 @@ export function RaceGroupPanel({
       {inGroup ? (
         <div className="race-group-panel__status">
           <p className="race-group-panel__title">
-            {group.isLeader ? "You're the leader" : raceTeamLabel(group.leaderName)}
+            {group.isLeader ? "You're the leader" : (raceTeamLabel(group.leaderName) ?? "Your group")}
           </p>
           <p className="race-group-panel__meta">
-            {group.isLeader ? `${raceTeamLabel(group.leaderName)} · ` : null}
+            {group.isLeader && raceTeamLabel(group.leaderName)
+              ? `${raceTeamLabel(group.leaderName)} · `
+              : null}
             {group.memberCount} / {MAX_RACE_GROUP_SIZE} in your group
           </p>
           <button
@@ -168,7 +170,7 @@ export function RaceGroupPanel({
                 {joinOptions.map((number) => {
                   const summary = group.groups.find((item) => item.number === number);
                   const count = summary?.memberCount ?? 0;
-                  const label = raceTeamLabel(summary?.leaderName);
+                  const label = raceTeamLabel(summary.leaderName)!;
                   return (
                     <option key={number} value={number}>
                       {label} ({count}/{MAX_RACE_GROUP_SIZE})

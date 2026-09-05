@@ -247,7 +247,7 @@ export async function listPublicRaceFeed(): Promise<RaceFeedItem[]> {
           submitterId: row.submitterId,
           submitterName: row.submitterName ?? "Participant",
           groupNumber,
-          groupLabel: groupNumber != null ? raceTeamLabel(leaderName) : null,
+          groupLabel: leaderName ? raceTeamLabel(leaderName) : null,
         },
       ];
     });

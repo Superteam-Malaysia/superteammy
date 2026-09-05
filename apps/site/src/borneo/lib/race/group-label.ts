@@ -1,6 +1,6 @@
-/** Public label for an Amazing Race group — keyed off the leader's name. */
-export function raceTeamLabel(leaderName: string | null | undefined): string {
+/** Public label for an Amazing Race group — always named after the leader who formed it. */
+export function raceTeamLabel(leaderName: string | null | undefined): string | null {
   const name = leaderName?.trim();
-  if (name) return `Team ${name}`;
-  return "Team (no leader)";
+  if (!name) return null;
+  return `Team ${name}`;
 }

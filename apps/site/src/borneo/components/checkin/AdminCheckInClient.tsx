@@ -81,7 +81,7 @@ function mergeGuests(prev: CheckInGuest[], updated: CheckInGuest[]): CheckInGues
 }
 
 function groupTitle(group: GroupBlock): string {
-  return raceTeamLabel(group.leader?.name);
+  return raceTeamLabel(group.leader!.name)!;
 }
 
 function buildGroupLeaderNames(guests: CheckInGuest[]): Map<number, string> {
@@ -115,6 +115,7 @@ function buildGroupBlocks(guests: CheckInGuest[], query: string): GroupBlock[] {
       leader: block.leader,
       members: block.members.sort((a, b) => a.name.localeCompare(b.name)),
     }))
+    .filter((group) => group.leader != null)
     .filter((group) => {
       if (!query) return true;
       if (groupTitle(group).toLowerCase().includes(query)) return true;
@@ -146,17 +147,9 @@ export function AdminCheckInClient({ initialGuests }: AdminCheckInClientProps) {
     const groupNumbers = new Set(
       approvedGuests.map((guest) => guest.groupNumber).filter((n): n is number => n != null),
     );
-    const groupsWithLeader = new Set<number>();
-
-    for (const guest of approvedGuests) {
-      if (guest.amazingRaceLeader && guest.groupNumber != null) {
-        groupsWithLeader.add(guest.groupNumber);
-      }
-    }
 
     return {
       groupCount: groupNumbers.size,
-      groupsWithoutLeader: [...groupNumbers].filter((n) => !groupsWithLeader.has(n)).length,
     };
   }, [approvedGuests]);
 
@@ -169,7 +162,6 @@ export function AdminCheckInClient({ initialGuests }: AdminCheckInClientProps) {
       checkedIn,
       merchReceived,
       groupCount: groupStats.groupCount,
-      groupsWithoutLeader: groupStats.groupsWithoutLeader,
     };
   }, [approvedGuests, groupStats]);
 
@@ -261,8 +253,7 @@ export function AdminCheckInClient({ initialGuests }: AdminCheckInClientProps) {
           <td>
             {guest.groupNumber != null ? (
               <span className="admin-checkin__badge admin-checkin__badge--race">
-                {guestTeamLabel(guest)}
-                {guest.amazingRaceLeader ? " · Leader" : ""}
+                {guestTeamLabel(guest) ?? "—"}
               </span>
             ) : (
               <span className="admin-checkin__badge admin-checkin__badge--out">—</span>
@@ -364,10 +355,6 @@ export function AdminCheckInClient({ initialGuests }: AdminCheckInClientProps) {
           <span className="admin-checkin__stat-label">Groups</span>
         </div>
         <div className="admin-checkin__stat">
-          <span className="admin-checkin__stat-value">{stats.groupsWithoutLeader}</span>
-          <span className="admin-checkin__stat-label">Groups w/o leader</span>
-        </div>
-        <div className="admin-checkin__stat">
           <span className="admin-checkin__stat-value">{stats.approved}</span>
           <span className="admin-checkin__stat-label">Approved total</span>
         </div>
@@ -419,19 +406,14 @@ export function AdminCheckInClient({ initialGuests }: AdminCheckInClientProps) {
                 <header className="admin-checkin__group-header">
                   <h3 className="admin-checkin__group-title">{groupTitle(group)}</h3>
                   <p className="admin-checkin__group-meta">
-                    {(group.leader ? 1 : 0) + group.members.length} guest
-                    {(group.leader ? 1 : 0) + group.members.length === 1 ? "" : "s"}
-                    {!group.leader ? " · no leader assigned" : ""}
+                    {1 + group.members.length} guest
+                    {1 + group.members.length === 1 ? "" : "s"}
                   </p>
                 </header>
 
                 <div className="admin-checkin__group-section">
                   <h4 className="admin-checkin__group-section-label">Leader</h4>
-                  {group.leader ? (
-                    renderGuestTable([group.leader], false)
-                  ) : (
-                    <p className="admin-checkin__group-empty">No leader assigned yet.</p>
-                  )}
+                  {renderGuestTable([group.leader!], false)}
                 </div>
 
                 <div className="admin-checkin__group-section">
