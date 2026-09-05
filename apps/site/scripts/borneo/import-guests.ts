@@ -12,7 +12,7 @@ import { closeDb, getDb } from "../../src/borneo/lib/db";
 import { participants } from "../../src/borneo/lib/db/schema";
 import { normalizeEmail } from "../../src/borneo/lib/auth/session";
 
-const CSV_DEFAULT = resolve(__dirname, "../../data/imports/guests-2026-09-03.csv");
+const CSV_DEFAULT = resolve(__dirname, "../../data/imports/guests-2026-09-05.csv");
 
 const COL = {
   telegram: "What is your Telegram username?",
@@ -62,6 +62,7 @@ async function main() {
     if (!email || !guestId) continue;
 
     const emailNormalized = normalizeEmail(email);
+    const checkedInAt = parseDate(row.checked_in_at);
     const values = {
       guestId,
       email,
@@ -72,7 +73,8 @@ async function main() {
       phoneNumber: emptyToNull(row.phone_number),
       lumaCreatedAt: parseDate(row.created_at),
       approvalStatus: emptyToNull(row.approval_status),
-      checkedInAt: parseDate(row.checked_in_at),
+      checkedInAt,
+      merchReceivedAt: checkedInAt,
       ticketTypeId: emptyToNull(row.ticket_type_id),
       ticketName: emptyToNull(row.ticket_name),
       passportFirstName: emptyToNull(row[COL.passportFirst]),
@@ -96,6 +98,7 @@ async function main() {
         set: {
           ...values,
           checkedInAt: sql`coalesce(excluded.checked_in_at, ${participants.checkedInAt})`,
+          merchReceivedAt: sql`coalesce(excluded.merch_received_at, ${participants.merchReceivedAt})`,
           importedAt: sql`now()`,
         },
       });
