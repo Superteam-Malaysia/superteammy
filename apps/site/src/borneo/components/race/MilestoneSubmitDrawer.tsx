@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "@borneo/components/Link";
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { RACE_TASKS } from "@borneo/data/race-tasks";
+import { raceMilestoneImage } from "@borneo/data/race-milestone-images";
 import { CtaButton } from "@borneo/components/ui";
 import { withBasePath } from "@borneo/lib/base-path";
 import type {
@@ -232,6 +234,7 @@ export function MilestoneSubmitDrawer({
             <ul className="race-drawer__milestones list-none">
               {RACE_TASKS.map((task) => {
                 const saved = submissionByTask.has(task.id);
+                const imageSrc = raceMilestoneImage(task.id);
                 return (
                   <li key={task.id}>
                     <button
@@ -241,6 +244,25 @@ export function MilestoneSubmitDrawer({
                       onClick={() => pickTask(task.id)}
                     >
                       <span className="race-drawer__milestone-num">#{task.number}</span>
+                      {imageSrc ? (
+                        <span
+                          className={[
+                            "race-drawer__milestone-thumb",
+                            task.id === "race-onboard-user" ? "race-drawer__milestone-thumb--logo" : "",
+                          ]
+                            .filter(Boolean)
+                            .join(" ")}
+                        >
+                          <Image
+                            src={imageSrc}
+                            alt=""
+                            width={96}
+                            height={96}
+                            className="race-drawer__milestone-image"
+                            sizes="3.5rem"
+                          />
+                        </span>
+                      ) : null}
                       <span className="race-drawer__milestone-body">
                         <span className="race-drawer__milestone-title">{task.title}</span>
                         <span className="race-drawer__milestone-desc">{task.shortDescription}</span>
