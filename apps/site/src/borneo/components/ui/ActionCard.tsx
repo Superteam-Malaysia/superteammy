@@ -40,16 +40,14 @@ export function ActionCard({
         .filter(Boolean)
         .join(" ")}
     >
-      <h3 className="text-label text-label-accent">{title}</h3>
+      <h3 className="bp-card__title">{title}</h3>
       <div className="mt-auto flex flex-col gap-8">
-        {description && (
-          <p className="font-[family-name:var(--font-mono)] text-sm tracking-[0.075rem]">{description}</p>
-        )}
+        {description && <p className="bp-card__description">{description}</p>}
         {children}
         {cta && (
           <CtaButton
             href={cta.href}
-            variant={cta.variant ?? (tone === "mint" ? "ghost-null" : "azure")}
+            variant={cta.variant ?? "ghost-wisp"}
             size="sm"
             fullWidth
             external={cta.href?.startsWith("http")}

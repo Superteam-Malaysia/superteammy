@@ -69,7 +69,6 @@ export default function PrizesPage() {
             <li>
               <ActionCard
                 tone="null"
-                accentText
                 title="Amazing Race"
                 description="2×$500"
                 cta={{ label: "Race tasks", href: "/amazing-race" }}
