@@ -56,20 +56,10 @@ export function ProfileTeamsPanel({ teams }: ProfileTeamsPanelProps) {
           <CtaButton href={`/teams/${primaryManage.slug}`} variant="byte" size="md" showArrow={false}>
             Manage team
           </CtaButton>
-        ) : (
+        ) : teams.length === 0 ? (
           <CtaButton href="/teams/new" variant="byte" size="md" showArrow={false}>
             Create team
           </CtaButton>
-        )}
-        {teams.length > 0 && !primaryManage ? (
-          <CtaButton href="/teams/new" variant="ghost-wisp" size="md" showArrow={false}>
-            Create team
-          </CtaButton>
-        ) : null}
-        {teams.length > 0 && primaryManage ? (
-          <Link href="/teams/new" className="profile-teams__browse">
-            Create another team
-          </Link>
         ) : null}
         <Link href="/teams" className="profile-teams__browse">
           Browse teams directory

@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { getParticipantForSession } from "@borneo/lib/auth/participant";
 import { getDb } from "@borneo/lib/db";
 import { teamMembers, teams } from "@borneo/lib/db/schema";
+import { getParticipantHackathonTeams } from "@borneo/lib/teams/access";
 import { getPublicTeams, slugExists } from "@borneo/lib/teams/public-teams";
 import { slugifyTeamName } from "@borneo/lib/teams/slug";
 
@@ -15,6 +16,14 @@ export async function POST(request: Request) {
   const participant = await getParticipantForSession();
   if (!participant) {
     return NextResponse.json({ error: "Sign in required" }, { status: 401 });
+  }
+
+  const existingTeams = await getParticipantHackathonTeams(participant.id);
+  if (existingTeams.length > 0) {
+    return NextResponse.json(
+      { error: "You are already on a team. Manage it from your profile." },
+      { status: 409 },
+    );
   }
 
   const body = (await request.json()) as {
