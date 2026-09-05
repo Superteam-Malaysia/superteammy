@@ -1,8 +1,14 @@
-import { CONTENT_TASKS, RACE_CUTOFF, RACE_TASKS, type RaceTask } from "@borneo/data/race-tasks";
+import {
+  CONTENT_TASKS,
+  MILESTONE_SUBMIT_TASKS,
+  RACE_CUTOFF,
+  RACE_TASKS,
+  type RaceTask,
+} from "@borneo/data/race-tasks";
 
 const THREAD_HOSTS = new Set(["twitter.com", "x.com", "www.twitter.com", "mobile.twitter.com"]);
 
-const raceTaskIds = new Set(RACE_TASKS.map((task) => task.id));
+const submitTaskIds = new Set(MILESTONE_SUBMIT_TASKS.map((task) => task.id));
 
 /** Retired milestone ids — still resolve for early feed rows. */
 const RETIRED_RACE_TASKS: RaceTask[] = [
@@ -27,7 +33,7 @@ export function getRaceTask(taskId: string): RaceTask | undefined {
 }
 
 export function isValidRaceTaskId(taskId: string): boolean {
-  return raceTaskIds.has(taskId);
+  return submitTaskIds.has(taskId);
 }
 
 export function isRaceCutoffPassed(now = new Date()): boolean {

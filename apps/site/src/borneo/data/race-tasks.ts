@@ -299,6 +299,11 @@ export const RACE_TASKS: RaceTask[] = [
 
 export const ALL_TASKS: RaceTask[] = [...CONTENT_TASKS, ...RACE_TASKS];
 
+/** Full milestone list for the submit drawer — content posts first, then race stations. */
+export const MILESTONE_SUBMIT_TASKS: RaceTask[] = [...CONTENT_TASKS, ...RACE_TASKS].sort(
+  (a, b) => a.number - b.number,
+);
+
 export const THEME_LABELS: Record<TaskTheme, string> = {
   content: "Content",
   food: "Food & flavours",

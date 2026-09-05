@@ -3,7 +3,7 @@
 import Link from "@borneo/components/Link";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
-import { RACE_TASKS, type RaceTask } from "@borneo/data/race-tasks";
+import { MILESTONE_SUBMIT_TASKS, type RaceTask } from "@borneo/data/race-tasks";
 import { raceMilestoneImage } from "@borneo/data/race-milestone-images";
 import { CtaButton } from "@borneo/components/ui";
 import { withBasePath } from "@borneo/lib/base-path";
@@ -59,10 +59,10 @@ export function MilestoneSubmitDrawer({
     return map;
   }, [submissions]);
 
-  const selectedTask = RACE_TASKS.find((task) => task.id === selectedTaskId) ?? null;
+  const selectedTask = MILESTONE_SUBMIT_TASKS.find((task) => task.id === selectedTaskId) ?? null;
   const selectedTaskImage = selectedTask ? raceMilestoneImage(selectedTask.id) : null;
   const completedCount = submissions.length;
-  const totalCount = RACE_TASKS.length;
+  const totalCount = MILESTONE_SUBMIT_TASKS.length;
 
   useEffect(() => {
     if (!open) {
@@ -233,8 +233,9 @@ export function MilestoneSubmitDrawer({
               Pick a milestone, then paste your X link — one post per person per milestone.
             </p>
 
-            <ul className="race-drawer__milestones list-none">
-              {RACE_TASKS.map((task) => {
+            <div className="race-drawer__scroll">
+              <ul className="race-drawer__milestones list-none">
+                {MILESTONE_SUBMIT_TASKS.map((task) => {
                 const saved = submissionByTask.has(task.id);
                 const imageSrc = raceMilestoneImage(task.id);
                 return (
@@ -277,9 +278,11 @@ export function MilestoneSubmitDrawer({
                   </li>
                 );
               })}
-            </ul>
+              </ul>
+            </div>
           </>
         ) : selectedTask ? (
+          <div className="race-drawer__scroll">
           <div className="race-drawer__link-step">
             {selectedTaskImage ? (
               <div
@@ -295,6 +298,7 @@ export function MilestoneSubmitDrawer({
                   alt=""
                   width={880}
                   height={550}
+                  unoptimized
                   className="race-drawer__link-hero-image"
                   sizes="(max-width: 550px) 100vw, 550px"
                   priority
@@ -343,6 +347,7 @@ export function MilestoneSubmitDrawer({
             >
               {saving ? "Posting…" : submissionByTask.has(selectedTask.id) ? "Update feed post" : "Add to feed"}
             </CtaButton>
+          </div>
           </div>
         ) : null}
       </div>

@@ -1218,10 +1218,12 @@
 }
 
 .race-drawer__sheet {
+  display: flex;
+  flex-direction: column;
   width: 100%;
   max-width: var(--race-content-max, min(100%, 550px));
   max-height: min(88vh, 720px);
-  overflow-y: auto;
+  overflow: hidden;
   background: var(--color-bg-elevated);
   border-top-left-radius: 1.25rem;
   border-top-right-radius: 1.25rem;
@@ -1229,6 +1231,16 @@
   border-bottom: none;
   padding: 0.75rem 1rem max(1.5rem, env(safe-area-inset-bottom));
   box-shadow: 0 -12px 40px color-mix(in srgb, var(--color-null) 65%, transparent);
+}
+
+.race-drawer__scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  margin-inline: -1rem;
+  padding-inline: 1rem;
 }
 
 .race-drawer__handle {
@@ -1337,7 +1349,6 @@
 .race-drawer__milestones {
   display: flex;
   flex-direction: column;
-  margin-inline: -1rem;
 }
 
 .race-drawer__milestone {
