@@ -41,6 +41,31 @@
   min-width: 0;
 }
 
+.judges-panel__card--link {
+  color: inherit;
+  text-decoration: none;
+  transition: opacity 200ms ease;
+}
+
+.judges-panel__card--link:hover {
+  opacity: 0.92;
+}
+
+.judges-panel__card--link:focus-visible {
+  outline: 2px solid var(--color-byte);
+  outline-offset: 4px;
+}
+
+.judges-panel__cta {
+  margin-top: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-byte);
+}
+
 .judges-panel__photo {
   position: relative;
   width: 100%;

@@ -1,5 +1,6 @@
 import { DEMO_DAY_JUDGES } from "@borneo/data/judges";
 import { WORKSHOP_SESSIONS } from "@borneo/data/speakers";
+import { withBasePath } from "@borneo/lib/base-path";
 import { participantInitials } from "@borneo/lib/participants/team-categories";
 import type { PublicMentor, PublicMentorWorkshop } from "@borneo/lib/mentors/types";
 
@@ -106,6 +107,11 @@ export function mentorSlug(name: string): string {
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+/** Deep link into the mentors directory tab for a workshop leader or judge. */
+export function mentorDirectoryHref(mentorId: string): string {
+  return withBasePath(`/teams?tab=mentors#mentor-${mentorId}`);
 }
 
 /** Mentor directory ids — never shown as hackathon team cards. */

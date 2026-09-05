@@ -1,23 +1,31 @@
 import Image from "next/image";
+import Link from "@borneo/components/Link";
 import { SectionIntro } from "@borneo/components/ui";
 import { DEMO_DAY_JUDGES, type Judge } from "@borneo/data/judges";
+import { mentorDirectoryHref } from "@borneo/data/mentors";
 
 function JudgeCard({ judge }: { judge: Judge }) {
   return (
-    <li className="judges-panel__card">
-      <div className="judges-panel__photo">
-        {judge.photo ? (
-          <Image
-            src={judge.photo}
-            alt=""
-            fill
-            className="judges-panel__photo-image"
-            sizes="(min-width: 768px) 25vw, 50vw"
-          />
-        ) : null}
-      </div>
-      <h3 className="judges-panel__name">{judge.name}</h3>
-      <p className="judges-panel__org">{judge.role}</p>
+    <li>
+      <Link
+        href={mentorDirectoryHref(judge.id)}
+        className="judges-panel__card judges-panel__card--link"
+      >
+        <div className="judges-panel__photo">
+          {judge.photo ? (
+            <Image
+              src={judge.photo}
+              alt=""
+              fill
+              className="judges-panel__photo-image"
+              sizes="(min-width: 768px) 25vw, 50vw"
+            />
+          ) : null}
+        </div>
+        <h3 className="judges-panel__name">{judge.name}</h3>
+        <p className="judges-panel__org">{judge.role}</p>
+        <span className="judges-panel__cta">View mentor profile</span>
+      </Link>
     </li>
   );
 }

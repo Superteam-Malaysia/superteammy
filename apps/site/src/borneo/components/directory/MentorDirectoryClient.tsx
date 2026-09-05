@@ -5,7 +5,13 @@ import { ScalableCardWrapper } from "@/components/members/ScalableCardWrapper";
 import type { PublicMentor } from "@borneo/data/mentors";
 import { mentorToProfile } from "@borneo/lib/directory/to-profile-card";
 
-export function MentorDirectoryClient({ mentors }: { mentors: PublicMentor[] }) {
+export function MentorDirectoryClient({
+  mentors,
+  expandMentorId,
+}: {
+  mentors: PublicMentor[];
+  expandMentorId?: string | null;
+}) {
   if (mentors.length === 0) {
     return (
       <div className="text-center py-20">
@@ -19,7 +25,14 @@ export function MentorDirectoryClient({ mentors }: { mentors: PublicMentor[] }) 
     <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {mentors.map((mentor, index) => (
         <ScalableCardWrapper key={mentor.id}>
-          <MemberProfileCard profile={mentorToProfile(mentor)} index={index} expandOnClick />
+          <div id={`mentor-${mentor.id}`}>
+            <MemberProfileCard
+              profile={mentorToProfile(mentor)}
+              index={index}
+              expandOnClick
+              startExpanded={expandMentorId === mentor.id}
+            />
+          </div>
         </ScalableCardWrapper>
       ))}
     </div>

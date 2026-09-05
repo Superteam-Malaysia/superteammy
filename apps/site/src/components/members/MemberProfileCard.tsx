@@ -16,6 +16,8 @@ interface MemberProfileCardProps {
   index?: number;
   /** When true (members page), click opens enlarged overlay with front+back side by side */
   expandOnClick?: boolean;
+  /** Open the expanded overlay on mount — used for #mentor-* deep links */
+  startExpanded?: boolean;
   /** Optional internal link — e.g. Borneo team detail page */
   detailHref?: string;
   detailLabel?: string;
@@ -28,6 +30,7 @@ export function MemberProfileCard({
   profile,
   index = 0,
   expandOnClick = false,
+  startExpanded = false,
   detailHref,
   detailLabel = "View profile",
   achievementsLabel = "Achievements",
@@ -67,8 +70,12 @@ export function MemberProfileCard({
   const [isFlipped, setIsFlipped] = useState(false);
   // Latches on the first flip so the back face stays mounted afterwards.
   const [hasFlipped, setHasFlipped] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(startExpanded);
   const lenisRef = useLenisRef();
+
+  useEffect(() => {
+    if (startExpanded) setIsExpanded(true);
+  }, [startExpanded]);
 
   const handleCardClick = () => {
     if (expandOnClick) {

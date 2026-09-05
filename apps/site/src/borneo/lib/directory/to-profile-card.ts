@@ -83,8 +83,12 @@ export function mentorToProfile(mentor: PublicMentor): Profile {
   if (mentor.isWorkshopLeader) {
     roles.push({ id: `${mentor.id}-workshop`, name: "Workshop leader" });
   }
-  if (mentor.isJudge && mentor.judgeRole) {
-    roles.push({ id: `${mentor.id}-judge`, name: mentor.judgeRole });
+  if (mentor.isJudge) {
+    const judgeLabel =
+      mentor.judgeRole && mentor.judgeRole !== mentor.organization
+        ? mentor.judgeRole
+        : "Demo Day judge";
+    roles.push({ id: `${mentor.id}-judge`, name: judgeLabel });
   }
 
   const workshopBio = mentor.workshops.map((workshop) => workshop.title).join(" · ");

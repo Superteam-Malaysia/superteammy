@@ -45,6 +45,18 @@ function scrollToBuilderHash() {
   document.querySelector(hash)?.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
+function scrollToMentorHash() {
+  const hash = window.location.hash;
+  if (!hash.startsWith("#mentor-")) return;
+  document.querySelector(hash)?.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function mentorIdFromHash(): string | null {
+  if (typeof window === "undefined") return null;
+  const hash = window.location.hash;
+  return hash.startsWith("#mentor-") ? hash.slice("#mentor-".length) : null;
+}
+
 function matchesSearch(values: (string | null | undefined)[], query: string): boolean {
   if (!query.trim()) return true;
   const needle = query.trim().toLowerCase();
@@ -62,6 +74,7 @@ export function DirectoryTabsClient({
   const [searchQuery, setSearchQuery] = useState("");
   const [teamCategory, setTeamCategory] = useState("All");
   const [mentorFilter, setMentorFilter] = useState<(typeof MENTOR_FILTERS)[number]>("All");
+  const [expandMentorId, setExpandMentorId] = useState<string | null>(null);
 
   const unassigned = useMemo(() => getUnassignedBuilders(people), [people]);
 
@@ -84,8 +97,20 @@ export function DirectoryTabsClient({
   }, []);
 
   useEffect(() => {
+    const mentorId = mentorIdFromHash();
+    if (!mentorId) return;
+    setTabState("mentors");
+    setMentorFilter("Judges");
+    setExpandMentorId(mentorId);
+    window.requestAnimationFrame(scrollToMentorHash);
+  }, []);
+
+  useEffect(() => {
     if (tab === "teams" && window.location.hash.startsWith("#builder-")) {
       window.requestAnimationFrame(scrollToBuilderHash);
+    }
+    if (tab === "mentors" && window.location.hash.startsWith("#mentor-")) {
+      window.requestAnimationFrame(scrollToMentorHash);
     }
   }, [tab]);
 
@@ -228,7 +253,7 @@ export function DirectoryTabsClient({
         </div>
 
         <div role="tabpanel" hidden={tab !== "mentors"} aria-hidden={tab !== "mentors"}>
-          <MentorDirectoryClient mentors={filteredMentors} />
+          <MentorDirectoryClient mentors={filteredMentors} expandMentorId={expandMentorId} />
         </div>
 
         {!isSignedIn && tab === "teams" ? (
