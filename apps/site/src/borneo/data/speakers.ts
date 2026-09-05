@@ -342,9 +342,6 @@ export const WORKSHOP_LEADER_PROFILES: Record<
     avatar: withBasePath("/speakers/ohmeohmy.jpg"),
     twitter: "OhMeOhMy_Sol",
   },
-  "s3-elfa-sales": {
-    avatar: withBasePath("/speakers/hypetris.jpg"),
-  },
   "s4-virtuals": {
     avatar: withBasePath("/speakers/joey.jpg"),
     twitter: "joeylaujy",
