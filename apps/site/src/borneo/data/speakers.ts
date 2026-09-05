@@ -30,23 +30,24 @@ export const SPEAKER_DAYS: SpeakerDay[] = [
     theme: "Opening & Problem Framing",
     sessions: [
       { id: "s2-open", title: "Opening", speaker: "Superteam MY", kind: "opening", start: "10:00", end: "10:10" },
-      { id: "s2-socoe", title: "SOCOE welcome", speaker: "Edvin", organization: "SOCOE · Director", kind: "keynote", start: "10:10", end: "10:20" },
+      { id: "s2-socoe", title: "SOCOE welcome", speaker: "Leon", organization: "SOCOE · Director", kind: "keynote", start: "10:10", end: "10:25" },
       {
         id: "s2-sf",
         title: "Solana Foundation keynote",
         speaker: "Chaerin",
         organization: "Solana Foundation",
         kind: "keynote",
-        start: "10:20",
-        end: "10:30",
+        start: "10:25",
+        end: "10:40",
       },
       {
-        id: "s2-minister",
-        title: "Minister address + launch",
-        speaker: "TBC",
-        kind: "ministry",
-        start: "10:30",
-        end: "10:45",
+        id: "s2-superscrypt",
+        title: "What investors look for — what kills a pitch in 30 seconds",
+        speaker: "Jacob",
+        organization: "Superscrypt",
+        kind: "workshop",
+        start: "10:40",
+        end: "11:10",
       },
       {
         id: "s2-elfa",
@@ -54,8 +55,8 @@ export const SPEAKER_DAYS: SpeakerDay[] = [
         speaker: "Tristan",
         organization: "Elfa AI",
         kind: "workshop",
-        start: "11:15",
-        end: "11:45",
+        start: "11:10",
+        end: "11:40",
       },
       {
         id: "s2-meteora",
@@ -63,14 +64,14 @@ export const SPEAKER_DAYS: SpeakerDay[] = [
         speaker: "Vesper",
         organization: "Meteora",
         kind: "workshop",
-        start: "11:45",
-        end: "12:30",
+        start: "11:40",
+        end: "12:10",
       },
       {
-        id: "s2-superscrypt",
-        title: "What investors look for — what kills a pitch in 30 seconds",
-        speaker: "Jacob",
-        organization: "Superscrypt",
+        id: "s2-cradle",
+        title: "Cradle workshop",
+        speaker: "Faiz",
+        organization: "Cradle",
         kind: "workshop",
         start: "13:30",
         end: "14:15",
@@ -189,20 +190,29 @@ export const SPEAKER_DAYS: SpeakerDay[] = [
         end: "12:15",
       },
       {
-        id: "s4-content",
+        id: "s4-content-joyce",
         title: "Contentmaxxing",
-        speaker: "Nikki",
+        speaker: "Joyce",
         organization: "Content",
         kind: "workshop",
         start: "12:15",
         end: "12:45",
       },
       {
+        id: "s4-content-nikki",
+        title: "Contentmaxxing",
+        speaker: "Nikki",
+        organization: "Content",
+        kind: "workshop",
+        start: "13:30",
+        end: "14:00",
+      },
+      {
         id: "s4-deck",
         title: "Deck clinic — one-liner, story arc, demo",
         speaker: "Mentors",
         kind: "program",
-        start: "13:30",
+        start: "14:00",
         end: "15:00",
       },
       {
@@ -267,11 +277,12 @@ export const SPEAKER_DAYS: SpeakerDay[] = [
 
 /** Flat list for homepage preview — featured workshop leaders */
 export const FEATURED_SPEAKERS = [
-  { name: "Edvin", org: "SOCOE" },
+  { name: "Leon", org: "SOCOE" },
   { name: "Chaerin", org: "Solana Foundation" },
+  { name: "Jacob", org: "Superscrypt" },
   { name: "Tristan", org: "Elfa AI" },
   { name: "Vesper", org: "Meteora" },
-  { name: "Jacob", org: "Superscrypt" },
+  { name: "Faiz", org: "Cradle" },
   { name: "Jemmy", org: "MonkeDAO" },
   { name: "Nic", org: "Sanctum" },
   { name: "Vasily", org: "GetBlock" },
@@ -281,6 +292,7 @@ export const FEATURED_SPEAKERS = [
   { name: "Joey", org: "Virtuals" },
   { name: "Chris", org: "No Limit Holdings" },
   { name: "Shuen Rui", org: "Impossible Finance / Rarible" },
+  { name: "Joyce", org: "Content" },
   { name: "Nikki", org: "Content" },
 ];
 
@@ -308,6 +320,9 @@ export const WORKSHOP_LEADER_PROFILES: Record<
   "s2-superscrypt": {
     avatar: withBasePath("/speakers/jacob-ko.jpg"),
     linkedin: "jacob-ko-10989b24",
+  },
+  "s2-cradle": {
+    avatar: withBasePath("/judges/faiz.jpg"),
   },
   "s3-monke": {
     avatar: withBasePath("/speakers/jemmy.jpg"),
@@ -341,7 +356,7 @@ export const WORKSHOP_LEADER_PROFILES: Record<
     avatar: withBasePath("/speakers/shuen-rui.jpg"),
     twitter: "shuenrui",
   },
-  "s4-content": {
+  "s4-content-nikki": {
     avatar: withBasePath("/speakers/nikkideyy.jpg"),
     twitter: "nikkideyy",
   },
