@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "npm run borneo:generate-ics && next dev",
     "prebuild": "npm run borneo:generate-ics",
-    "build": "next build",
+    "build": "next build --webpack",
     "optimize-loading-video": "bash scripts/optimize-loading-video.sh",
     "postbuild": "next-sitemap",
     "start": "npm run start:production",
