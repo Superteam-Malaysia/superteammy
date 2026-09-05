@@ -51,6 +51,10 @@ export function RacePageContent({
     });
   }, []);
 
+  const inRaceGroup = Boolean(raceGroup?.groupNumber);
+  const addMilestoneLabel =
+    isSignedIn && !inRaceGroup ? "+ Add milestone / join group" : "+ Add milestone";
+
   return (
     <div className="race-page">
       <header className="race-page__hero">
@@ -75,16 +79,16 @@ export function RacePageContent({
           className="race-page__add-btn"
           onClick={openDrawer}
         >
-          + Add milestone
+          {addMilestoneLabel}
         </CtaButton>
       </div>
 
-      <RaceFeed items={feed} onAdd={openDrawer} />
+      <RaceFeed items={feed} onAdd={openDrawer} addLabel={addMilestoneLabel} />
 
       <button
         type="button"
         className="race-page__fab"
-        aria-label="Add milestone"
+        aria-label={addMilestoneLabel.replace(/^\+ /, "")}
         onClick={openDrawer}
       >
         +

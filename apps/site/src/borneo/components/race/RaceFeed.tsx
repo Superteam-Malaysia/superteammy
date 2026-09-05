@@ -7,9 +7,10 @@ import { RaceFeedPost } from "./RaceFeedPost";
 type RaceFeedProps = {
   items: RaceFeedItem[];
   onAdd?: () => void;
+  addLabel?: string;
 };
 
-export function RaceFeed({ items, onAdd }: RaceFeedProps) {
+export function RaceFeed({ items, onAdd, addLabel = "+ Add milestone" }: RaceFeedProps) {
   if (!items.length) {
     return (
       <div className="race-feed race-feed--empty">
@@ -19,7 +20,7 @@ export function RaceFeed({ items, onAdd }: RaceFeedProps) {
         </p>
         {onAdd ? (
           <CtaButton variant="byte" size="md" showArrow={false} onClick={onAdd}>
-            + Add milestone
+            {addLabel}
           </CtaButton>
         ) : null}
       </div>
