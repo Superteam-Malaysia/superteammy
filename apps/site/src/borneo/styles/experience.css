@@ -727,6 +727,7 @@
 }
 
 .race-page {
+  --race-content-max: min(100%, 550px);
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -739,7 +740,7 @@
 .race-page__admin,
 .race-group-panel {
   width: 100%;
-  max-width: 32rem;
+  max-width: var(--race-content-max);
   margin-inline: auto;
 }
 
@@ -921,7 +922,7 @@
   gap: 1.25rem;
   width: 100%;
   /* Match native X embed width — don't stretch posts on desktop */
-  max-width: min(100%, 550px);
+  max-width: var(--race-content-max);
   margin-inline: auto;
 }
 
@@ -1059,7 +1060,7 @@
   color: var(--color-wisp);
 }
 
-/* Milestone submit drawer */
+/* Milestone submit drawer — sheet width/padding mirrors site-main + feed column */
 .race-drawer {
   position: fixed;
   inset: 0;
@@ -1068,11 +1069,18 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  padding-inline: max(1rem, env(safe-area-inset-left)) max(1rem, env(safe-area-inset-right));
+}
+
+@media (min-width: 768px) {
+  .race-drawer {
+    padding-inline: max(2rem, env(safe-area-inset-left)) max(2rem, env(safe-area-inset-right));
+  }
 }
 
 .race-drawer__sheet {
   width: 100%;
-  max-width: 32rem;
+  max-width: var(--race-content-max, min(100%, 550px));
   max-height: min(88vh, 720px);
   overflow-y: auto;
   background: var(--color-bg-elevated);
@@ -1127,7 +1135,7 @@
   background: none;
   width: 2rem;
   height: 2rem;
-  margin: -0.25rem -0.25rem -0.25rem 0;
+  margin: 0;
   padding: 0;
   font-size: 1.5rem;
   line-height: 1;
@@ -1190,15 +1198,17 @@
 .race-drawer__milestones {
   display: flex;
   flex-direction: column;
+  margin-inline: -1rem;
 }
 
 .race-drawer__milestone {
   display: grid;
-  grid-template-columns: 2.25rem 3.5rem minmax(0, 1fr) auto;
-  gap: 0.625rem 0.75rem;
+  grid-template-columns: 2.25rem 3.5rem minmax(0, 1fr) 1.75rem;
+  column-gap: 0.75rem;
+  row-gap: 0.625rem;
   align-items: start;
   width: 100%;
-  padding: 0.875rem 0;
+  padding: 0.875rem 1rem;
   border: none;
   border-top: 1px solid var(--color-transparent-wisp-10);
   background: none;
@@ -1275,6 +1285,7 @@
 }
 
 .race-drawer__milestone-action {
+  justify-self: end;
   align-self: start;
   flex-shrink: 0;
   width: 1.75rem;
