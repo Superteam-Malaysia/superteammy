@@ -4,13 +4,11 @@ import { useCallback, useState } from "react";
 import { CtaButton } from "@borneo/components/ui";
 import { RaceFeed } from "./RaceFeed";
 import { MilestoneSubmitGate } from "./MilestoneSubmitDrawer";
-import type { ParticipantTeamOption, PublicRaceSubmission, RaceFeedItem } from "@borneo/lib/race/submissions";
+import type { PublicRaceSubmission, RaceFeedItem } from "@borneo/lib/race/submissions";
 import type { ParticipantRaceGroup } from "@borneo/lib/race/group-types";
 
 type RaceSubmissionContext = {
   participantName: string;
-  teams: ParticipantTeamOption[];
-  tagTeamSlug: string | null;
   initialSubmissions: PublicRaceSubmission[];
   initialGroup: ParticipantRaceGroup | null;
   cutoffPassed: boolean;

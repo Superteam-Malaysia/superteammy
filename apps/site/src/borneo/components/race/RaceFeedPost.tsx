@@ -1,10 +1,8 @@
 "use client";
 
-import Link from "@borneo/components/Link";
 import { EmbeddedTweetCard } from "@borneo/components/shell/EmbeddedTweetCard";
 import { extractTweetIdFromUrl } from "@borneo/lib/race/validation";
 import type { RaceFeedItem } from "@borneo/lib/race/submissions";
-import { withBasePath } from "@borneo/lib/base-path";
 
 function formatFeedTime(iso: string): string {
   const date = new Date(iso);
@@ -44,10 +42,8 @@ export function RaceFeedPost({ item }: RaceFeedPostProps) {
         <div className="race-feed-post__meta">
           <p className="race-feed-post__person">
             <span className="race-feed-post__person-name">{displayName}</span>
-            {item.teamName && item.teamSlug ? (
-              <Link href={withBasePath(`/teams/${item.teamSlug}`)} className="race-feed-post__team-tag">
-                {item.teamName}
-              </Link>
+            {item.groupNumber != null ? (
+              <span className="race-feed-post__group-tag">Group {item.groupNumber}</span>
             ) : null}
           </p>
           <p className="race-feed-post__milestone">

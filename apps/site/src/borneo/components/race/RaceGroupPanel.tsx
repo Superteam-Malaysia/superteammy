@@ -9,12 +9,14 @@ type RaceGroupPanelProps = {
   isSignedIn: boolean;
   initialGroup: ParticipantRaceGroup | null;
   variant?: "page" | "drawer";
+  onGroupChange?: (group: ParticipantRaceGroup) => void;
 };
 
 export function RaceGroupPanel({
   isSignedIn,
   initialGroup,
   variant = "page",
+  onGroupChange,
 }: RaceGroupPanelProps) {
   const [group, setGroup] = useState<ParticipantRaceGroup | null>(initialGroup);
   const [pending, setPending] = useState<"leader" | "join" | "leave" | null>(null);
@@ -43,6 +45,7 @@ export function RaceGroupPanel({
     }
 
     setGroup(data.group);
+    onGroupChange?.(data.group);
     return data.group;
   }
 

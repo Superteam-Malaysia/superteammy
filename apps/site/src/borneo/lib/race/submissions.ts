@@ -1,6 +1,7 @@
 import { desc, eq } from "drizzle-orm";
+import { parseGroupNumber } from "@borneo/lib/checkin/group-number";
 import { getDb } from "@borneo/lib/db";
-import { participants, raceSubmissions, teamMembers, teams } from "@borneo/lib/db/schema";
+import { participants, raceSubmissions, raceTeams, teamMembers, teams } from "@borneo/lib/db/schema";
 import { getRaceTask, raceThreadUrlsMatch, extractTweetIdFromUrl } from "@borneo/lib/race/validation";
 
 export type PublicRaceSubmission = {
@@ -15,8 +16,7 @@ export type PublicRaceSubmission = {
 export type RaceFeedItem = PublicRaceSubmission & {
   submitterId: string;
   submitterName: string;
-  teamSlug: string | null;
-  teamName: string | null;
+  groupNumber: number | null;
 };
 
 export type AdminRaceSubmission = PublicRaceSubmission & {
@@ -193,8 +193,7 @@ export const SEED_RACE_FEED: Omit<RaceFeedItem, "id">[] = [
     taskNumber: 1,
     submitterId: "seed-han",
     submitterName: "Han",
-    teamSlug: null,
-    teamName: null,
+    groupNumber: null,
   },
 ];
 
@@ -224,13 +223,12 @@ export async function listPublicRaceFeed(): Promise<RaceFeedItem[]> {
         threadUrl: raceSubmissions.threadUrl,
         submittedAt: raceSubmissions.submittedAt,
         submitterId: raceSubmissions.submittedBy,
-        teamSlug: teams.slug,
-        teamName: teams.name,
+        raceTeamName: raceTeams.name,
         submitterName: participants.name,
       })
       .from(raceSubmissions)
       .innerJoin(participants, eq(raceSubmissions.submittedBy, participants.id))
-      .leftJoin(teams, eq(raceSubmissions.teamId, teams.id))
+      .leftJoin(raceTeams, eq(participants.raceTeamId, raceTeams.id))
       .orderBy(desc(raceSubmissions.submittedAt));
 
     const dbItems: RaceFeedItem[] = rows.flatMap((row) => {
@@ -241,8 +239,7 @@ export async function listPublicRaceFeed(): Promise<RaceFeedItem[]> {
           ...mapped,
           submitterId: row.submitterId,
           submitterName: row.submitterName ?? "Participant",
-          teamSlug: row.teamSlug,
-          teamName: row.teamName,
+          groupNumber: parseGroupNumber(row.raceTeamName),
         },
       ];
     });

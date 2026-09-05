@@ -3,7 +3,6 @@ import { RacePageContent } from "@borneo/components/race";
 import { getParticipantForSession } from "@borneo/lib/auth/participant";
 import {
   listParticipantRaceSubmissions,
-  listParticipantTeams,
   listPublicRaceFeed,
 } from "@borneo/lib/race/submissions";
 import { getParticipantRaceGroup } from "@borneo/lib/race/groups";
@@ -26,17 +25,13 @@ export default async function AmazingRacePage() {
   let submission = null;
 
   if (participant) {
-    const [teams, initialSubmissions, group] = await Promise.all([
-      listParticipantTeams(participant.id),
+    const [initialSubmissions, group] = await Promise.all([
       listParticipantRaceSubmissions(participant.id),
       getParticipantRaceGroup(participant.id),
     ]);
-    const initialTeam = teams[0] ?? null;
 
     submission = {
       participantName: participant.name ?? participant.firstName ?? "You",
-      teams,
-      tagTeamSlug: initialTeam?.slug ?? null,
       initialSubmissions,
       initialGroup: group,
       cutoffPassed: isRaceCutoffPassed(),

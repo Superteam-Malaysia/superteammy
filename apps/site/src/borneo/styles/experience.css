@@ -1039,6 +1039,7 @@
   color: var(--color-wisp);
 }
 
+.race-feed-post__group-tag,
 .race-feed-post__team-tag {
   font-family: var(--font-mono);
   font-size: 0.6875rem;
@@ -1051,6 +1052,7 @@
   text-decoration: none;
 }
 
+.race-feed-post__group-tag:hover,
 .race-feed-post__team-tag:hover {
   background: color-mix(in srgb, var(--color-byte) 12%, transparent);
 }

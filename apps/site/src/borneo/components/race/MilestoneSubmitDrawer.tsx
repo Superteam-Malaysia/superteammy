@@ -8,7 +8,6 @@ import { raceMilestoneImage } from "@borneo/data/race-milestone-images";
 import { CtaButton } from "@borneo/components/ui";
 import { withBasePath } from "@borneo/lib/base-path";
 import type {
-  ParticipantTeamOption,
   PublicRaceSubmission,
   RaceFeedItem,
 } from "@borneo/lib/race/submissions";
@@ -28,8 +27,6 @@ type MilestoneSubmitDrawerProps = {
   open: boolean;
   onClose: () => void;
   participantName: string;
-  teams: ParticipantTeamOption[];
-  tagTeamSlug: string | null;
   initialSubmissions: PublicRaceSubmission[];
   initialGroup: ParticipantRaceGroup | null;
   cutoffPassed: boolean;
@@ -40,15 +37,13 @@ export function MilestoneSubmitDrawer({
   open,
   onClose,
   participantName,
-  teams,
-  tagTeamSlug,
   initialSubmissions,
   initialGroup,
   cutoffPassed,
   onSubmitted,
 }: MilestoneSubmitDrawerProps) {
   const [submissions, setSubmissions] = useState<PublicRaceSubmission[]>(initialSubmissions);
-  const [teamSlug, setTeamSlug] = useState<string>(tagTeamSlug ?? teams[0]?.slug ?? "");
+  const [groupNumber, setGroupNumber] = useState<number | null>(initialGroup?.groupNumber ?? null);
   const [step, setStep] = useState<"pick" | "link">("pick");
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [threadUrl, setThreadUrl] = useState("");
@@ -65,9 +60,6 @@ export function MilestoneSubmitDrawer({
   const selectedTaskImage = selectedTask ? raceMilestoneImage(selectedTask.id) : null;
   const completedCount = submissions.length;
   const totalCount = RACE_TASKS.length;
-  const taggedTeam = teamSlug
-    ? (teams.find((team) => team.slug === teamSlug) ?? null)
-    : null;
 
   useEffect(() => {
     if (!open) {
@@ -80,8 +72,8 @@ export function MilestoneSubmitDrawer({
 
   useEffect(() => {
     setSubmissions(initialSubmissions);
-    setTeamSlug(tagTeamSlug ?? teams[0]?.slug ?? "");
-  }, [initialSubmissions, tagTeamSlug, teams]);
+    setGroupNumber(initialGroup?.groupNumber ?? null);
+  }, [initialSubmissions, initialGroup]);
 
   useEffect(() => {
     if (!open) return;
@@ -127,7 +119,6 @@ export function MilestoneSubmitDrawer({
       body: JSON.stringify({
         taskId: selectedTaskId,
         threadUrl,
-        teamSlug: taggedTeam?.slug ?? null,
       }),
     });
     const data = (await res.json()) as {
@@ -151,8 +142,7 @@ export function MilestoneSubmitDrawer({
         taskNumber: selectedTask.number,
         submitterId: "self",
         submitterName: participantName,
-        teamSlug: taggedTeam?.slug ?? null,
-        teamName: taggedTeam?.name ?? null,
+        groupNumber,
       };
       setSubmissions((prev) => {
         const rest = prev.filter((row) => row.taskId !== selectedTaskId);
@@ -201,33 +191,16 @@ export function MilestoneSubmitDrawer({
           </button>
         </header>
 
-        <RaceGroupPanel isSignedIn initialGroup={initialGroup} variant="drawer" />
+        <RaceGroupPanel
+          isSignedIn
+          initialGroup={initialGroup}
+          variant="drawer"
+          onGroupChange={(group) => setGroupNumber(group.groupNumber)}
+        />
 
         <p className="race-drawer__team-note">
           Submitting as <strong>{participantName}</strong>
         </p>
-
-        {teams.length > 1 ? (
-          <label className="race-drawer__team-field">
-            <span className="race-drawer__team-label">Team tag (optional)</span>
-            <select
-              className="team-form__select"
-              value={teamSlug}
-              onChange={(e) => setTeamSlug(e.target.value)}
-            >
-              <option value="">No team tag</option>
-              {teams.map((team) => (
-                <option key={team.slug} value={team.slug}>
-                  {team.name}
-                </option>
-              ))}
-            </select>
-          </label>
-        ) : teams.length === 1 ? (
-          <p className="race-drawer__team-note">
-            Team tag: <strong>{teams[0].name}</strong>
-          </p>
-        ) : null}
 
         {step === "pick" ? (
           <>
@@ -369,8 +342,6 @@ type MilestoneSubmitGateProps = {
   onClose: () => void;
   submission: {
     participantName: string;
-    teams: ParticipantTeamOption[];
-    tagTeamSlug: string | null;
     initialSubmissions: PublicRaceSubmission[];
     initialGroup: ParticipantRaceGroup | null;
     cutoffPassed: boolean;
@@ -416,8 +387,6 @@ export function MilestoneSubmitGate({
       open={open}
       onClose={onClose}
       participantName={submission.participantName}
-      teams={submission.teams}
-      tagTeamSlug={submission.tagTeamSlug}
       initialSubmissions={submission.initialSubmissions}
       initialGroup={submission.initialGroup}
       cutoffPassed={submission.cutoffPassed}
