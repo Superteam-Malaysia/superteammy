@@ -56,7 +56,7 @@ export function RacePageContent({
     isSignedIn && !inRaceGroup ? "+ Add milestone / join group" : "+ Add milestone";
 
   return (
-    <div className="race-page">
+    <div className={`race-page${isSignedIn ? " race-page--signed-in" : ""}`}>
       <header className="race-page__hero">
         <p className="race-page__lead">
           Complete milestones across Kuching — post proof on X, paste the link here. Your post shows up in the feed.

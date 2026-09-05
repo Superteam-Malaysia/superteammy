@@ -753,9 +753,10 @@
 }
 
 .race-page__fab {
+  display: none;
   position: fixed;
   right: max(1rem, env(safe-area-inset-right));
-  bottom: max(5.5rem, calc(env(safe-area-inset-bottom) + 4.5rem));
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
   z-index: 100;
   width: 3.25rem;
   height: 3.25rem;
@@ -768,6 +769,7 @@
   font-weight: 400;
   cursor: pointer;
   box-shadow: 0 8px 24px color-mix(in srgb, var(--color-byte) 35%, transparent);
+  place-items: center;
 }
 
 .race-page__fab:hover {
@@ -1906,8 +1908,13 @@
     letter-spacing: 0.035em;
   }
 
-  .race-page__actions {
+  /* Signed-in: FAB replaces the long inline CTA. Guests keep the labeled button. */
+  .race-page--signed-in .race-page__actions {
     display: none;
+  }
+
+  .race-page--signed-in .race-page__fab {
+    display: grid;
   }
 
   .race-group-panel__title {
