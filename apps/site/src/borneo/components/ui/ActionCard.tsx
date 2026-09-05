@@ -8,8 +8,7 @@ export type ActionCardProps = {
   description?: string;
   tone?: CardTone;
   aspect?: "square" | "5-4";
-  accentText?: boolean;
-  cta?: { label: string; href?: string; variant?: "byte" | "azure" | "ghost-null" };
+  cta?: { label: string; href?: string; variant?: "byte" | "azure" | "ghost-wisp" | "ghost-null" };
   children?: ReactNode;
 };
 
@@ -25,7 +24,6 @@ export function ActionCard({
   description,
   tone = "null",
   aspect = "5-4",
-  accentText,
   cta,
   children,
 }: ActionCardProps) {
@@ -35,7 +33,6 @@ export function ActionCard({
         "bp-card",
         aspect === "square" ? "bp-card--square" : "bp-card--5-4",
         toneClass[tone],
-        accentText ? "bp-card--null-accent" : "",
       ]
         .filter(Boolean)
         .join(" ")}

@@ -69,9 +69,9 @@
 .text-label-accent {
   font-family: var(--font-mono);
   font-size: 0.8125rem;
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: 0.02em;
-  color: var(--color-byte);
+  color: var(--color-wisp);
 }
 
 .text-label-muted {
@@ -84,6 +84,18 @@
 
 .text-label-sm {
   font-size: 0.6875rem;
+}
+
+/** Inline links on dark surfaces — white hierarchy, no red accent. */
+.text-link-wisp {
+  color: color-mix(in srgb, var(--color-wisp) 78%, transparent);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  transition: color var(--duration-normal) var(--ease-out-expo);
+}
+
+.text-link-wisp:hover {
+  color: var(--color-wisp);
 }
 
 /* Home hero layout — title styles in hero-reveal.css */
@@ -219,7 +231,7 @@
 }
 
 .before-you-land__tweet-link:hover {
-  color: var(--color-byte);
+  color: var(--color-wisp);
 }
 
 .embedded-tweet-card .react-tweet-theme {

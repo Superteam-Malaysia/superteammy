@@ -58,7 +58,7 @@
 }
 
 .site-nav__logo:hover {
-  color: var(--color-byte);
+  color: var(--color-wisp);
 }
 
 .site-nav__logo-mark {
@@ -107,7 +107,7 @@
 }
 
 .site-nav__desktop-link:hover {
-  color: var(--color-byte);
+  color: var(--color-wisp);
 }
 
 .site-nav__soon-tag {
@@ -156,11 +156,11 @@
 }
 
 .site-nav__auth-link:hover {
-  color: var(--color-byte);
+  color: var(--color-wisp);
 }
 
 .site-nav__auth-link--signed-in {
-  color: var(--color-byte);
+  color: var(--color-wisp);
 }
 
 @media (min-width: 1024px) {
@@ -186,8 +186,8 @@
 
 .site-nav__menu-btn:hover,
 .site-nav__menu-btn[aria-expanded="true"] {
-  color: var(--color-byte);
-  border-color: color-mix(in srgb, var(--color-byte) 40%, transparent);
+  color: var(--color-wisp);
+  border-color: color-mix(in srgb, var(--color-wisp) 40%, transparent);
 }
 
 .site-nav__mobile-panel {
@@ -226,7 +226,7 @@
 }
 
 .site-nav__mobile-link:hover {
-  color: var(--color-byte);
+  color: var(--color-wisp);
 }
 
 /* Mobile panel spans the full nav bar — not just the Menu button width */

@@ -11,11 +11,11 @@
 .nav-mobile-scroll { display: flex; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; scroll-snap-type: x proximity; scroll-padding-inline: 1rem; border-top: 1px solid var(--color-transparent-wisp-10); mask-image: linear-gradient(to right, transparent, black 0.75rem, black calc(100% - 0.75rem), transparent); }
 .nav-mobile-scroll::-webkit-scrollbar { display: none; }
 .nav-mobile-link { flex-shrink: 0; scroll-snap-align: start; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.75rem 1rem; color: color-mix(in srgb, var(--color-wisp) 78%, transparent); transition: color var(--duration-normal) var(--ease-out-expo); white-space: nowrap; }
-.nav-mobile-link:hover, .nav-mobile-link:focus-visible { color: var(--color-byte); }
+.nav-mobile-link:hover, .nav-mobile-link:focus-visible { color: var(--color-wisp); }
 .prize-row { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding-bottom: 0.875rem; border-bottom: 1px solid var(--color-transparent-wisp-10); font-family: var(--font-mono); font-size: 0.8125rem; letter-spacing: 0.06em; text-transform: uppercase; transition: border-color var(--duration-normal) var(--ease-out-expo); }
-.prize-row:hover { border-color: color-mix(in srgb, var(--color-byte) 35%, transparent); }
+.prize-row:hover { border-color: color-mix(in srgb, var(--color-wisp) 35%, transparent); }
 .prize-row__amount { font-family: var(--font-display); font-size: 1.25rem; letter-spacing: normal; text-transform: none; flex-shrink: 0; }
 .prize-rows--invert .prize-row { border-color: color-mix(in srgb, var(--color-null) 18%, transparent); }
 .prize-rows--invert .prize-row:hover { border-color: color-mix(in srgb, var(--color-null) 45%, transparent); }
 .partner-pill { transition: border-color var(--duration-normal) var(--ease-out-expo), color var(--duration-normal) var(--ease-out-expo); }
-.partner-pill:hover:not(.partner-pill--pending) { border-color: var(--color-byte); color: var(--color-byte); opacity: 1; }
+.partner-pill:hover:not(.partner-pill--pending) { border-color: color-mix(in srgb, var(--color-wisp) 45%, transparent); color: var(--color-wisp); opacity: 1; }

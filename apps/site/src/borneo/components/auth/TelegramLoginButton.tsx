@@ -160,7 +160,7 @@ export function TelegramLoginButton() {
 
   if (!config.configured || !config.botUsername) {
     return (
-      <p className="text-sm text-[var(--color-byte)]">
+      <p className="text-sm text-[color:color-mix(in_srgb,var(--color-wisp)_72%,transparent)]">
         Telegram sign-in is not configured yet. Set{" "}
         <code className="font-mono">TELEGRAM_BOT_TOKEN</code> on the server and redeploy.
         {config.error ? ` (${config.error})` : ""}

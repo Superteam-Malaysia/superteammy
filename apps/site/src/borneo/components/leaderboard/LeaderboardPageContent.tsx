@@ -11,7 +11,7 @@ import { PageHeader } from "@borneo/components/shell";
 const DAY_LABELS = ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5"];
 
 function rankAccent(rank: number) {
-  if (rank === 1) return "text-[var(--color-byte)]";
+  if (rank === 1) return "text-[var(--color-wisp)] font-bold";
   if (rank === 2) return "text-[var(--color-azure)]";
   if (rank === 3) return "text-[var(--color-mint)]";
   return "text-[var(--color-wisp)]/60";

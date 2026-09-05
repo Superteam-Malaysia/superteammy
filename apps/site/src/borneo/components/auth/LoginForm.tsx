@@ -45,7 +45,7 @@ export function LoginForm({ error }: LoginFormProps) {
   return (
     <div className="max-w-md">
       {error ? (
-        <p className="mb-4 text-sm text-[var(--color-byte)]">{error}</p>
+        <p className="mb-4 text-sm text-[var(--color-wisp)]/80">{error}</p>
       ) : null}
 
       <form onSubmit={onSubmit} className="flex flex-col gap-4">

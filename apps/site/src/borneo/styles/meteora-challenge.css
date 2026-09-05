@@ -39,7 +39,7 @@
   font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-byte);
+  color: color-mix(in srgb, var(--color-wisp) 65%, transparent);
 }
 
 .meteora-hero__title {
@@ -140,7 +140,7 @@
   min-height: 100%;
   padding: 1.35rem 1.4rem;
   border: 1px solid color-mix(in srgb, var(--color-wisp) 12%, transparent);
-  background: color-mix(in srgb, var(--color-null) 94%, var(--color-byte) 6%);
+  background: color-mix(in srgb, var(--color-null) 94%, var(--color-wisp) 4%);
 }
 
 .meteora-steps__item:nth-child(2) {
@@ -158,7 +158,7 @@
   font-size: 0.65rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--color-byte);
+  color: color-mix(in srgb, var(--color-wisp) 65%, transparent);
 }
 
 .meteora-steps__cue {
@@ -246,7 +246,7 @@
 }
 
 .meteora-wallet__sign-in-link {
-  color: var(--color-byte);
+  color: color-mix(in srgb, var(--color-wisp) 65%, transparent);
   text-decoration: none;
 }
 
@@ -257,14 +257,14 @@
 .meteora-wallet__error {
   margin: 0;
   font-size: 0.875rem;
-  color: color-mix(in srgb, var(--color-byte) 90%, #ff6b6b);
+  color: color-mix(in srgb, var(--color-wisp) 85%, transparent);
 }
 
 .meteora-wallet__saved {
   margin: 0;
   font-family: var(--font-mono);
   font-size: 0.8125rem;
-  color: var(--color-byte);
+  color: color-mix(in srgb, var(--color-wisp) 65%, transparent);
 }
 
 .meteora-wallet__field {
@@ -292,7 +292,7 @@
 }
 
 .meteora-wallet__input:focus {
-  outline: 2px solid color-mix(in srgb, var(--color-byte) 45%, transparent);
+  outline: 2px solid color-mix(in srgb, var(--color-wisp) 45%, transparent);
   outline-offset: 2px;
 }
 

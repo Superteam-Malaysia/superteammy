@@ -59,7 +59,7 @@
   z-index: -1;
   transform: scaleX(1);
   transform-origin: left center;
-  background: var(--color-byte);
+  background: color-mix(in srgb, var(--color-azure) 55%, transparent);
 }
 
 .prize-tracks__marquee {

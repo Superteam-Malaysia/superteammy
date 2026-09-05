@@ -35,7 +35,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           />
           <div className="mt-10">
             {error ? (
-              <p className="mb-4 text-sm text-[var(--color-byte)]">{error}</p>
+              <p className="mb-4 text-sm text-[var(--color-wisp)]/80">{error}</p>
             ) : null}
             <TelegramLoginButton />
           </div>

@@ -63,7 +63,7 @@
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--color-byte);
+  color: color-mix(in srgb, var(--color-wisp) 70%, transparent);
 }
 
 .judges-panel__photo {

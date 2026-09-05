@@ -11,7 +11,7 @@ export async function ParticipantDirectory() {
       <SectionArticle className="builder-directory__empty">
         <p className="text-sm text-[var(--color-wisp)]/60 max-w-xl">
           Participant directory syncs from Luma registration. Check back once imports are live, or{" "}
-          <Link href="/login" className="text-[var(--color-byte)] hover:underline">
+          <Link href="/login" className="text-link-wisp">
             sign in
           </Link>{" "}
           if you are registered.

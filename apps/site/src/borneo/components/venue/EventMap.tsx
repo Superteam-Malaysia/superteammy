@@ -26,7 +26,7 @@ function MapSearch({
         placeholder="Search locations..."
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full h-12 px-4 pr-10 bg-[var(--map-surface)] border border-[color:var(--color-transparent-wisp-10)] text-white placeholder:text-[color:var(--color-wisp)]/40 focus:outline-none focus:border-[var(--color-byte)]/50 transition-colors font-[family-name:var(--font-sans)]"
+        className="w-full h-12 px-4 pr-10 bg-[var(--map-surface)] border border-[color:var(--color-transparent-wisp-10)] text-white placeholder:text-[color:var(--color-wisp)]/40 focus:outline-none focus:border-[color:var(--color-wisp)]/50 transition-colors font-[family-name:var(--font-sans)]"
       />
       <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[color:var(--color-wisp)]/40">
         <IconSearch />
@@ -52,7 +52,7 @@ function FloorTabsMobile({
           className={[
             "w-full py-2 font-[family-name:var(--font-sans)] text-xs transition-all cursor-pointer",
             active === floor.id
-              ? "bg-[var(--color-byte)] text-[var(--color-null)]"
+              ? "bg-[color:var(--color-transparent-wisp-10)] text-[var(--color-wisp)]"
               : "text-[var(--color-wisp)] hover:bg-[color:var(--color-transparent-wisp-10)]",
           ].join(" ")}
         >
@@ -83,7 +83,7 @@ function FloorListDesktop({
             className={[
               "w-full px-4 py-3 font-[family-name:var(--font-sans)] text-left transition-all cursor-pointer flex items-center justify-between border-b border-t",
               isActive
-                ? "bg-[var(--color-byte)]/20 border-[var(--color-byte)]/50 text-[var(--color-byte)]"
+                ? "bg-[color:var(--color-transparent-wisp-10)] border-[color:var(--color-wisp)]/50 text-[var(--color-wisp)]"
                 : "bg-[var(--map-surface)] border-[color:var(--color-transparent-wisp-10)] text-[var(--color-wisp)] hover:bg-[color:var(--color-transparent-wisp-10)]",
             ].join(" ")}
           >
@@ -91,7 +91,7 @@ function FloorListDesktop({
             <span
               className={[
                 "text-[12px] px-2 py-0.5",
-                isActive ? "bg-[var(--color-byte)]/30" : "bg-[color:var(--color-transparent-wisp-10)]",
+                isActive ? "bg-[color:var(--color-transparent-wisp-10)]" : "bg-[color:var(--color-transparent-wisp-10)]",
               ].join(" ")}
             >
               {floor.locationCount} locations
@@ -115,7 +115,7 @@ function ZoneCallout({
   return (
     <div
       className={[
-        "flex flex-col gap-3 bg-[var(--map-surface)] border border-[var(--color-byte)]/50 p-4",
+        "flex flex-col gap-3 bg-[var(--map-surface)] border border-[color:var(--color-transparent-wisp-10)] p-4",
         compact ? "" : "flex-1 overflow-y-auto max-h-80",
       ].join(" ")}
     >
@@ -123,13 +123,13 @@ function ZoneCallout({
         <div className="flex items-center gap-2 sm:gap-3">
           <span
             className={[
-              "inline-flex items-center justify-center rounded font-bold bg-[var(--color-byte)] text-[var(--color-null)]",
+              "inline-flex items-center justify-center rounded font-bold bg-[color:var(--color-transparent-wisp-10)] text-[var(--color-wisp)]",
               compact ? "w-6 h-6 text-[10px]" : "w-7 h-7 text-xs",
             ].join(" ")}
           >
             {zone.number}
           </span>
-          <h5 className="text-[var(--color-byte)] font-medium text-sm sm:text-base">{zone.name}</h5>
+          <h5 className="text-[var(--color-wisp)] font-medium text-sm sm:text-base">{zone.name}</h5>
         </div>
         <button
           type="button"

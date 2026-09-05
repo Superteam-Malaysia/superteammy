@@ -25,8 +25,8 @@ export default function DesignSystemPage() {
           <SectionIntro title="Brand assets" accent="byte" />
           <p className="mt-6 max-w-2xl text-[var(--color-wisp)]/80 leading-relaxed">
             Official SVB marks for partners and press. Component reference for{" "}
-            <code className="text-[var(--color-byte)]">apps/web/src/components</code> below.
-            Public site: <Link href="/" className="text-[var(--color-byte)] hover:underline">/</Link>.
+            <code className="text-[var(--color-wisp)]/80">apps/web/src/components</code> below.
+            Public site: <Link href="/" className="text-link-wisp">/</Link>.
           </p>
         </section>
 
@@ -61,12 +61,12 @@ export default function DesignSystemPage() {
         </section>
 
         <section id="cards">
-          <SectionArticle className="bg-[var(--color-azure)] text-[var(--color-null)]">
+          <SectionArticle className="bg-[var(--color-azure)] text-[var(--color-wisp)]">
             <SectionIntro title="Ticket cards" />
             <ul className="mt-10 grid gap-6 card-sm:grid-cols-2 md:grid-cols-4 list-none">
               <li>
-                <ActionCard title="General Admission" tone="null" aspect="square" accentText>
-                  <p className="stat-display text-[var(--color-azure)]">$500</p>
+                <ActionCard title="General Admission" tone="null" aspect="square">
+                  <p className="stat-display">$500</p>
                 </ActionCard>
               </li>
               <li>
@@ -91,7 +91,7 @@ export default function DesignSystemPage() {
             <SectionIntro title="Action cards" />
             <ul className="mt-10 grid gap-6 md:grid-cols-4 list-none">
               <li>
-                <ActionCard title="Speak" tone="null" accentText description="Applications closed." />
+                <ActionCard title="Speak" tone="null" description="Applications closed." />
               </li>
               <li>
                 <ActionCard
@@ -149,11 +149,11 @@ export default function DesignSystemPage() {
             <SectionIntro title="Print-screen data surfaces" />
             <p className="mt-4 text-[var(--color-wisp)]/70 text-sm max-w-2xl">
               Breakpoint handles layout, CTAs, and venue chrome. Halftone UI (
-              <a href="https://halftone-ui.com/docs/" className="text-[var(--color-byte)] hover:underline">
+              <a href="https://halftone-ui.com/docs/" className="text-link-wisp">
                 halftone-kit
               </a>
               ) presses meters, charts, and cards — copy-in at{" "}
-              <code className="text-[var(--color-byte)]">src/halftone/</code>.
+              <code className="text-[var(--color-wisp)]/80">src/halftone/</code>.
             </p>
             <div className="mt-10">
               <HalftoneShowcase />
@@ -167,7 +167,7 @@ export default function DesignSystemPage() {
             <SectionIntro title="Event map" />
             <p className="mt-4 text-[var(--color-wisp)]/70 text-sm max-w-2xl">
               Pan/zoom floor plans with numbered zones — from Breakpoint 2025 event-day archive. Floor images:
-              <code className="text-[var(--color-byte)]"> public/map/*.webp</code>
+              <code className="text-[var(--color-wisp)]/80"> public/map/*.webp</code>
             </p>
             <EventMap venueName="Etihad Arena (reference)" />
           </SectionArticle>

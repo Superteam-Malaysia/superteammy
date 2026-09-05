@@ -12,7 +12,7 @@ export default function NotFound() {
       </div>
       <Link
         href="/amazing-race"
-        className="font-[family-name:var(--font-mono)] text-sm text-[var(--color-wisp)]/50 hover:text-[var(--color-byte)] transition-colors"
+        className="font-[family-name:var(--font-mono)] text-sm text-[var(--color-wisp)]/50 hover:text-[var(--color-wisp)] transition-colors"
       >
         Amazing Race →
       </Link>

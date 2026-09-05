@@ -61,15 +61,15 @@
   font-size: 0.6875rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--color-byte);
-  border: 1px solid color-mix(in srgb, var(--color-byte) 45%, transparent);
+  color: var(--color-wisp);
+  border: 1px solid color-mix(in srgb, var(--color-wisp) 35%, transparent);
   background: transparent;
   padding: 0.5rem 0.75rem;
   cursor: pointer;
 }
 
 .image-upload__button:hover:not(:disabled) {
-  border-color: var(--color-byte);
+  border-color: color-mix(in srgb, var(--color-wisp) 55%, transparent);
 }
 
 .image-upload__button:disabled {
@@ -90,5 +90,5 @@
 }
 
 .image-upload__error {
-  color: var(--color-byte);
+  color: #fca5a5;
 }

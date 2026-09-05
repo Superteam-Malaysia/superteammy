@@ -257,12 +257,12 @@
 }
 
 .workshop-row__link:hover {
-  color: var(--color-byte);
+  color: var(--color-wisp);
   background: color-mix(in srgb, var(--color-wisp) 8%, transparent);
 }
 
 .workshop-row__link:focus-visible {
-  outline: 2px solid var(--color-byte);
+  outline: 2px solid color-mix(in srgb, var(--color-wisp) 65%, transparent);
   outline-offset: -2px;
 }
 

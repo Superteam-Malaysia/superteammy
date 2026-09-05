@@ -27,7 +27,7 @@ export default function SustainabilityPage() {
         <SectionIntro title="What judges look for" />
         <ul className="mt-8 flex flex-col gap-4 list-none">
           {SUSTAINABILITY_TRACK.criteria.map((item) => (
-            <li key={item} className="border-l-2 border-[var(--color-byte)] pl-4 text-[var(--color-wisp)]/75 leading-relaxed">
+            <li key={item} className="border-l-2 border-[color:var(--color-transparent-wisp-35)] pl-4 text-[var(--color-wisp)]/75 leading-relaxed">
               {item}
             </li>
           ))}

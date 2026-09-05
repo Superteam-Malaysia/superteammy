@@ -52,8 +52,8 @@ export function VenueMapSwitcher() {
             className={[
               "px-4 py-2 text-label text-label-accent border transition-colors cursor-pointer",
               preset === p.id
-                ? "bg-[var(--color-byte)] text-[var(--color-null)] border-[var(--color-byte)]"
-                : "border-[color:var(--color-transparent-wisp-10)] text-[var(--color-wisp)]/70 hover:border-[var(--color-byte)]/40",
+                ? "bg-[color:var(--color-transparent-wisp-10)] text-[var(--color-wisp)] border-[color:var(--color-wisp)]/50"
+                : "border-[color:var(--color-transparent-wisp-10)] text-[var(--color-wisp)]/70 hover:border-[color:var(--color-wisp)]/40",
             ].join(" ")}
           >
             {p.label}

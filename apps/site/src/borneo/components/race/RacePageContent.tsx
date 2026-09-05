@@ -100,14 +100,14 @@ export function RacePageContent({
         <p className="race-page__admin">
           <Link
             href={withBasePath("/admin/checkin")}
-            className="text-[var(--color-byte)] hover:underline font-[family-name:var(--font-mono)] text-sm"
+            className="text-link-wisp font-[family-name:var(--font-mono)] text-sm"
           >
             Guest check-in →
           </Link>
           {" · "}
           <Link
             href={withBasePath("/admin/submissions")}
-            className="text-[var(--color-byte)] hover:underline font-[family-name:var(--font-mono)] text-sm"
+            className="text-link-wisp font-[family-name:var(--font-mono)] text-sm"
           >
             Review all submissions →
           </Link>

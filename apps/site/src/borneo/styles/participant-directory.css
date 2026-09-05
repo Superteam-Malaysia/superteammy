@@ -50,7 +50,7 @@
 }
 
 .builder-directory__tab--active .builder-directory__tab-count {
-  color: var(--color-byte);
+  color: var(--color-wisp);
 }
 
 .builder-directory__summary {

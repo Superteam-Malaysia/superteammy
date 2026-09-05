@@ -109,11 +109,11 @@ export function RaceSubmissionsPanel({
       <div className="race-submissions-panel">
         <p className="text-sm text-[var(--color-wisp)]/70">
           Sign in and join a team to submit race threads.{" "}
-          <Link href={withBasePath("/teams")} className="text-[var(--color-byte)] hover:underline">
+          <Link href={withBasePath("/teams")} className="text-link-wisp">
             Browse teams
           </Link>
           {" · "}
-          <Link href="/login" className="text-[var(--color-byte)] hover:underline">
+          <Link href="/login" className="text-link-wisp">
             Sign in
           </Link>
         </p>

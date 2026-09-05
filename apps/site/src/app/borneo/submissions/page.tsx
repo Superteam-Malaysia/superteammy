@@ -62,7 +62,7 @@ export default function SubmissionsPage() {
                 title="Amazing Race"
                 tone="azure"
                 description="One Twitter thread per task — tag every teammate."
-                cta={{ label: "Task list", href: "/amazing-race", variant: "azure" }}
+                cta={{ label: "Task list", href: "/amazing-race" }}
               />
             </li>
             <li>
@@ -76,7 +76,6 @@ export default function SubmissionsPage() {
               <ActionCard
                 title="Content posts"
                 tone="null"
-                accentText
                 description="Individual X posts — Content Award, not race points."
               />
             </li>
@@ -96,7 +95,7 @@ export default function SubmissionsPage() {
                 task. Multiple photos in the same thread are fine; duplicate tasks across teams are
                 not.
               </p>
-              <p className="font-[family-name:var(--font-mono)] text-sm text-[var(--color-byte)]">
+              <p className="font-[family-name:var(--font-mono)] text-sm font-semibold text-[var(--color-wisp)]">
                 Companion dApp: paste your thread URL per task for live scoring.
               </p>
             </div>
@@ -154,7 +153,7 @@ export default function SubmissionsPage() {
                     <li key={d}>{d}</li>
                   ))}
                 </ul>
-                <p className="font-[family-name:var(--font-mono)] text-sm text-[var(--color-byte)]">
+                <p className="font-[family-name:var(--font-mono)] text-sm font-semibold text-[var(--color-wisp)]">
                   {walletTask.pointsBase} pts · highest-value single station
                 </p>
               </div>
@@ -185,7 +184,7 @@ export default function SubmissionsPage() {
           </div>
         </SectionArticle>
 
-        <SectionArticle className="bg-[var(--color-byte)]/5 border border-[color:var(--color-transparent-wisp-10)] p-6 md:p-10">
+        <SectionArticle className="bg-[var(--color-wisp)]/5 border border-[color:var(--color-transparent-wisp-10)] p-6 md:p-10">
           <SectionIntro title="Race thread uploads" />
           <p className="mt-6 max-w-xl text-[var(--color-wisp)]/75 leading-relaxed">
             Submit thread URLs on the Amazing Race page — one link per station, tagging every

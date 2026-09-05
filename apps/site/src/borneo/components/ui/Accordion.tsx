@@ -28,20 +28,20 @@ export function Accordion({ items }: { items: AccordionItem[] }) {
               aria-expanded={isOpen}
             >
               <span
-                className="font-[family-name:var(--font-sans)] text-xl font-normal normal-case group-hover:text-[var(--color-byte)] transition-colors duration-300"
+                className="font-[family-name:var(--font-sans)] text-xl font-normal normal-case group-hover:text-[var(--color-wisp)] transition-colors duration-300"
               >
                 {item.title}
               </span>
               <span
-                className="relative shrink-0 size-8 border border-[var(--color-wisp)] text-center flex items-center justify-center group-hover:border-[var(--color-byte)] transition-colors duration-300"
+                className="relative shrink-0 size-8 border border-[var(--color-wisp)] text-center flex items-center justify-center group-hover:border-[color:var(--color-transparent-wisp-35)] transition-colors duration-300"
               >
                 <span
                   className={[
-                    "absolute h-0.5 w-3 bg-[var(--color-wisp)] group-hover:bg-[var(--color-byte)] transition-all duration-300",
+                    "absolute h-0.5 w-3 bg-[var(--color-wisp)] group-hover:bg-[var(--color-wisp)] transition-all duration-300",
                     isOpen ? "rotate-0" : "rotate-90",
                   ].join(" ")}
                 />
-                <span className="absolute h-0.5 w-3 bg-[var(--color-wisp)] group-hover:bg-[var(--color-byte)] transition-colors duration-300" />
+                <span className="absolute h-0.5 w-3 bg-[var(--color-wisp)] group-hover:bg-[var(--color-wisp)] transition-colors duration-300" />
               </span>
             </button>
             {isOpen && (

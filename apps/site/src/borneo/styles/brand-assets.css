@@ -94,10 +94,10 @@
   font-size: 0.8125rem;
   font-weight: 500;
   letter-spacing: 0.02em;
-  color: var(--color-byte);
+  color: var(--color-wisp);
   text-decoration: none;
 }
 
 .brand-logos__download:hover {
-  color: color-mix(in srgb, var(--color-byte) 82%, var(--color-wisp));
+  color: color-mix(in srgb, var(--color-wisp) 82%, transparent);
 }

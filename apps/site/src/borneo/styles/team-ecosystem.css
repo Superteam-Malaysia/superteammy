@@ -349,7 +349,7 @@
 }
 
 .team-directory-card:hover .team-directory-card__cta {
-  color: var(--color-byte);
+  color: var(--color-wisp);
 }
 
 /* Colosseum company card — grid frame holds member cells inside */
@@ -873,7 +873,7 @@
 .team-form__error {
   margin: 0;
   font-size: 0.8125rem;
-  color: var(--color-byte);
+  color: #fca5a5;
 }
 
 .team-form__actions {
@@ -1102,7 +1102,7 @@
   padding: 0.25rem 0.5rem;
   border: 0;
   background: transparent;
-  color: color-mix(in srgb, var(--color-byte) 80%, transparent);
+  color: color-mix(in srgb, #fca5a5 85%, var(--color-wisp));
   font-family: var(--font-mono);
   font-size: 0.7rem;
   text-transform: uppercase;

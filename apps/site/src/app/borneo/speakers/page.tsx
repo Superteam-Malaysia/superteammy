@@ -40,7 +40,7 @@ export default function SpeakersPage() {
             </div>
             <Link
               href={`/schedule?day=${day.dayIndex}`}
-              className="text-label text-label-muted hover:text-[var(--color-byte)] transition-colors"
+              className="text-label text-label-muted hover:text-[var(--color-wisp)] transition-colors"
             >
               Calendar →
             </Link>
@@ -50,7 +50,7 @@ export default function SpeakersPage() {
             {day.sessions.map((session) => (
               <li
                 key={session.id}
-                className="speaker-session-row group grid gap-4 md:grid-cols-[5rem_1fr_auto] md:items-center border border-[color:var(--color-transparent-wisp-10)] p-4 md:p-5 hover:border-[var(--color-byte)] transition-colors"
+                className="speaker-session-row group grid gap-4 md:grid-cols-[5rem_1fr_auto] md:items-center border border-[color:var(--color-transparent-wisp-10)] p-4 md:p-5 hover:border-[color:var(--color-transparent-wisp-35)] transition-colors"
               >
                 <div className="text-label text-label-muted">
                   {session.start ?? "—"}

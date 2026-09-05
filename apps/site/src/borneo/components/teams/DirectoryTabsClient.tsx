@@ -258,7 +258,7 @@ export function DirectoryTabsClient({
 
         {!isSignedIn && tab === "teams" ? (
           <p className="mt-10 text-center text-sm text-white/70">
-            <Link href="/login" className="text-[var(--color-byte)] hover:underline">
+            <Link href="/login" className="text-link-wisp">
               Sign in
             </Link>{" "}
             to create a team and add builders from the directory.
