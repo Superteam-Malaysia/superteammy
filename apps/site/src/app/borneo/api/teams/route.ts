@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { eq } from "drizzle-orm";
 import { getParticipantForSession } from "@borneo/lib/auth/participant";
 import { getDb } from "@borneo/lib/db";
 import { teamMembers, teams } from "@borneo/lib/db/schema";
