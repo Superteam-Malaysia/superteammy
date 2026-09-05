@@ -4,6 +4,7 @@ import Link from "@borneo/components/Link";
 import { useState } from "react";
 import { NAV_LINKS } from "@borneo/data/site";
 import type { NavAuthLink } from "@borneo/lib/auth/nav-auth-link";
+import { NavAuthControl } from "./NavAuthControl";
 import { SiteNavMobileItem } from "./SiteNavItem";
 
 type MobileNavMenuProps = {
@@ -37,13 +38,12 @@ export function MobileNavMenu({ authLink }: MobileNavMenuProps) {
               </li>
             ))}
             <li>
-              <Link
-                href={authLink.href}
+              <NavAuthControl
+                authLink={authLink}
                 className="site-nav__mobile-link site-nav__mobile-link--auth"
+                mobile
                 onClick={() => setOpen(false)}
-              >
-                {authLink.label}
-              </Link>
+              />
             </li>
           </ul>
         </nav>

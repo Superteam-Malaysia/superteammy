@@ -3,6 +3,7 @@ import { NAV_LINKS, SITE } from "@borneo/data/site";
 import type { NavAuthLink } from "@borneo/lib/auth/nav-auth-link";
 import { withBasePath } from "@borneo/lib/base-path";
 import { MobileNavMenu } from "./MobileNavMenu";
+import { NavAuthControl } from "./NavAuthControl";
 import { SiteNavDesktopItem } from "./SiteNavItem";
 
 type SiteNavProps = {
@@ -10,8 +11,6 @@ type SiteNavProps = {
 };
 
 export function SiteNav({ authLink }: SiteNavProps) {
-  const signedIn = authLink.href === "/profile";
-
   return (
     <header className="site-nav">
       <div className="site-nav__bar">
@@ -33,12 +32,7 @@ export function SiteNav({ authLink }: SiteNavProps) {
         </nav>
 
         <div className="site-nav__actions">
-          <Link
-            href={authLink.href}
-            className={`site-nav__auth-link${signedIn ? " site-nav__auth-link--signed-in" : ""}`}
-          >
-            {authLink.label}
-          </Link>
+          <NavAuthControl authLink={authLink} className="site-nav__auth-link" />
           <MobileNavMenu authLink={authLink} />
         </div>
       </div>
