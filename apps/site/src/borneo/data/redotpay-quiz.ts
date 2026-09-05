@@ -20,7 +20,7 @@ export type RedotPayQuizQuestion = {
 
 export const REDOTPAY_QUIZ = {
   title: "RedotPay Card Quiz",
-  prize: "RedotPay luggage tags",
+  prize: "Virtual cards + luggage tags",
   totalQuestions: 10,
   /** Seconds to answer all questions once the attempt starts. */
   timeLimitSeconds: 120,
@@ -28,7 +28,7 @@ export const REDOTPAY_QUIZ = {
   startDate: "2026-09-05",
   timezone: "Asia/Kuching",
   intro:
-    "All 10 card questions are live. Sign in, start the quiz, and submit within 2 minutes — one attempt per profile. Your score is logged.",
+    "All 10 card questions are live. Sign in, start the quiz, and submit within 2 minutes — one attempt per profile. Top scores win virtual cards and luggage tags.",
 } as const;
 
 export const REDOTPAY_QUIZ_QUESTIONS: RedotPayQuizQuestion[] = [

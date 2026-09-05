@@ -47,8 +47,8 @@ export const PRIZE_TRACKS: PrizeTrack[] = [
   {
     id: "redotpay",
     title: "RedotPay Card Quiz",
-    amount: "Luggage tags",
+    amount: "Virtual cards + luggage tags",
     description:
-      "All 10 card questions live — 2 minutes, one attempt per profile. Scores logged for staff review.",
+      "All 10 card questions live — 2 minutes, one attempt per profile. Top scores win virtual cards and luggage tags.",
   },
 ];
