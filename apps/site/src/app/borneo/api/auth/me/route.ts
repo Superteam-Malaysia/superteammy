@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { getDb } from "@borneo/lib/db";
 import { participants } from "@borneo/lib/db/schema";
+import { toSessionParticipant } from "@borneo/lib/auth/participant";
 import { getSession } from "@borneo/lib/auth/session";
 
 export async function GET() {
@@ -21,6 +22,5 @@ export async function GET() {
     return NextResponse.json({ participant: null }, { status: 401 });
   }
 
-  const { rawRegistration: _raw, ...safe } = participant;
-  return NextResponse.json({ participant: safe });
+  return NextResponse.json({ participant: toSessionParticipant(participant) });
 }

@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     const raceTeam = await createRaceTeam(name);
     return NextResponse.json({ raceTeam });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Could not create race team.";
+    const message = error instanceof Error ? error.message : "Could not create ops group.";
     return NextResponse.json({ error: message }, { status: 400 });
   }
 }

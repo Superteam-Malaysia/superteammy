@@ -11,7 +11,8 @@ import { withBasePath } from "@borneo/lib/base-path";
 
 export const metadata: Metadata = {
   title: "Guest check-in · Admin",
-  description: "Track Startup Village Borneo guest check-in for organizers.",
+  description: "Organizer-only on-site check-in desk.",
+  robots: { index: false, follow: false },
 };
 
 export const dynamic = "force-dynamic";
@@ -30,13 +31,13 @@ export default async function AdminCheckInPage() {
     <main className="site-main site-main--stack">
       <PageHeader
         title="Guest check-in"
-        lead="Mark arrivals, merch pickup, and Amazing Race teams on-site. Separate from hackathon teams in Teams & Mentors."
+        lead="Organizer ops desk — check-in, merch, and internal group assignments. Nothing here is published to the public site."
       />
 
       <SectionArticle className="border border-[color:var(--color-transparent-wisp-10)] p-6 md:p-8">
         <SectionIntro
-          title={`${checkedIn} / ${approved.length} checked in · ${merchReceived} / ${approved.length} merch · ${raceLeaders} race leaders`}
-          lead="Create Amazing Race teams here, assign guests, then mark one leader per race team. Hackathon project teams on /teams are unrelated."
+          title={`${checkedIn} / ${approved.length} checked in · ${merchReceived} / ${approved.length} merch · ${raceLeaders} group leaders`}
+          lead="Ops groups are for your WhatsApp / on-site coordination only. They do not appear on Amazing Race, the leaderboard, Teams & Mentors, or guest profiles."
         />
         <p className="admin-checkin__links">
           <Link href={withBasePath("/admin/submissions")} className="admin-checkin__link">

@@ -1,3 +1,7 @@
+/**
+ * Organizer check-in desk — internal ops data only.
+ * Do not import into public pages, race feed, leaderboard, or participant APIs.
+ */
 import { and, asc, eq, ne } from "drizzle-orm";
 import { getDb } from "@borneo/lib/db";
 import { participants, raceTeams } from "@borneo/lib/db/schema";
@@ -117,7 +121,7 @@ async function uniqueRaceTeamSlug(db: ReturnType<typeof getDb>, name: string): P
 export async function createRaceTeam(name: string): Promise<RaceTeamOption> {
   const trimmed = name.trim();
   if (!trimmed) {
-    throw new Error("Race team name is required.");
+    throw new Error("Ops group name is required.");
   }
 
   const db = getDb();
@@ -209,7 +213,7 @@ export async function updateGuestChecklist(
 
   if (updates.amazingRaceLeader === true) {
     if (!nextRaceTeamId) {
-      throw new Error("Assign an Amazing Race team before marking a leader.");
+      throw new Error("Assign an ops group before marking a leader.");
     }
 
     const previousLeaders = await db

@@ -5,6 +5,7 @@ Allow: /
 # *
 User-agent: *
 Disallow: /dashboard
+Disallow: /borneo/admin
 
 # Host
 Host: https://my.superteam.fun

@@ -22,7 +22,7 @@ const bytea = customType<{ data: Buffer; driverData: Buffer }>({
     return value;
   },
 });
-/** Amazing Race team — separate from hackathon project teams in /teams. */
+/** Organizer ops only — never expose in public APIs, feeds, or directory UI. */
 export const raceTeams = pgTable("race_teams", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
@@ -43,7 +43,9 @@ export const participants = pgTable("participants", {
   approvalStatus: text("approval_status"),
   checkedInAt: timestamp("checked_in_at", { withTimezone: true }),
   merchReceivedAt: timestamp("merch_received_at", { withTimezone: true }),
+  /** Organizer check-in only — not shown on the public site. */
   amazingRaceLeader: boolean("amazing_race_leader").notNull().default(false),
+  /** Organizer check-in only — not shown on the public site. */
   raceTeamId: uuid("race_team_id").references(() => raceTeams.id, { onDelete: "set null" }),
   ticketTypeId: text("ticket_type_id"),
   ticketName: text("ticket_name"),

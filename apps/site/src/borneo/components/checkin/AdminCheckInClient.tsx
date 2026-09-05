@@ -81,8 +81,8 @@ const FILTERS: { id: CheckInFilter; label: string }[] = [
   { id: "checked-in", label: "Checked in" },
   { id: "no-merch", label: "No merch yet" },
   { id: "merch-received", label: "Merch received" },
-  { id: "race-leaders", label: "Race leaders" },
-  { id: "no-race-leader", label: "Race teams w/o leader" },
+  { id: "race-leaders", label: "Group leaders" },
+  { id: "no-race-leader", label: "Groups w/o leader" },
   { id: "all", label: "All guests" },
 ];
 
@@ -218,7 +218,7 @@ export function AdminCheckInClient({
       const data = (await res.json()) as { error?: string; raceTeam?: RaceTeamOption };
 
       if (!res.ok || !data.raceTeam) {
-        setError(data.error ?? "Could not create race team.");
+        setError(data.error ?? "Could not create ops group.");
         return;
       }
 
@@ -227,7 +227,7 @@ export function AdminCheckInClient({
       );
       setNewRaceTeamName("");
     } catch {
-      setError("Could not create race team.");
+      setError("Could not create ops group.");
     } finally {
       setCreatingTeam(false);
     }
@@ -253,12 +253,12 @@ export function AdminCheckInClient({
     <div className="admin-checkin">
       <form className="admin-checkin__create-team" onSubmit={(event) => void createRaceTeam(event)}>
         <label className="admin-checkin__create-team-label">
-          <span className="team-form__label">New Amazing Race team</span>
+          <span className="team-form__label">New ops group (internal)</span>
           <input
             type="text"
             value={newRaceTeamName}
             onChange={(event) => setNewRaceTeamName(event.target.value)}
-            placeholder="Team name for the race (not hackathon directory)"
+            placeholder="e.g. WhatsApp group name — not published on site"
             className="team-form__input"
           />
         </label>
@@ -267,7 +267,7 @@ export function AdminCheckInClient({
           disabled={creatingTeam || !newRaceTeamName.trim()}
           className="admin-checkin__action admin-checkin__action--race"
         >
-          {creatingTeam ? "Creating…" : "Create race team"}
+          {creatingTeam ? "Creating…" : "Create group"}
         </button>
       </form>
 
@@ -282,11 +282,11 @@ export function AdminCheckInClient({
         </div>
         <div className="admin-checkin__stat">
           <span className="admin-checkin__stat-value">{stats.raceLeaders}</span>
-          <span className="admin-checkin__stat-label">Race leaders</span>
+          <span className="admin-checkin__stat-label">Group leaders</span>
         </div>
         <div className="admin-checkin__stat">
           <span className="admin-checkin__stat-value">{stats.onRaceTeam}</span>
-          <span className="admin-checkin__stat-label">On race teams</span>
+          <span className="admin-checkin__stat-label">In ops groups</span>
         </div>
         <div className="admin-checkin__stat">
           <span className="admin-checkin__stat-value">{stats.approved}</span>
@@ -299,7 +299,7 @@ export function AdminCheckInClient({
           type="search"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search name, email, race team…"
+          placeholder="Search name, email, ops group…"
           className="admin-checkin__search team-form__input"
           aria-label="Search guests"
         />
@@ -324,8 +324,8 @@ export function AdminCheckInClient({
       {error ? <p className="team-form__error">{error}</p> : null}
 
       <p className="admin-checkin__count">
-        Showing {visibleGuests.length} guest{visibleGuests.length === 1 ? "" : "s"} · {raceTeams.length} race team
-        {raceTeams.length === 1 ? "" : "s"}
+        Showing {visibleGuests.length} guest{visibleGuests.length === 1 ? "" : "s"} · {raceTeams.length} ops group
+        {raceTeams.length === 1 ? "" : "s"} (internal)
       </p>
 
       {visibleGuests.length === 0 ? (
@@ -336,7 +336,7 @@ export function AdminCheckInClient({
             <thead>
               <tr>
                 <th>Guest</th>
-                <th>Amazing Race team</th>
+                <th>Ops group</th>
                 <th>Arrival</th>
                 <th>Merch</th>
                 <th>Leader</th>
@@ -373,7 +373,7 @@ export function AdminCheckInClient({
                         onChange={(event) =>
                           assignRaceTeam(guest, event.target.value ? event.target.value : null)
                         }
-                        aria-label={`Amazing Race team for ${guest.name}`}
+                        aria-label={`Ops group for ${guest.name}`}
                       >
                         <option value="">Unassigned</option>
                         {raceTeams.map((team) => (
@@ -456,15 +456,15 @@ export function AdminCheckInClient({
                           onClick={() => toggleRaceLeader(guest)}
                           title={
                             guest.raceTeam
-                              ? "One race leader per Amazing Race team"
-                              : "Assign an Amazing Race team first"
+                              ? "One leader per ops group — internal only"
+                              : "Assign an ops group first"
                           }
                         >
                           {raceLeaderPending
                             ? "Saving…"
                             : isRaceLeader
                               ? "Remove leader"
-                              : "Race leader"}
+                              : "Group leader"}
                         </button>
                       </div>
                     </td>
