@@ -132,7 +132,7 @@ export function RaceGroupPanel({ isSignedIn, initialGroup }: RaceGroupPanelProps
             disabled={Boolean(pending)}
             onClick={() => void becomeLeader()}
           >
-            {pending === "leader" ? "Assigning…" : `Group leader → ${group.nextGroupNumber}`}
+            {pending === "leader" ? "Assigning…" : "Become leader"}
           </button>
 
           <form className="race-group-panel__join" onSubmit={(event) => void joinSelectedGroup(event)}>
