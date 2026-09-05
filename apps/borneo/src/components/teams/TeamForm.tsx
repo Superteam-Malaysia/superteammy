@@ -111,7 +111,7 @@ export function TeamForm({ mode, slug, logoUrl, logoFallback, initial, inline }:
           value={values.name}
           onChange={(e) => update("name", e.target.value)}
           className="team-form__input"
-          placeholder="Imperial Perps"
+          placeholder="Your project or team name"
         />
       </label>
 
@@ -158,7 +158,7 @@ export function TeamForm({ mode, slug, logoUrl, logoFallback, initial, inline }:
           value={values.websiteUrl}
           onChange={(e) => update("websiteUrl", e.target.value)}
           className="team-form__input"
-          placeholder="https://"
+          placeholder="https://yourproject.com"
         />
       </label>
 
