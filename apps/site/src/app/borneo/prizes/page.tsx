@@ -18,7 +18,7 @@ export default function PrizesPage() {
     <main className="site-main prizes-page">
       <PageHeader
         title={`${PRIZE_TOTAL} prize pool`}
-        lead="USD prizes are settled off-app per event operations. Meteora and RedotPay run separate partner challenges — this site is the program bible, not a payment portal."
+        lead="USD $10,000 across demo day, Amazing Race, content, and sustainability tracks. Meteora and RedotPay run separate partner challenges."
       />
       <SectionArticle>
         <SectionIntro title="Prize breakdown" accent="byte" />

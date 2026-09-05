@@ -38,7 +38,7 @@ export default async function ProfilePage() {
         <SectionArticle>
           <SectionIntro
             title="My profile"
-            lead="Update your builder card and manage your hackathon team. The teams directory is for browsing only."
+            lead="Update your builder card and manage your hackathon team."
             accent="green"
           />
 

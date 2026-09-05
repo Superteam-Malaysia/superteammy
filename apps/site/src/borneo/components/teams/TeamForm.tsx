@@ -95,7 +95,7 @@ export function TeamForm({ mode, slug, logoUrl, logoFallback, initial, inline }:
         <ImageUploadField
           inputId={`team-logo-upload-${slug}`}
           label="Team logo"
-          hint="Square works best · JPG, PNG, WebP, or GIF · max 1 MB. Stored in the event database."
+          hint="Square works best · JPG, PNG, WebP, or GIF · max 1 MB"
           uploadUrl={`/api/teams/${slug}/logo`}
           imageUrl={logoUrl ?? null}
           fallbackLabel={logoFallback ?? "?"}

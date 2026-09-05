@@ -12,7 +12,7 @@ import { isRaceCutoffPassed } from "@borneo/lib/race/validation";
 export const metadata: Metadata = {
   title: "Amazing Race · Startup Village Borneo",
   description:
-    "Kuching milestone feed — complete race stations, post on X, and paste your link. Hard cutoff Day 4 at 18:00 MYT.",
+    "Kuching milestone feed — complete race stations, post on X, and paste your link.",
 };
 
 export const dynamic = "force-dynamic";

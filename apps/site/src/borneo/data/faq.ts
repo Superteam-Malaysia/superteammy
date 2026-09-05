@@ -62,7 +62,7 @@ export const FAQ_ITEMS: FaqItem[] = [
     category: "general",
     question: "How are prizes paid?",
     answer:
-      "USD $10,000 total prize pool across demo day placements, honourable mentions, sustainability, content, and Amazing Race. Prizes are settled off-app per event ops — this site does not handle payments.",
+      "USD $10,000 total prize pool across demo day placements, honourable mentions, sustainability, content, and Amazing Race. Winners are paid per event operations after the village.",
   },
   {
     id: "evenings",

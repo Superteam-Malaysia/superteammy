@@ -24,16 +24,15 @@ const MAP_PRESETS: {
     zones: SVB_VENUE_ZONES,
     defaultZoneId: "sheraton-lobby",
     caption:
-      "SVB zones on Sheraton — lobby, breakfast, evening build, and waterfront exit. Floor images are a UI placeholder until official plans arrive.",
+      "Sheraton Kuching — lobby, breakfast, evening build, and waterfront exit.",
   },
   {
     id: "breakpoint",
     label: "Breakpoint reference",
-    venueName: "Breakpoint map (UI reference)",
+    venueName: "Breakpoint map",
     zones: BREAKPOINT_VENUE_ZONES,
     defaultZoneId: "touch-grass",
-    caption:
-      "Original Breakpoint EventMap pattern — kept as a layout reference for the interactive component.",
+    caption: "Breakpoint Singapore venue map for reference.",
   },
 ];
 

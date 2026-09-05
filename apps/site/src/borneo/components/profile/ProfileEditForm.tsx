@@ -87,7 +87,7 @@ export function ProfileEditForm({
         <ImageUploadField
           inputId="profile-avatar-upload"
           label="Profile photo"
-          hint="JPG, PNG, WebP, or GIF · max 1 MB. Stored in the event database — no extra storage fees."
+          hint="JPG, PNG, WebP, or GIF · max 1 MB"
           uploadUrl="/api/profile/avatar"
           imageUrl={avatarUrl}
           fallbackLabel={avatarFallback}
@@ -194,10 +194,7 @@ export function ProfileEditForm({
           <h2 id="profile-preview-heading" className="profile-edit__preview-title">
             Directory preview
           </h2>
-          <p className="profile-edit__preview-lead">
-            Your builder card in the teams directory. Click the card to flip it — same as on{" "}
-            <span className="profile-edit__preview-em">Teams &amp; Mentors</span>.
-          </p>
+          <p className="profile-edit__preview-lead">Preview how you appear in Teams &amp; Mentors.</p>
         </div>
         <div className="profile-edit__preview-card">
           <MemberProfileCard profile={previewProfile} expandOnClick />

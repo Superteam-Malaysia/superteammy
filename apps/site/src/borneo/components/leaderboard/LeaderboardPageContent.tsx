@@ -25,13 +25,8 @@ export function LeaderboardPageContent() {
     <div className="flex flex-col gap-16 md:gap-24">
       <PageHeader
         title="Teams"
-        lead="Team points across Kuching stations — updated live during the event via the companion dApp. Until then, explore sample standings and momentum charts below."
+        lead="Team points across Kuching milestones — updated as submissions come in."
       />
-
-      <div className="companion-banner" role="status">
-        <span className="companion-banner__tag">Coming soon</span>
-        Live team standings ship with the companion dApp — sample data below is for layout preview only.
-      </div>
 
       <SectionArticle className="border border-[color:var(--color-transparent-wisp-10)] p-6 md:p-8">
           <SectionIntro title="Top three momentum" />
@@ -133,7 +128,7 @@ export function LeaderboardPageContent() {
         <SectionArticle className="border border-[color:var(--color-transparent-wisp-10)] p-6 md:p-8">
           <SectionIntro title="Cumulative race energy" />
           <p className="mt-4 text-sm text-[var(--color-wisp)]/50 max-w-xl">
-            Aggregate points across all sample teams — {totalPoints} pts logged in this preview field.
+            Aggregate points across all teams — {totalPoints} pts logged so far.
           </p>
           <div className="mt-8 grid gap-8 lg:grid-cols-2">
             <div>
@@ -164,7 +159,7 @@ export function LeaderboardPageContent() {
       <SectionArticle>
         <SectionIntro title="Log your race tasks" />
         <p className="mt-4 max-w-xl text-[var(--color-wisp)]/70 leading-relaxed">
-          Race threads and deck uploads open in the companion dApp. Review submission rules before
+          Submit race posts and deck uploads from the Amazing Race page. Review the rules before
           you hit the streets.
         </p>
         <div className="mt-8 flex flex-wrap gap-4">

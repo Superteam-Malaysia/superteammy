@@ -24,7 +24,7 @@ const walletTask = RACE_TASKS.find((t) => t.category === "wallet");
 export const metadata: Metadata = {
   title: "Submissions",
   description:
-    "How to submit Amazing Race Twitter threads, pitch decks, content posts, and wallet onboarding tasks. Companion dApp uploads coming at the event.",
+    "How to submit Amazing Race posts, pitch decks, content tasks, and wallet onboarding proof.",
 };
 
 export default function SubmissionsPage() {
@@ -33,7 +33,7 @@ export default function SubmissionsPage() {
       <div className="flex flex-col gap-16 md:gap-24">
         <PageHeader
           title="Submissions"
-          lead="Everything you need to log Amazing Race threads, pitch decks, and content tasks — before the companion dApp goes live on-site."
+          lead="How to log Amazing Race posts, pitch decks, and content tasks."
         />
 
         <div className="cutoff-banner">
@@ -96,7 +96,7 @@ export default function SubmissionsPage() {
                 not.
               </p>
               <p className="font-[family-name:var(--font-mono)] text-sm font-semibold text-[var(--color-wisp)]">
-                Companion dApp: paste your thread URL per task for live scoring.
+                Paste your X post link on the Amazing Race page after each milestone.
               </p>
             </div>
             <Accordion
