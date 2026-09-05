@@ -70,6 +70,18 @@ async function countGroupMembers(db: ReturnType<typeof getDb>, raceTeamId: strin
   return row?.count ?? 0;
 }
 
+async function deleteRaceGroupIfEmpty(
+  db: ReturnType<typeof getDb>,
+  raceTeamId: string | null | undefined,
+): Promise<void> {
+  if (!raceTeamId) return;
+
+  const memberCount = await countGroupMembers(db, raceTeamId);
+  if (memberCount > 0) return;
+
+  await db.delete(raceTeams).where(eq(raceTeams.id, raceTeamId));
+}
+
 async function groupLeaderName(
   db: ReturnType<typeof getDb>,
   raceTeamId: string,
@@ -244,6 +256,9 @@ export async function joinRaceGroup(
     throw new Error(`Group ${groupNumber} is full (${MAX_RACE_GROUP_SIZE} people max).`);
   }
 
+  const previousTeamId =
+    current.raceTeamId && current.raceTeamId !== team.id ? current.raceTeamId : null;
+
   await db
     .update(participants)
     .set({
@@ -252,6 +267,10 @@ export async function joinRaceGroup(
       updatedAt: new Date(),
     })
     .where(eq(participants.id, participantId));
+
+  if (previousTeamId) {
+    await deleteRaceGroupIfEmpty(db, previousTeamId);
+  }
 
   return getParticipantRaceGroup(participantId);
 }
@@ -264,6 +283,8 @@ export async function leaveRaceGroup(participantId: string): Promise<Participant
     return getParticipantRaceGroup(participantId);
   }
 
+  const previousTeamId = current.raceTeamId;
+
   await db
     .update(participants)
     .set({
@@ -272,6 +293,8 @@ export async function leaveRaceGroup(participantId: string): Promise<Participant
       updatedAt: new Date(),
     })
     .where(eq(participants.id, participantId));
+
+  await deleteRaceGroupIfEmpty(db, previousTeamId);
 
   return getParticipantRaceGroup(participantId);
 }
