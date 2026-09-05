@@ -19,7 +19,13 @@ export function RaceFeed({ items, onAdd, addLabel = "+ Add milestone" }: RaceFee
           Pick a milestone, paste your X link — photos and video come from your post.
         </p>
         {onAdd ? (
-          <CtaButton variant="byte" size="md" showArrow={false} onClick={onAdd}>
+          <CtaButton
+            variant="byte"
+            size="md"
+            showArrow={false}
+            className="race-page__add-btn"
+            onClick={onAdd}
+          >
             {addLabel}
           </CtaButton>
         ) : null}

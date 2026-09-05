@@ -321,7 +321,11 @@ export function AdminCheckInClient({ initialGuests }: AdminCheckInClientProps) {
 
     return (
       <div className="admin-submissions-table-wrap">
-        <table className="admin-submissions-table admin-checkin__table">
+        <table
+          className={`admin-submissions-table admin-checkin__table${
+            showGroup ? " admin-checkin__table--with-group" : ""
+          }`}
+        >
           <thead>
             <tr>
               <th>Guest</th>

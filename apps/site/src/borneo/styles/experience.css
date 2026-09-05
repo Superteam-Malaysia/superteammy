@@ -774,6 +774,12 @@
   filter: brightness(1.05);
 }
 
+.race-page > .race-group-panel {
+  width: 100%;
+  max-width: var(--race-content-max);
+  margin-inline: auto;
+}
+
 .race-group-panel {
   border: 1px solid var(--color-transparent-wisp-10);
   border-radius: 1rem;
@@ -1050,6 +1056,10 @@
   border: 1px solid color-mix(in srgb, var(--color-byte) 35%, transparent);
   color: var(--color-wisp);
   text-decoration: none;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .race-feed-post__group-tag:hover,
@@ -1132,7 +1142,7 @@
   border-top-right-radius: 1.25rem;
   border: 1px solid var(--color-transparent-wisp-10);
   border-bottom: none;
-  padding: 0.75rem 1rem 1.5rem;
+  padding: 0.75rem 1rem max(1.5rem, env(safe-area-inset-bottom));
   box-shadow: 0 -12px 40px color-mix(in srgb, var(--color-null) 65%, transparent);
 }
 
@@ -1773,14 +1783,83 @@
 
 @media (max-width: 720px) {
   .admin-checkin__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-checkin__table--with-group th:nth-child(2),
+  .admin-checkin__table--with-group td:nth-child(2) {
+    display: none;
+  }
+
+  .admin-checkin__actions {
+    min-width: 0;
+  }
+
+  .admin-checkin__action {
+    font-size: 0.6875rem;
+    padding: 0.45rem 0.55rem;
+    white-space: normal;
+    line-height: 1.25;
+    text-align: center;
+  }
+
+  .admin-submissions-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-checkin__group-title {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 520px) {
+  .race-page__add-btn.cta--md {
+    height: auto;
+    min-height: var(--cta-height-md);
+    padding-block: 0.7rem;
+    padding-inline: 0.85rem;
+    white-space: normal;
+    line-height: 1.35;
+    font-size: 0.6875rem;
+    letter-spacing: 0.035em;
+  }
+
+  .race-page__actions {
+    display: none;
+  }
+
+  .race-group-panel__title {
+    font-size: 1rem;
+    overflow-wrap: anywhere;
+  }
+
+  .race-group-panel__meta {
+    font-size: 0.625rem;
+    line-height: 1.45;
+  }
+
+  .race-feed-post__person-name {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .race-feed-post__group-tag {
+    flex-shrink: 1;
+    max-width: min(100%, 10.5rem);
+  }
+
+  .admin-checkin__stats {
     grid-template-columns: 1fr;
   }
 
-  .admin-checkin__table th:nth-child(2),
-  .admin-checkin__table td:nth-child(2),
-  .admin-checkin__table th:nth-child(5),
-  .admin-checkin__table td:nth-child(5) {
-    display: none;
+  .admin-checkin__filter {
+    font-size: 0.6875rem;
+    padding: 0.4rem 0.6rem;
+  }
+
+  .admin-checkin__group-title {
+    font-size: 0.9375rem;
   }
 }
 
