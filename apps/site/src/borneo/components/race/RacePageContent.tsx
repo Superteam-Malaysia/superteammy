@@ -47,8 +47,6 @@ export function RacePageContent({
   return (
     <div className="race-page">
       <header className="race-page__hero">
-        <p className="race-page__eyebrow">Startup Village Borneo</p>
-        <h1 className="race-page__title">Amazing Race</h1>
         <p className="race-page__lead">
           Complete milestones across Kuching — post proof on X, paste the link here. Your post shows up in the feed.
         </p>
