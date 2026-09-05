@@ -12,6 +12,7 @@ type ImageUploadFieldProps = {
   fallbackLabel: string;
   shape?: "circle" | "square";
   inputId: string;
+  onImageUrlChange?: (url: string | null) => void;
 };
 
 export function ImageUploadField({
@@ -22,6 +23,7 @@ export function ImageUploadField({
   fallbackLabel,
   shape = "circle",
   inputId,
+  onImageUrlChange,
 }: ImageUploadFieldProps) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -40,6 +42,7 @@ export function ImageUploadField({
 
     const localPreview = URL.createObjectURL(file);
     setPreviewUrl(localPreview);
+    onImageUrlChange?.(localPreview);
 
     try {
       const body = new FormData();
@@ -57,15 +60,18 @@ export function ImageUploadField({
 
       if (!res.ok) {
         setPreviewUrl(imageUrl);
+        onImageUrlChange?.(imageUrl);
         setError(data.error ?? "Upload failed.");
         return;
       }
 
       const nextUrl = data.avatarUrl ?? data.logoUrl ?? null;
       setPreviewUrl(nextUrl);
+      onImageUrlChange?.(nextUrl);
       router.refresh();
     } catch {
       setPreviewUrl(imageUrl);
+      onImageUrlChange?.(imageUrl);
       setError("Upload failed. Try again.");
     } finally {
       URL.revokeObjectURL(localPreview);

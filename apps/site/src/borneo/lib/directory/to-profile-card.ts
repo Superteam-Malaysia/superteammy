@@ -1,6 +1,8 @@
 import { mentorSocialUrls, type PublicMentor } from "@borneo/data/mentors";
-import type { PublicParticipant } from "@borneo/lib/participants/types";
+import { builderSocialLinks } from "@borneo/lib/participants/social-links";
+import type { PublicParticipant, PublicParticipantTeam } from "@borneo/lib/participants/types";
 import { telegramHref } from "@borneo/lib/participants/types";
+import type { ProfileFormValues } from "@borneo/lib/profile/form";
 import type { PublicTeam } from "@borneo/lib/teams/types";
 import type { Profile } from "@/lib/types";
 
@@ -41,6 +43,36 @@ export function participantToProfile(person: PublicParticipant): Profile {
     })),
     bio: person.projectIdea ?? "",
     talk_to_me_about: person.teamSetup ?? "",
+  };
+}
+
+/** Live preview while editing /borneo/profile — mirrors directory builder cards. */
+export function profileFormToProfile(input: {
+  participantId: string;
+  values: ProfileFormValues;
+  avatarUrl: string | null;
+  hackathonTeams?: PublicParticipantTeam[];
+}): Profile {
+  const social = builderSocialLinks({
+    proofOfWork: input.values.proofOfWork,
+    projectIdea: input.values.projectIdea,
+  });
+  const name = input.values.name.trim() || "Builder";
+
+  return {
+    ...emptyProfile(`borneo-participant-${input.participantId}`),
+    nickname: name,
+    real_name: name,
+    avatar_url: input.avatarUrl ?? "",
+    twitter_url: social.twitter ?? "",
+    linkedin_url: social.linkedin ?? "",
+    telegram_url: telegramHref(input.values.telegram) ?? "",
+    companies: (input.hackathonTeams ?? []).map((team) => ({
+      id: team.slug,
+      name: team.name,
+    })),
+    bio: input.values.projectIdea.trim(),
+    talk_to_me_about: input.values.teamSetup.trim(),
   };
 }
 

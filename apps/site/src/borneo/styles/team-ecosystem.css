@@ -930,6 +930,67 @@
   color: var(--team-colosseum-accent);
 }
 
+.profile-edit {
+  display: grid;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+@media (min-width: 1100px) {
+  .profile-edit {
+    grid-template-columns: minmax(0, 42rem) minmax(280px, 360px);
+    gap: 3rem;
+  }
+}
+
+.profile-edit__preview {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.profile-edit__preview-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.profile-edit__preview-title {
+  margin: 0;
+  font-family: var(--font-orbitron);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--team-colosseum-accent);
+}
+
+.profile-edit__preview-lead {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--color-wisp-70, rgba(230, 237, 243, 0.72));
+}
+
+.profile-edit__preview-em {
+  color: var(--color-wisp);
+}
+
+.profile-edit__preview-card {
+  display: flex;
+  justify-content: center;
+  padding: 1.25rem;
+  border: 1px solid var(--team-colosseum-border);
+  background: color-mix(in srgb, var(--team-colosseum-panel) 72%, transparent);
+}
+
+@media (min-width: 1100px) {
+  .profile-edit__preview {
+    position: sticky;
+    top: 6rem;
+  }
+}
+
 .team-manage {
   display: flex;
   flex-direction: column;

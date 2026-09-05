@@ -3,6 +3,7 @@ import { SectionArticle, SectionIntro } from "@borneo/components/ui";
 import { LogoutButton } from "@borneo/components/auth/LogoutButton";
 import { ProfileEditForm } from "@borneo/components/profile/ProfileEditForm";
 import { requireParticipant } from "@borneo/lib/auth/participant";
+import { getPublicParticipantsByIds } from "@borneo/lib/participants/public-directory";
 import { participantInitials } from "@borneo/lib/participants/team-categories";
 import { participantToProfileForm } from "@borneo/lib/profile/form";
 import { uploadPublicUrl } from "@borneo/lib/uploads/public-url";
@@ -16,9 +17,11 @@ export const dynamic = "force-dynamic";
 
 export default async function ProfilePage() {
   const participant = await requireParticipant();
+  const [directoryProfile] = await getPublicParticipantsByIds([participant.id]);
   const displayName = participant.name ?? participant.email;
   const initials = participantInitials(displayName);
   const avatarUrl = uploadPublicUrl(participant.avatarUrl);
+  const hackathonTeams = directoryProfile?.hackathonTeams ?? [];
 
   return (
     <main className="site-main site-main--stack">
@@ -30,8 +33,9 @@ export default async function ProfilePage() {
             accent="green"
           />
 
-          <div className="mt-10 max-w-2xl">
+          <div className="mt-10">
             <ProfileEditForm
+              participantId={participant.id}
               initial={participantToProfileForm(participant)}
               meta={{
                 email: participant.email,
@@ -40,6 +44,7 @@ export default async function ProfilePage() {
               }}
               avatarFallback={initials}
               avatarUrl={avatarUrl}
+              hackathonTeams={hackathonTeams}
             />
           </div>
 
