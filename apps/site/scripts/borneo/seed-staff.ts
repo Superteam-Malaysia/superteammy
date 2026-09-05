@@ -1,63 +1,83 @@
 #!/usr/bin/env tsx
 /**
  * Seed staff / mentor accounts that are not in the Luma guest export.
- * Usage: DATABASE_URL=... npm run db:seed-staff
+ * Ensures every mentors-directory person appears on the organizer check-in list.
+ *
+ * Usage: DATABASE_URL=... npm run borneo:db:seed-staff
  */
 import "dotenv/config";
 import { sql } from "drizzle-orm";
+import { getPublicMentors } from "../../src/borneo/data/mentors";
 import { normalizeEmail } from "../../src/borneo/lib/auth/session";
 import { closeDb, getDb } from "../../src/borneo/lib/db";
 import { participants } from "../../src/borneo/lib/db/schema";
 
-type StaffSeed = {
-  guestId: string;
-  email: string;
-  name: string;
-  firstName?: string;
-  lastName?: string;
-  telegram?: string;
-  ticketName?: string;
-  projectIdea: string;
-  proofOfWork?: string;
-  teamSetup: string;
-};
+const ORGANIZER_IDS = new Set(["han", "marianne", "semi"]);
 
-const STAFF: StaffSeed[] = [
-  {
-    guestId: "staff-semi",
-    email: "semi@sendarcade.fun",
-    name: "Semi",
-    firstName: "Semi",
-    telegram: "https://t.me/semi_infiknight",
-    ticketName: "Organizer",
-    teamSetup: "Organizer · Superteam Malaysia",
-    projectIdea:
-      "Startup Village Borneo organizer — workshops, mentor ops, and builder programs with Superteam Malaysia.",
-    proofOfWork: [
-      "X: https://x.com/semiii",
-      "@superteammy Rainmaker · dev mentor & hackathon host.",
-      "Prev $SEND (Send Arcade). Colosseum Frontier Hackathon winner (Jun 2026).",
-    ].join("\n"),
-  },
-];
+function staffEmail(mentorId: string, email: string | null): string {
+  if (email?.trim()) return email.trim();
+  return `staff+${mentorId}@svb.local`;
+}
+
+function telegramHref(value: string | null): string | null {
+  if (!value?.trim()) return null;
+  const trimmed = value.trim();
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  const handle = trimmed.replace(/^@/, "");
+  return handle ? `https://t.me/${handle}` : null;
+}
+
+function matchesGuestName(mentorName: string, guestName: string | null): boolean {
+  const needle = mentorName.toLowerCase().trim();
+  const haystack = (guestName ?? "").toLowerCase().trim();
+  if (!needle || !haystack) return false;
+  return haystack === needle || haystack.startsWith(`${needle} `) || haystack.startsWith(`${needle}|`);
+}
 
 async function main() {
   const db = getDb();
+  const mentors = getPublicMentors();
 
-  for (const person of STAFF) {
-    const emailNormalized = normalizeEmail(person.email);
+  const guestRows = await db
+    .select({ guestId: participants.guestId, name: participants.name })
+    .from(participants);
+
+  let seeded = 0;
+  let skipped = 0;
+
+  for (const mentor of mentors) {
+    const guestId = `staff-${mentor.id}`;
+    const alreadyGuest = guestRows.some(
+      (row) => !row.guestId.startsWith("staff-") && matchesGuestName(mentor.name, row.name),
+    );
+
+    if (alreadyGuest) {
+      console.log(`Skipped staff seed (Luma guest exists): ${mentor.name}`);
+      skipped += 1;
+      continue;
+    }
+
+    const email = staffEmail(mentor.id, mentor.email);
+    const emailNormalized = normalizeEmail(email);
+    const isOrganizer = ORGANIZER_IDS.has(mentor.id);
+    const roleLabel = isOrganizer ? "Organizer" : "Mentor";
+    const workshopTitles = mentor.workshops.map((workshop) => workshop.title).join(" · ");
+    const projectIdea =
+      workshopTitles ||
+      `${roleLabel} · ${mentor.organization ?? "Startup Village Borneo"}`;
+
     const values = {
-      guestId: person.guestId,
-      email: person.email,
+      guestId,
+      email,
       emailNormalized,
-      name: person.name,
-      firstName: person.firstName ?? null,
-      lastName: person.lastName ?? null,
-      telegram: person.telegram ?? null,
-      ticketName: person.ticketName ?? null,
-      projectIdea: person.projectIdea,
-      proofOfWork: person.proofOfWork ?? null,
-      teamSetup: person.teamSetup,
+      name: mentor.name,
+      firstName: mentor.name.split(/\s+/)[0] ?? mentor.name,
+      lastName: mentor.name.split(/\s+/).slice(1).join(" ") || null,
+      telegram: telegramHref(mentor.telegram),
+      ticketName: roleLabel,
+      projectIdea,
+      proofOfWork: mentor.organization ?? null,
+      teamSetup: mentor.organization ?? "Startup Village Borneo",
       approvalStatus: "approved",
       updatedAt: new Date(),
     };
@@ -66,16 +86,26 @@ async function main() {
       .insert(participants)
       .values(values)
       .onConflictDoUpdate({
-        target: participants.emailNormalized,
+        target: participants.guestId,
         set: {
-          ...values,
+          name: values.name,
+          firstName: values.firstName,
+          lastName: values.lastName,
+          telegram: values.telegram,
+          ticketName: values.ticketName,
+          projectIdea: values.projectIdea,
+          proofOfWork: values.proofOfWork,
+          teamSetup: values.teamSetup,
+          approvalStatus: values.approvalStatus,
           updatedAt: sql`now()`,
         },
       });
 
-    console.log(`Seeded staff: ${person.name} (${person.email}) · ${person.telegram ?? "no telegram"}`);
+    console.log(`Seeded staff: ${mentor.name} · ${guestId} · ${email}`);
+    seeded += 1;
   }
 
+  console.log(`Staff seed done — ${seeded} upserted, ${skipped} skipped (already in Luma export).`);
   await closeDb();
 }
 
