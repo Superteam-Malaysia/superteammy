@@ -1224,6 +1224,26 @@
   margin: 0.75rem 0 0;
 }
 
+.admin-checkin__create-team {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+  margin-bottom: 1.25rem;
+}
+
+.admin-checkin__create-team-label {
+  flex: 1 1 16rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.admin-checkin__select {
+  min-width: 10rem;
+  font-size: 0.8125rem;
+}
+
 .admin-checkin__link {
   font-family: var(--font-mono);
   font-size: 0.8125rem;

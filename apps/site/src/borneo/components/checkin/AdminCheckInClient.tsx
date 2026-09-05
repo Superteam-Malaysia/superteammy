@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import type { CheckInGuest } from "@borneo/lib/checkin/admin";
+import { FormEvent, useMemo, useState } from "react";
+import type { CheckInGuest, RaceTeamOption } from "@borneo/lib/checkin/admin";
 import { withBasePath } from "@borneo/lib/base-path";
 
 type CheckInFilter =
@@ -14,7 +14,7 @@ type CheckInFilter =
   | "no-race-leader"
   | "all";
 
-type PendingAction = "checkIn" | "merch" | "raceLeader";
+type PendingAction = "checkIn" | "merch" | "raceLeader" | "raceTeam";
 
 function formatWhen(iso: string) {
   return new Date(iso).toLocaleString("en-MY", {
@@ -22,11 +22,6 @@ function formatWhen(iso: string) {
     timeStyle: "short",
     timeZone: "Asia/Kuching",
   });
-}
-
-function teamLabel(guest: CheckInGuest): string {
-  if (guest.hackathonTeams.length === 0) return "";
-  return guest.hackathonTeams.map((team) => team.name).join(" · ");
 }
 
 function matchesSearch(guest: CheckInGuest, query: string): boolean {
@@ -38,7 +33,7 @@ function matchesSearch(guest: CheckInGuest, query: string): boolean {
     guest.ticketName,
     guest.guestId,
     guest.approvalStatus,
-    ...guest.hackathonTeams.map((team) => team.name),
+    guest.raceTeam?.name,
   ]
     .filter(Boolean)
     .join(" ")
@@ -49,7 +44,7 @@ function matchesSearch(guest: CheckInGuest, query: string): boolean {
 function matchesFilter(
   guest: CheckInGuest,
   filter: CheckInFilter,
-  teamsWithLeader: Set<string>,
+  raceTeamsWithLeader: Set<string>,
 ): boolean {
   const isApproved = guest.approvalStatus === "approved";
   const isCheckedIn = Boolean(guest.checkedInAt);
@@ -72,7 +67,8 @@ function matchesFilter(
     case "no-race-leader":
       return (
         isApproved &&
-        guest.hackathonTeams.some((team) => !teamsWithLeader.has(team.slug))
+        Boolean(guest.raceTeam) &&
+        !raceTeamsWithLeader.has(guest.raceTeam!.id)
       );
     case "all":
       return true;
@@ -86,7 +82,7 @@ const FILTERS: { id: CheckInFilter; label: string }[] = [
   { id: "no-merch", label: "No merch yet" },
   { id: "merch-received", label: "Merch received" },
   { id: "race-leaders", label: "Race leaders" },
-  { id: "no-race-leader", label: "Teams w/o leader" },
+  { id: "no-race-leader", label: "Race teams w/o leader" },
   { id: "all", label: "All guests" },
 ];
 
@@ -98,10 +94,21 @@ function mergeGuests(prev: CheckInGuest[], updated: CheckInGuest[]): CheckInGues
   return [...byId.values()].sort((a, b) => a.name.localeCompare(b.name));
 }
 
-export function AdminCheckInClient({ initialGuests }: { initialGuests: CheckInGuest[] }) {
+type AdminCheckInClientProps = {
+  initialGuests: CheckInGuest[];
+  initialRaceTeams: RaceTeamOption[];
+};
+
+export function AdminCheckInClient({
+  initialGuests,
+  initialRaceTeams,
+}: AdminCheckInClientProps) {
   const [guests, setGuests] = useState(initialGuests);
+  const [raceTeams, setRaceTeams] = useState(initialRaceTeams);
   const [filter, setFilter] = useState<CheckInFilter>("approved");
   const [search, setSearch] = useState("");
+  const [newRaceTeamName, setNewRaceTeamName] = useState("");
+  const [creatingTeam, setCreatingTeam] = useState(false);
   const [pending, setPending] = useState<{ id: string; action: PendingAction } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -112,54 +119,58 @@ export function AdminCheckInClient({ initialGuests }: { initialGuests: CheckInGu
     [guests],
   );
 
-  const teamLeaderState = useMemo(() => {
-    const teamsWithLeader = new Set<string>();
-    const allTeamSlugs = new Set<string>();
+  const raceTeamLeaderState = useMemo(() => {
+    const raceTeamsWithLeader = new Set<string>();
+    const allRaceTeamIds = new Set(raceTeams.map((team) => team.id));
 
     for (const guest of approvedGuests) {
-      for (const team of guest.hackathonTeams) {
-        allTeamSlugs.add(team.slug);
-        if (guest.amazingRaceLeader) {
-          teamsWithLeader.add(team.slug);
-        }
+      if (guest.amazingRaceLeader && guest.raceTeam) {
+        raceTeamsWithLeader.add(guest.raceTeam.id);
       }
     }
 
     return {
-      teamsWithLeader,
-      teamsWithoutLeader: allTeamSlugs.size - teamsWithLeader.size,
+      raceTeamsWithLeader,
+      raceTeamsWithoutLeader: allRaceTeamIds.size - raceTeamsWithLeader.size,
     };
-  }, [approvedGuests]);
+  }, [approvedGuests, raceTeams]);
 
   const stats = useMemo(() => {
     const checkedIn = approvedGuests.filter((guest) => guest.checkedInAt).length;
     const merchReceived = approvedGuests.filter((guest) => guest.merchReceivedAt).length;
     const raceLeaders = approvedGuests.filter((guest) => guest.amazingRaceLeader).length;
+    const onRaceTeam = approvedGuests.filter((guest) => guest.raceTeam).length;
+
     return {
       approved: approvedGuests.length,
       checkedIn,
       notCheckedIn: approvedGuests.length - checkedIn,
       merchReceived,
-      noMerch: approvedGuests.length - merchReceived,
       raceLeaders,
-      teamsWithoutLeader: teamLeaderState.teamsWithoutLeader,
+      onRaceTeam,
+      raceTeamsWithoutLeader: raceTeamLeaderState.raceTeamsWithoutLeader,
     };
-  }, [approvedGuests, teamLeaderState.teamsWithoutLeader]);
+  }, [approvedGuests, raceTeamLeaderState.raceTeamsWithoutLeader]);
 
   const visibleGuests = useMemo(
     () =>
       guests.filter(
         (guest) =>
-          matchesFilter(guest, filter, teamLeaderState.teamsWithLeader) &&
+          matchesFilter(guest, filter, raceTeamLeaderState.raceTeamsWithLeader) &&
           matchesSearch(guest, query),
       ),
-    [guests, filter, query, teamLeaderState.teamsWithLeader],
+    [guests, filter, query, raceTeamLeaderState.raceTeamsWithLeader],
   );
 
   async function patchGuest(
     guest: CheckInGuest,
     action: PendingAction,
-    payload: { checkedIn?: boolean; merchReceived?: boolean; amazingRaceLeader?: boolean },
+    payload: {
+      checkedIn?: boolean;
+      merchReceived?: boolean;
+      amazingRaceLeader?: boolean;
+      raceTeamId?: string | null;
+    },
   ) {
     setPending({ id: guest.id, action });
     setError(null);
@@ -190,6 +201,38 @@ export function AdminCheckInClient({ initialGuests }: { initialGuests: CheckInGu
     }
   }
 
+  async function createRaceTeam(event: FormEvent) {
+    event.preventDefault();
+    const name = newRaceTeamName.trim();
+    if (!name) return;
+
+    setCreatingTeam(true);
+    setError(null);
+
+    try {
+      const res = await fetch(withBasePath("/api/admin/race-teams"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      });
+      const data = (await res.json()) as { error?: string; raceTeam?: RaceTeamOption };
+
+      if (!res.ok || !data.raceTeam) {
+        setError(data.error ?? "Could not create race team.");
+        return;
+      }
+
+      setRaceTeams((prev) =>
+        [...prev, data.raceTeam!].sort((a, b) => a.name.localeCompare(b.name)),
+      );
+      setNewRaceTeamName("");
+    } catch {
+      setError("Could not create race team.");
+    } finally {
+      setCreatingTeam(false);
+    }
+  }
+
   function toggleCheckIn(guest: CheckInGuest) {
     void patchGuest(guest, "checkIn", { checkedIn: !guest.checkedInAt });
   }
@@ -202,16 +245,36 @@ export function AdminCheckInClient({ initialGuests }: { initialGuests: CheckInGu
     void patchGuest(guest, "raceLeader", { amazingRaceLeader: !guest.amazingRaceLeader });
   }
 
+  function assignRaceTeam(guest: CheckInGuest, raceTeamId: string | null) {
+    void patchGuest(guest, "raceTeam", { raceTeamId });
+  }
+
   return (
     <div className="admin-checkin">
+      <form className="admin-checkin__create-team" onSubmit={(event) => void createRaceTeam(event)}>
+        <label className="admin-checkin__create-team-label">
+          <span className="team-form__label">New Amazing Race team</span>
+          <input
+            type="text"
+            value={newRaceTeamName}
+            onChange={(event) => setNewRaceTeamName(event.target.value)}
+            placeholder="Team name for the race (not hackathon directory)"
+            className="team-form__input"
+          />
+        </label>
+        <button
+          type="submit"
+          disabled={creatingTeam || !newRaceTeamName.trim()}
+          className="admin-checkin__action admin-checkin__action--race"
+        >
+          {creatingTeam ? "Creating…" : "Create race team"}
+        </button>
+      </form>
+
       <div className="admin-checkin__stats admin-checkin__stats--grid">
         <div className="admin-checkin__stat">
           <span className="admin-checkin__stat-value">{stats.checkedIn}</span>
           <span className="admin-checkin__stat-label">Checked in</span>
-        </div>
-        <div className="admin-checkin__stat">
-          <span className="admin-checkin__stat-value">{stats.notCheckedIn}</span>
-          <span className="admin-checkin__stat-label">Awaiting arrival</span>
         </div>
         <div className="admin-checkin__stat">
           <span className="admin-checkin__stat-value">{stats.merchReceived}</span>
@@ -220,6 +283,10 @@ export function AdminCheckInClient({ initialGuests }: { initialGuests: CheckInGu
         <div className="admin-checkin__stat">
           <span className="admin-checkin__stat-value">{stats.raceLeaders}</span>
           <span className="admin-checkin__stat-label">Race leaders</span>
+        </div>
+        <div className="admin-checkin__stat">
+          <span className="admin-checkin__stat-value">{stats.onRaceTeam}</span>
+          <span className="admin-checkin__stat-label">On race teams</span>
         </div>
         <div className="admin-checkin__stat">
           <span className="admin-checkin__stat-value">{stats.approved}</span>
@@ -232,7 +299,7 @@ export function AdminCheckInClient({ initialGuests }: { initialGuests: CheckInGu
           type="search"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search name, email, team, Telegram…"
+          placeholder="Search name, email, race team…"
           className="admin-checkin__search team-form__input"
           aria-label="Search guests"
         />
@@ -257,7 +324,8 @@ export function AdminCheckInClient({ initialGuests }: { initialGuests: CheckInGu
       {error ? <p className="team-form__error">{error}</p> : null}
 
       <p className="admin-checkin__count">
-        Showing {visibleGuests.length} guest{visibleGuests.length === 1 ? "" : "s"}
+        Showing {visibleGuests.length} guest{visibleGuests.length === 1 ? "" : "s"} · {raceTeams.length} race team
+        {raceTeams.length === 1 ? "" : "s"}
       </p>
 
       {visibleGuests.length === 0 ? (
@@ -268,10 +336,10 @@ export function AdminCheckInClient({ initialGuests }: { initialGuests: CheckInGu
             <thead>
               <tr>
                 <th>Guest</th>
-                <th>Ticket</th>
+                <th>Amazing Race team</th>
                 <th>Arrival</th>
                 <th>Merch</th>
-                <th>Race leader</th>
+                <th>Leader</th>
                 <th aria-label="Actions" />
               </tr>
             </thead>
@@ -283,25 +351,41 @@ export function AdminCheckInClient({ initialGuests }: { initialGuests: CheckInGu
                 const checkInPending = pending?.id === guest.id && pending.action === "checkIn";
                 const merchPending = pending?.id === guest.id && pending.action === "merch";
                 const raceLeaderPending = pending?.id === guest.id && pending.action === "raceLeader";
-                const teams = teamLabel(guest);
+                const raceTeamPending = pending?.id === guest.id && pending.action === "raceTeam";
 
                 return (
-                  <tr
-                    key={guest.id}
-                    className={checkedIn && merchReceived && isRaceLeader ? "admin-checkin__row--done" : undefined}
-                  >
+                  <tr key={guest.id} className={checkedIn && merchReceived ? "admin-checkin__row--done" : undefined}>
                     <td>
                       <span className="admin-checkin__name">{guest.name}</span>
                       <span className="admin-submissions-table__email">{guest.email}</span>
                       {guest.telegram ? (
                         <span className="admin-submissions-table__email">{guest.telegram}</span>
                       ) : null}
-                      {teams ? <span className="admin-checkin__team">{teams}</span> : null}
                       {guest.approvalStatus !== "approved" ? (
                         <span className="admin-checkin__approval">{guest.approvalStatus ?? "unknown"}</span>
                       ) : null}
                     </td>
-                    <td>{guest.ticketName ?? "—"}</td>
+                    <td>
+                      <select
+                        className="admin-checkin__select team-form__input"
+                        value={guest.raceTeam?.id ?? ""}
+                        disabled={Boolean(pending)}
+                        onChange={(event) =>
+                          assignRaceTeam(guest, event.target.value ? event.target.value : null)
+                        }
+                        aria-label={`Amazing Race team for ${guest.name}`}
+                      >
+                        <option value="">Unassigned</option>
+                        {raceTeams.map((team) => (
+                          <option key={team.id} value={team.id}>
+                            {team.name}
+                          </option>
+                        ))}
+                      </select>
+                      {raceTeamPending ? (
+                        <span className="admin-checkin__timestamp">Saving…</span>
+                      ) : null}
+                    </td>
                     <td>
                       <span
                         className={
@@ -312,9 +396,6 @@ export function AdminCheckInClient({ initialGuests }: { initialGuests: CheckInGu
                       >
                         {checkedIn ? "Checked in" : "Not yet"}
                       </span>
-                      {guest.checkedInAt ? (
-                        <span className="admin-checkin__timestamp">{formatWhen(guest.checkedInAt)}</span>
-                      ) : null}
                     </td>
                     <td>
                       <span
@@ -326,9 +407,6 @@ export function AdminCheckInClient({ initialGuests }: { initialGuests: CheckInGu
                       >
                         {merchReceived ? "Received" : "Pending"}
                       </span>
-                      {guest.merchReceivedAt ? (
-                        <span className="admin-checkin__timestamp">{formatWhen(guest.merchReceivedAt)}</span>
-                      ) : null}
                     </td>
                     <td>
                       <span
@@ -338,7 +416,7 @@ export function AdminCheckInClient({ initialGuests }: { initialGuests: CheckInGu
                             : "admin-checkin__badge admin-checkin__badge--out"
                         }
                       >
-                        {isRaceLeader ? "Leader" : teams ? "Unassigned" : "No team"}
+                        {isRaceLeader ? "Leader" : guest.raceTeam ? "Member" : "—"}
                       </span>
                     </td>
                     <td>
@@ -374,12 +452,12 @@ export function AdminCheckInClient({ initialGuests }: { initialGuests: CheckInGu
                               ? "admin-checkin__action admin-checkin__action--undo"
                               : "admin-checkin__action admin-checkin__action--race"
                           }
-                          disabled={Boolean(pending) || guest.hackathonTeams.length === 0}
+                          disabled={Boolean(pending) || !guest.raceTeam}
                           onClick={() => toggleRaceLeader(guest)}
                           title={
-                            guest.hackathonTeams.length === 0
-                              ? "Guest is not on a hackathon team yet"
-                              : "One race leader per team — assigning replaces the previous leader"
+                            guest.raceTeam
+                              ? "One race leader per Amazing Race team"
+                              : "Assign an Amazing Race team first"
                           }
                         >
                           {raceLeaderPending

@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { getParticipantForSession } from "@borneo/lib/auth/participant";
 import { requireOrganizerApi } from "@borneo/lib/auth/organizer";
-import { listGuestsForCheckIn, updateGuestChecklist } from "@borneo/lib/checkin/admin";
+import {
+  listGuestsForCheckIn,
+  listRaceTeams,
+  updateGuestChecklist,
+} from "@borneo/lib/checkin/admin";
 
 export async function GET() {
   const participant = await getParticipantForSession();
@@ -10,8 +14,8 @@ export async function GET() {
     return NextResponse.json({ error: auth.error }, { status: auth.status });
   }
 
-  const guests = await listGuestsForCheckIn();
-  return NextResponse.json({ guests });
+  const [guests, raceTeams] = await Promise.all([listGuestsForCheckIn(), listRaceTeams()]);
+  return NextResponse.json({ guests, raceTeams });
 }
 
 export async function PATCH(request: Request) {
@@ -44,32 +48,55 @@ export async function PATCH(request: Request) {
     typeof body === "object" && body && "amazingRaceLeader" in body
       ? (body as { amazingRaceLeader: unknown }).amazingRaceLeader
       : undefined;
+  const raceTeamId =
+    typeof body === "object" && body && "raceTeamId" in body
+      ? (body as { raceTeamId: unknown }).raceTeamId
+      : undefined;
 
   if (!participantId) {
     return NextResponse.json({ error: "participantId is required" }, { status: 400 });
   }
 
+  const hasRaceTeamUpdate = raceTeamId !== undefined;
+  const normalizedRaceTeamId =
+    raceTeamId === null || raceTeamId === ""
+      ? null
+      : typeof raceTeamId === "string"
+        ? raceTeamId
+        : undefined;
+
   if (
     typeof checkedIn !== "boolean" &&
     typeof merchReceived !== "boolean" &&
-    typeof amazingRaceLeader !== "boolean"
+    typeof amazingRaceLeader !== "boolean" &&
+    !hasRaceTeamUpdate
   ) {
     return NextResponse.json(
-      { error: "checkedIn, merchReceived, and/or amazingRaceLeader must be boolean" },
+      { error: "No checklist updates provided" },
       { status: 400 },
     );
   }
 
-  const guests = await updateGuestChecklist(participantId, {
-    ...(typeof checkedIn === "boolean" ? { checkedIn } : {}),
-    ...(typeof merchReceived === "boolean" ? { merchReceived } : {}),
-    ...(typeof amazingRaceLeader === "boolean" ? { amazingRaceLeader } : {}),
-  });
-
-  const guest = guests.find((row) => row.id === participantId);
-  if (!guest) {
-    return NextResponse.json({ error: "Guest not found" }, { status: 404 });
+  if (hasRaceTeamUpdate && normalizedRaceTeamId === undefined) {
+    return NextResponse.json({ error: "raceTeamId must be a string or null" }, { status: 400 });
   }
 
-  return NextResponse.json({ guest, guests });
+  try {
+    const guests = await updateGuestChecklist(participantId, {
+      ...(typeof checkedIn === "boolean" ? { checkedIn } : {}),
+      ...(typeof merchReceived === "boolean" ? { merchReceived } : {}),
+      ...(typeof amazingRaceLeader === "boolean" ? { amazingRaceLeader } : {}),
+      ...(hasRaceTeamUpdate ? { raceTeamId: normalizedRaceTeamId ?? null } : {}),
+    });
+
+    const guest = guests.find((row) => row.id === participantId);
+    if (!guest) {
+      return NextResponse.json({ error: "Guest not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ guest, guests });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Could not save checklist.";
+    return NextResponse.json({ error: message }, { status: 400 });
+  }
 }

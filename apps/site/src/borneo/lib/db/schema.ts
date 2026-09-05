@@ -22,6 +22,14 @@ const bytea = customType<{ data: Buffer; driverData: Buffer }>({
     return value;
   },
 });
+/** Amazing Race team — separate from hackathon project teams in /teams. */
+export const raceTeams = pgTable("race_teams", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull(),
+  slug: text("slug").notNull().unique(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 export const participants = pgTable("participants", {
   id: uuid("id").defaultRandom().primaryKey(),
   guestId: text("guest_id").notNull().unique(),
@@ -36,6 +44,7 @@ export const participants = pgTable("participants", {
   checkedInAt: timestamp("checked_in_at", { withTimezone: true }),
   merchReceivedAt: timestamp("merch_received_at", { withTimezone: true }),
   amazingRaceLeader: boolean("amazing_race_leader").notNull().default(false),
+  raceTeamId: uuid("race_team_id").references(() => raceTeams.id, { onDelete: "set null" }),
   ticketTypeId: text("ticket_type_id"),
   ticketName: text("ticket_name"),
   passportFirstName: text("passport_first_name"),
@@ -154,6 +163,8 @@ export const uploadedImages = pgTable("uploaded_images", {
 
 export type Participant = typeof participants.$inferSelect;
 export type NewParticipant = typeof participants.$inferInsert;
+export type RaceTeam = typeof raceTeams.$inferSelect;
+export type NewRaceTeam = typeof raceTeams.$inferInsert;
 export type Team = typeof teams.$inferSelect;
 export type NewTeam = typeof teams.$inferInsert;
 export type TeamMember = typeof teamMembers.$inferSelect;
