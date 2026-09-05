@@ -8,6 +8,7 @@ export type ActionCardProps = {
   description?: string;
   tone?: CardTone;
   aspect?: "square" | "5-4";
+  logo?: { src: string; alt: string };
   cta?: { label: string; href?: string; variant?: "byte" | "azure" | "ghost-wisp" | "ghost-null" };
   children?: ReactNode;
 };
@@ -24,6 +25,7 @@ export function ActionCard({
   description,
   tone = "null",
   aspect = "5-4",
+  logo,
   cta,
   children,
 }: ActionCardProps) {
@@ -38,6 +40,18 @@ export function ActionCard({
         .join(" ")}
     >
       <h3 className="bp-card__title">{title}</h3>
+      {logo ? (
+        <div className="bp-card__logo-wrap">
+          <img
+            src={logo.src}
+            alt={logo.alt}
+            className="bp-card__logo"
+            width={165}
+            height={31}
+            decoding="async"
+          />
+        </div>
+      ) : null}
       <div className="mt-auto flex flex-col gap-8">
         {description && <p className="bp-card__description">{description}</p>}
         {children}

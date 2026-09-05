@@ -6,6 +6,7 @@ import { PRIZE_ROWS, PRIZE_TOTAL } from "@borneo/data/prizes";
 import { REDOTPAY_QUIZ } from "@borneo/data/redotpay-quiz";
 import { CONTENT_AWARD, SUSTAINABILITY_TRACK } from "@borneo/data/tracks";
 import { pageMetadata } from "@borneo/lib/metadata";
+import { withBasePath } from "@borneo/lib/base-path";
 
 export const metadata = pageMetadata({
   title: "Prizes",
@@ -86,6 +87,7 @@ export default function PrizesPage() {
               <ActionCard
                 tone="mint"
                 title="RedotPay Card Quiz"
+                logo={{ src: withBasePath("/partners/redotpay.svg"), alt: "RedotPay" }}
                 description={`${REDOTPAY_QUIZ.prize} · 10 questions · 2 min · 1 attempt`}
                 cta={{ label: "Take the quiz", href: "/redotpay" }}
               />
