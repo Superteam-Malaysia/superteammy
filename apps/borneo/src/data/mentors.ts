@@ -18,6 +18,7 @@ const MENTOR_CONTACT: Record<
   nikki: {
     organization: "stmy",
   },
+  "ming-yang": { telegram: "Ming_Yang" },
 };
 
 function mentorSlug(name: string): string {

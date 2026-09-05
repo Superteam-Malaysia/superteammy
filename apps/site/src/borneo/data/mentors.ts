@@ -82,6 +82,7 @@ const MENTOR_CONTACT: Record<
   jemmy: { telegram: "jemmmyjemm" },
   nic: { telegram: "NicFury" },
   ohmeohmy: { telegram: "OhMeOhMy_Sol" },
+  "ming-yang": { telegram: "Ming_Yang" },
   joey: { telegram: "joeylaujy" },
   "shuen-rui": { telegram: "shuenrui" },
 };
