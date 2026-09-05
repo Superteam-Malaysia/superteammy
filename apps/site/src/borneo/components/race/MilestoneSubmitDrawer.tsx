@@ -31,6 +31,7 @@ type MilestoneSubmitDrawerProps = {
   initialGroup: ParticipantRaceGroup | null;
   cutoffPassed: boolean;
   onSubmitted: (item: RaceFeedItem) => void;
+  onGroupChange?: (group: ParticipantRaceGroup) => void;
 };
 
 export function MilestoneSubmitDrawer({
@@ -41,6 +42,7 @@ export function MilestoneSubmitDrawer({
   initialGroup,
   cutoffPassed,
   onSubmitted,
+  onGroupChange,
 }: MilestoneSubmitDrawerProps) {
   const [submissions, setSubmissions] = useState<PublicRaceSubmission[]>(initialSubmissions);
   const [groupNumber, setGroupNumber] = useState<number | null>(initialGroup?.groupNumber ?? null);
@@ -195,7 +197,10 @@ export function MilestoneSubmitDrawer({
           isSignedIn
           initialGroup={initialGroup}
           variant="drawer"
-          onGroupChange={(group) => setGroupNumber(group.groupNumber)}
+          onGroupChange={(group) => {
+            setGroupNumber(group.groupNumber);
+            onGroupChange?.(group);
+          }}
         />
 
         <p className="race-drawer__team-note">
@@ -347,6 +352,7 @@ type MilestoneSubmitGateProps = {
     cutoffPassed: boolean;
   } | null;
   onSubmitted: (item: RaceFeedItem) => void;
+  onGroupChange?: (group: ParticipantRaceGroup) => void;
 };
 
 export function MilestoneSubmitGate({
@@ -355,6 +361,7 @@ export function MilestoneSubmitGate({
   onClose,
   submission,
   onSubmitted,
+  onGroupChange,
 }: MilestoneSubmitGateProps) {
   if (!open) return null;
 
@@ -391,6 +398,7 @@ export function MilestoneSubmitGate({
       initialGroup={submission.initialGroup}
       cutoffPassed={submission.cutoffPassed}
       onSubmitted={onSubmitted}
+      onGroupChange={onGroupChange}
     />
   );
 }

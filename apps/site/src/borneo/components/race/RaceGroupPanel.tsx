@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "@borneo/components/Link";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { MAX_RACE_GROUP_SIZE, type ParticipantRaceGroup } from "@borneo/lib/race/group-types";
 import { withBasePath } from "@borneo/lib/base-path";
 
@@ -22,6 +22,10 @@ export function RaceGroupPanel({
   const [pending, setPending] = useState<"leader" | "join" | "leave" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedGroup, setSelectedGroup] = useState("");
+
+  useEffect(() => {
+    setGroup(initialGroup);
+  }, [initialGroup]);
 
   const joinOptions = useMemo(() => {
     if (!group) return [];

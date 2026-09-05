@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CtaButton } from "@borneo/components/ui";
 import { RaceFeed } from "./RaceFeed";
 import { MilestoneSubmitGate } from "./MilestoneSubmitDrawer";
+import { RaceGroupPanel } from "./RaceGroupPanel";
 import type { PublicRaceSubmission, RaceFeedItem } from "@borneo/lib/race/submissions";
 import type { ParticipantRaceGroup } from "@borneo/lib/race/group-types";
 
@@ -27,9 +28,19 @@ export function RacePageContent({
 }: RacePageContentProps) {
   const [feed, setFeed] = useState(initialFeed);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [raceGroup, setRaceGroup] = useState<ParticipantRaceGroup | null>(
+    submission?.initialGroup ?? null,
+  );
+
+  useEffect(() => {
+    setRaceGroup(submission?.initialGroup ?? null);
+  }, [submission?.initialGroup]);
 
   const openDrawer = useCallback(() => setDrawerOpen(true), []);
   const closeDrawer = useCallback(() => setDrawerOpen(false), []);
+  const handleGroupChange = useCallback((group: ParticipantRaceGroup) => {
+    setRaceGroup(group);
+  }, []);
 
   const prependFeedItem = useCallback((item: RaceFeedItem) => {
     setFeed((prev) => {
@@ -47,6 +58,14 @@ export function RacePageContent({
           Complete milestones across Kuching — post proof on X, paste the link here. Your post shows up in the feed.
         </p>
       </header>
+
+      {isSignedIn && submission && !drawerOpen ? (
+        <RaceGroupPanel
+          isSignedIn
+          initialGroup={raceGroup}
+          onGroupChange={handleGroupChange}
+        />
+      ) : null}
 
       <div className="race-page__actions">
         <CtaButton
@@ -75,7 +94,15 @@ export function RacePageContent({
         isSignedIn={isSignedIn}
         open={drawerOpen}
         onClose={closeDrawer}
-        submission={submission}
+        submission={
+          submission
+            ? {
+                ...submission,
+                initialGroup: raceGroup,
+              }
+            : null
+        }
+        onGroupChange={handleGroupChange}
         onSubmitted={prependFeedItem}
       />
 
