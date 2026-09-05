@@ -3,7 +3,6 @@ import { getParticipantForSession } from "@borneo/lib/auth/participant";
 import { requireOrganizerApi } from "@borneo/lib/auth/organizer";
 import {
   listGuestsForCheckIn,
-  listRaceTeams,
   updateGuestChecklist,
 } from "@borneo/lib/checkin/admin";
 
@@ -14,8 +13,8 @@ export async function GET() {
     return NextResponse.json({ error: auth.error }, { status: auth.status });
   }
 
-  const [guests, raceTeams] = await Promise.all([listGuestsForCheckIn(), listRaceTeams()]);
-  return NextResponse.json({ guests, raceTeams });
+  const guests = await listGuestsForCheckIn();
+  return NextResponse.json({ guests });
 }
 
 export async function PATCH(request: Request) {

@@ -1,8 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { CheckInGuest, RaceTeamOption } from "@borneo/lib/checkin/admin";
-import { parseGroupNumber } from "@borneo/lib/checkin/group-number";
+import type { CheckInGuest } from "@borneo/lib/checkin/admin";
 import { withBasePath } from "@borneo/lib/base-path";
 
 type CheckInFilter =
@@ -15,15 +14,7 @@ type CheckInFilter =
   | "no-race-leader"
   | "all";
 
-type PendingAction = "checkIn" | "merch" | "raceLeader" | "groupNumber";
-
-function formatWhen(iso: string) {
-  return new Date(iso).toLocaleString("en-MY", {
-    dateStyle: "medium",
-    timeStyle: "short",
-    timeZone: "Asia/Kuching",
-  });
-}
+type PendingAction = "checkIn" | "merch";
 
 function matchesSearch(guest: CheckInGuest, query: string): boolean {
   if (!query) return true;
@@ -95,24 +86,12 @@ function mergeGuests(prev: CheckInGuest[], updated: CheckInGuest[]): CheckInGues
   return [...byId.values()].sort((a, b) => a.name.localeCompare(b.name));
 }
 
-function groupNumbersFromTeams(teams: RaceTeamOption[]): number[] {
-  return teams
-    .map((team) => parseGroupNumber(team.name))
-    .filter((n): n is number => n != null)
-    .sort((a, b) => a - b);
-}
-
 type AdminCheckInClientProps = {
   initialGuests: CheckInGuest[];
-  initialRaceTeams: RaceTeamOption[];
 };
 
-export function AdminCheckInClient({
-  initialGuests,
-  initialRaceTeams,
-}: AdminCheckInClientProps) {
+export function AdminCheckInClient({ initialGuests }: AdminCheckInClientProps) {
   const [guests, setGuests] = useState(initialGuests);
-  const [raceTeams, setRaceTeams] = useState(initialRaceTeams);
   const [filter, setFilter] = useState<CheckInFilter>("approved");
   const [search, setSearch] = useState("");
   const [pending, setPending] = useState<{ id: string; action: PendingAction } | null>(null);
@@ -125,8 +104,6 @@ export function AdminCheckInClient({
     [guests],
   );
 
-  const existingGroupNumbers = useMemo(() => groupNumbersFromTeams(raceTeams), [raceTeams]);
-
   const groupLeaderState = useMemo(() => {
     const groupsWithLeader = new Set<number>();
 
@@ -136,30 +113,16 @@ export function AdminCheckInClient({
       }
     }
 
+    const groupNumbers = new Set(
+      approvedGuests.map((guest) => guest.groupNumber).filter((n): n is number => n != null),
+    );
+
     return {
       groupsWithLeader,
-      groupsWithoutLeader: existingGroupNumbers.filter((n) => !groupsWithLeader.has(n)).length,
+      groupCount: groupNumbers.size,
+      groupsWithoutLeader: [...groupNumbers].filter((n) => !groupsWithLeader.has(n)).length,
     };
-  }, [approvedGuests, existingGroupNumbers]);
-
-  const groupPickerOptions = useMemo(() => {
-    const maxExisting = existingGroupNumbers.length ? Math.max(...existingGroupNumbers) : 0;
-    const maxAssigned = approvedGuests.reduce(
-      (max, guest) => (guest.groupNumber != null ? Math.max(max, guest.groupNumber) : max),
-      0,
-    );
-    const ceiling = Math.max(maxExisting, maxAssigned, 1) + 1;
-    return Array.from({ length: ceiling }, (_, i) => i + 1);
-  }, [approvedGuests, existingGroupNumbers]);
-
-  const nextGroupNumber = useMemo(() => {
-    const maxExisting = existingGroupNumbers.length ? Math.max(...existingGroupNumbers) : 0;
-    const maxAssigned = approvedGuests.reduce(
-      (max, guest) => (guest.groupNumber != null ? Math.max(max, guest.groupNumber) : max),
-      0,
-    );
-    return Math.max(maxExisting, maxAssigned, 0) + 1;
-  }, [approvedGuests, existingGroupNumbers]);
+  }, [approvedGuests]);
 
   const stats = useMemo(() => {
     const checkedIn = approvedGuests.filter((guest) => guest.checkedInAt).length;
@@ -169,12 +132,11 @@ export function AdminCheckInClient({
     return {
       approved: approvedGuests.length,
       checkedIn,
-      notCheckedIn: approvedGuests.length - checkedIn,
       merchReceived,
       raceLeaders,
-      groupsWithoutLeader: groupLeaderState.groupsWithoutLeader,
+      groupCount: groupLeaderState.groupCount,
     };
-  }, [approvedGuests, groupLeaderState.groupsWithoutLeader]);
+  }, [approvedGuests, groupLeaderState.groupCount]);
 
   const visibleGuests = useMemo(
     () =>
@@ -186,30 +148,10 @@ export function AdminCheckInClient({
     [guests, filter, query, groupLeaderState.groupsWithLeader],
   );
 
-  function syncRaceTeamsFromGuests(updated: CheckInGuest[]) {
-    const next = new Map(raceTeams.map((team) => [team.id, team]));
-    for (const guest of updated) {
-      if (guest.raceTeam) {
-        next.set(guest.raceTeam.id, guest.raceTeam);
-      }
-    }
-    const merged = [...next.values()].sort(
-      (a, b) =>
-        (parseGroupNumber(a.name) ?? Number.MAX_SAFE_INTEGER) -
-        (parseGroupNumber(b.name) ?? Number.MAX_SAFE_INTEGER),
-    );
-    setRaceTeams(merged);
-  }
-
   async function patchGuest(
     guest: CheckInGuest,
     action: PendingAction,
-    payload: {
-      checkedIn?: boolean;
-      merchReceived?: boolean;
-      amazingRaceLeader?: boolean;
-      groupNumber?: number | null;
-    },
+    payload: { checkedIn?: boolean; merchReceived?: boolean },
   ) {
     setPending({ id: guest.id, action });
     setError(null);
@@ -233,7 +175,6 @@ export function AdminCheckInClient({
 
       const updated = data.guests?.length ? data.guests : [data.guest];
       setGuests((prev) => mergeGuests(prev, updated));
-      syncRaceTeamsFromGuests(updated);
     } catch {
       setError("Could not save.");
     } finally {
@@ -247,15 +188,6 @@ export function AdminCheckInClient({
 
   function toggleMerch(guest: CheckInGuest) {
     void patchGuest(guest, "merch", { merchReceived: !guest.merchReceivedAt });
-  }
-
-  function toggleGroupLeader(guest: CheckInGuest) {
-    void patchGuest(guest, "raceLeader", { amazingRaceLeader: !guest.amazingRaceLeader });
-  }
-
-  function assignGroupNumber(guest: CheckInGuest, raw: string) {
-    const groupNumber = raw ? Number.parseInt(raw, 10) : null;
-    void patchGuest(guest, "groupNumber", { groupNumber });
   }
 
   return (
@@ -274,7 +206,7 @@ export function AdminCheckInClient({
           <span className="admin-checkin__stat-label">Group leaders</span>
         </div>
         <div className="admin-checkin__stat">
-          <span className="admin-checkin__stat-value">{existingGroupNumbers.length}</span>
+          <span className="admin-checkin__stat-value">{stats.groupCount}</span>
           <span className="admin-checkin__stat-label">Groups</span>
         </div>
         <div className="admin-checkin__stat">
@@ -313,8 +245,8 @@ export function AdminCheckInClient({
       {error ? <p className="team-form__error">{error}</p> : null}
 
       <p className="admin-checkin__count">
-        Showing {visibleGuests.length} guest{visibleGuests.length === 1 ? "" : "s"} ·{" "}
-        {existingGroupNumbers.length} group{existingGroupNumbers.length === 1 ? "" : "s"}
+        Showing {visibleGuests.length} guest{visibleGuests.length === 1 ? "" : "s"} · groups are assigned on the
+        Amazing Race page
       </p>
 
       {visibleGuests.length === 0 ? (
@@ -328,7 +260,6 @@ export function AdminCheckInClient({
                 <th>Group</th>
                 <th>Arrival</th>
                 <th>Merch</th>
-                <th>Leader</th>
                 <th aria-label="Actions" />
               </tr>
             </thead>
@@ -336,11 +267,8 @@ export function AdminCheckInClient({
               {visibleGuests.map((guest) => {
                 const checkedIn = Boolean(guest.checkedInAt);
                 const merchReceived = Boolean(guest.merchReceivedAt);
-                const isRaceLeader = guest.amazingRaceLeader;
                 const checkInPending = pending?.id === guest.id && pending.action === "checkIn";
                 const merchPending = pending?.id === guest.id && pending.action === "merch";
-                const raceLeaderPending = pending?.id === guest.id && pending.action === "raceLeader";
-                const groupNumberPending = pending?.id === guest.id && pending.action === "groupNumber";
 
                 return (
                   <tr key={guest.id} className={checkedIn && merchReceived ? "admin-checkin__row--done" : undefined}>
@@ -355,23 +283,14 @@ export function AdminCheckInClient({
                       ) : null}
                     </td>
                     <td>
-                      <select
-                        className="admin-checkin__select team-form__input"
-                        value={guest.groupNumber ?? ""}
-                        disabled={Boolean(pending)}
-                        onChange={(event) => assignGroupNumber(guest, event.target.value)}
-                        aria-label={`Group for ${guest.name}`}
-                      >
-                        <option value="">—</option>
-                        {groupPickerOptions.map((number) => (
-                          <option key={number} value={number}>
-                            {number}
-                          </option>
-                        ))}
-                      </select>
-                      {groupNumberPending ? (
-                        <span className="admin-checkin__timestamp">Saving…</span>
-                      ) : null}
+                      {guest.groupNumber != null ? (
+                        <span className="admin-checkin__badge admin-checkin__badge--race">
+                          {guest.groupNumber}
+                          {guest.amazingRaceLeader ? " · Leader" : ""}
+                        </span>
+                      ) : (
+                        <span className="admin-checkin__badge admin-checkin__badge--out">—</span>
+                      )}
                     </td>
                     <td>
                       <span
@@ -393,23 +312,6 @@ export function AdminCheckInClient({
                         }
                       >
                         {merchReceived ? "Received" : "Pending"}
-                      </span>
-                    </td>
-                    <td>
-                      <span
-                        className={
-                          isRaceLeader
-                            ? "admin-checkin__badge admin-checkin__badge--race"
-                            : "admin-checkin__badge admin-checkin__badge--out"
-                        }
-                      >
-                        {isRaceLeader
-                          ? guest.groupNumber != null
-                            ? `Leader · ${guest.groupNumber}`
-                            : "Leader"
-                          : guest.groupNumber != null
-                            ? "Member"
-                            : "—"}
                       </span>
                     </td>
                     <td>
@@ -437,31 +339,6 @@ export function AdminCheckInClient({
                           onClick={() => toggleMerch(guest)}
                         >
                           {merchPending ? "Saving…" : merchReceived ? "Undo merch" : "Merch received"}
-                        </button>
-                        <button
-                          type="button"
-                          className={
-                            isRaceLeader
-                              ? "admin-checkin__action admin-checkin__action--undo"
-                              : "admin-checkin__action admin-checkin__action--race"
-                          }
-                          disabled={Boolean(pending)}
-                          onClick={() => toggleGroupLeader(guest)}
-                          title={
-                            isRaceLeader
-                              ? "Remove as group leader"
-                              : guest.groupNumber != null
-                                ? `Make leader of group ${guest.groupNumber}`
-                                : "Assign next group number and make leader"
-                          }
-                        >
-                          {raceLeaderPending
-                            ? "Saving…"
-                            : isRaceLeader
-                              ? "Remove leader"
-                              : guest.groupNumber != null
-                                ? "Group leader"
-                                : `Group leader → ${nextGroupNumber}`}
                         </button>
                       </div>
                     </td>

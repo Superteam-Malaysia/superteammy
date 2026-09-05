@@ -6,7 +6,9 @@ import { RACE_CUTOFF } from "@borneo/data/race-tasks";
 import { CtaButton } from "@borneo/components/ui";
 import { RaceFeed } from "./RaceFeed";
 import { MilestoneSubmitGate } from "./MilestoneSubmitDrawer";
+import { RaceGroupPanel } from "./RaceGroupPanel";
 import type { ParticipantTeamOption, PublicRaceSubmission, RaceFeedItem } from "@borneo/lib/race/submissions";
+import type { ParticipantRaceGroup } from "@borneo/lib/race/group-types";
 import { withBasePath } from "@borneo/lib/base-path";
 
 type RaceSubmissionContext = {
@@ -21,6 +23,7 @@ type RacePageContentProps = {
   isSignedIn?: boolean;
   isOrganizer?: boolean;
   initialFeed: RaceFeedItem[];
+  initialGroup?: ParticipantRaceGroup | null;
   submission?: RaceSubmissionContext | null;
 };
 
@@ -28,6 +31,7 @@ export function RacePageContent({
   isSignedIn = false,
   isOrganizer = false,
   initialFeed,
+  initialGroup = null,
   submission = null,
 }: RacePageContentProps) {
   const [feed, setFeed] = useState(initialFeed);
@@ -58,6 +62,8 @@ export function RacePageContent({
       <p className="race-page__cutoff">
         {RACE_CUTOFF.label} · {RACE_CUTOFF.time} cutoff
       </p>
+
+      <RaceGroupPanel isSignedIn={isSignedIn} initialGroup={initialGroup} />
 
       <div className="race-page__actions">
         <CtaButton

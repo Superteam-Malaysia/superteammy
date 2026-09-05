@@ -1,4 +1,5 @@
 export { RaceTaskCard } from "./RaceTaskCard";
+export { RaceGroupPanel } from "./RaceGroupPanel";
 export { RacePageContent } from "./RacePageContent";
 export { RaceSubmissionsPanel } from "./RaceSubmissionsPanel";
 export { RaceFeed } from "./RaceFeed";

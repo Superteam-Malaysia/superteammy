@@ -7,6 +7,7 @@ import {
   listParticipantTeams,
   listPublicRaceFeed,
 } from "@borneo/lib/race/submissions";
+import { getParticipantRaceGroup } from "@borneo/lib/race/groups";
 import { isRaceCutoffPassed } from "@borneo/lib/race/validation";
 
 export const metadata: Metadata = {
@@ -24,11 +25,16 @@ export default async function AmazingRacePage() {
   ]);
 
   let submission = null;
+  let initialGroup = null;
 
   if (participant) {
-    const teams = await listParticipantTeams(participant.id);
+    const [teams, initialSubmissions, group] = await Promise.all([
+      listParticipantTeams(participant.id),
+      listParticipantRaceSubmissions(participant.id),
+      getParticipantRaceGroup(participant.id),
+    ]);
     const initialTeam = teams[0] ?? null;
-    const initialSubmissions = await listParticipantRaceSubmissions(participant.id);
+    initialGroup = group;
 
     submission = {
       participantName: participant.name ?? participant.firstName ?? "You",
@@ -45,6 +51,7 @@ export default async function AmazingRacePage() {
         isSignedIn={!!participant}
         isOrganizer={participant ? isOrganizer(participant) : false}
         initialFeed={feed}
+        initialGroup={initialGroup}
         submission={submission}
       />
     </main>
