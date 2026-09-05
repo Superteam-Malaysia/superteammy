@@ -1598,6 +1598,66 @@
   color: color-mix(in srgb, var(--color-wisp) 55%, transparent);
 }
 
+.admin-checkin__groups {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.admin-checkin__group {
+  padding: 1rem;
+  border: 1px solid var(--color-transparent-wisp-10);
+  background: color-mix(in srgb, var(--team-colosseum-panel, #0d1117) 72%, transparent);
+}
+
+.admin-checkin__group-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.35rem 1rem;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid var(--color-transparent-wisp-10);
+}
+
+.admin-checkin__group-title {
+  margin: 0;
+  font-family: var(--font-orbitron);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-wisp);
+}
+
+.admin-checkin__group-meta {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-wisp) 55%, transparent);
+}
+
+.admin-checkin__group-section + .admin-checkin__group-section {
+  margin-top: 1rem;
+}
+
+.admin-checkin__group-section-label {
+  margin: 0 0 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-wisp) 70%, transparent);
+}
+
+.admin-checkin__group-empty {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: color-mix(in srgb, var(--color-wisp) 45%, transparent);
+}
+
 .admin-checkin__name {
   display: block;
   font-weight: 600;
