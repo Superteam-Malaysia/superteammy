@@ -46,7 +46,7 @@ const STANDALONE_MENTORS: PublicMentor[] = [
     isJudge: false,
     judgeRole: null,
     workshops: [],
-    avatar: null,
+    avatar: withBasePath("/speakers/semi.jpg"),
     twitter: null,
     linkedin: null,
     telegram: "semi_infiknight",
