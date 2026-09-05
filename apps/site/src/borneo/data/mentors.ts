@@ -18,7 +18,7 @@ const STANDALONE_MENTORS: PublicMentor[] = [
     avatar: null,
     twitter: "hanstmy",
     linkedin: null,
-    telegram: null,
+    telegram: "hanstmy",
     email: null,
     initials: participantInitials("Han"),
   },
@@ -33,7 +33,7 @@ const STANDALONE_MENTORS: PublicMentor[] = [
     avatar: null,
     twitter: "tuakdotsol",
     linkedin: null,
-    telegram: null,
+    telegram: "tuakdotsol",
     email: null,
     initials: participantInitials("Marianne"),
   },
@@ -59,15 +59,46 @@ const MENTOR_CONTACT: Record<
   string,
   { email?: string; telegram?: string; organization?: string }
 > = {
+  han: {
+    telegram: "hanstmy",
+    organization: "Superteam Malaysia",
+  },
+  marianne: {
+    telegram: "tuakdotsol",
+    organization: "Superteam Malaysia",
+  },
   semi: {
     email: "semi@sendarcade.fun",
     telegram: "semi_infiknight",
     organization: "Superteam Malaysia",
   },
   nikki: {
+    telegram: "nikkideyy",
     organization: "stmy",
   },
+  tristan: { telegram: "hypetris_" },
+  vesper: { telegram: "vesper792" },
+  jemmy: { telegram: "jemmmyjemm" },
+  nic: { telegram: "NicFury" },
+  ohmeohmy: { telegram: "OhMeOhMy_Sol" },
+  joey: { telegram: "joeylaujy" },
+  "shuen-rui": { telegram: "shuenrui" },
 };
+
+/** Best Telegram @handle for a mentor — explicit field, contact map, then X handle. */
+export function mentorTelegramHandle(mentor: PublicMentor): string | null {
+  if (mentor.telegram?.trim()) {
+    return mentor.telegram.replace(/^@/, "").trim();
+  }
+  const contact = MENTOR_CONTACT[mentor.id];
+  if (contact?.telegram?.trim()) {
+    return contact.telegram.replace(/^@/, "").trim();
+  }
+  if (mentor.twitter?.trim()) {
+    return mentor.twitter.replace(/^@/, "").trim();
+  }
+  return null;
+}
 
 export function mentorSlug(name: string): string {
   return name
@@ -217,6 +248,9 @@ export function getPublicMentors(): PublicMentor[] {
   for (const mentor of byId.values()) {
     const contact = MENTOR_CONTACT[mentor.id];
     if (contact?.organization) mentor.organization = contact.organization;
+    if (contact?.email && !mentor.email) mentor.email = contact.email;
+    const telegram = mentorTelegramHandle(mentor);
+    if (telegram) mentor.telegram = telegram;
   }
 
   return [...byId.values()].sort((a, b) => a.name.localeCompare(b.name));

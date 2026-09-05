@@ -7,7 +7,7 @@
  */
 import "dotenv/config";
 import { sql } from "drizzle-orm";
-import { getPublicMentors } from "../../src/borneo/data/mentors";
+import { getPublicMentors, mentorTelegramHandle } from "../../src/borneo/data/mentors";
 import { normalizeEmail } from "../../src/borneo/lib/auth/session";
 import { closeDb, getDb } from "../../src/borneo/lib/db";
 import { participants } from "../../src/borneo/lib/db/schema";
@@ -25,6 +25,10 @@ function telegramHref(value: string | null): string | null {
   if (/^https?:\/\//i.test(trimmed)) return trimmed;
   const handle = trimmed.replace(/^@/, "");
   return handle ? `https://t.me/${handle}` : null;
+}
+
+function mentorTelegramUrl(mentor: ReturnType<typeof getPublicMentors>[number]): string | null {
+  return telegramHref(mentorTelegramHandle(mentor));
 }
 
 function matchesGuestName(mentorName: string, guestName: string | null): boolean {
@@ -73,7 +77,7 @@ async function main() {
       name: mentor.name,
       firstName: mentor.name.split(/\s+/)[0] ?? mentor.name,
       lastName: mentor.name.split(/\s+/).slice(1).join(" ") || null,
-      telegram: telegramHref(mentor.telegram),
+      telegram: mentorTelegramUrl(mentor),
       ticketName: roleLabel,
       projectIdea,
       proofOfWork: mentor.organization ?? null,
