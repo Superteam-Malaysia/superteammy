@@ -59,6 +59,7 @@ export function MilestoneSubmitDrawer({
   }, [submissions]);
 
   const selectedTask = RACE_TASKS.find((task) => task.id === selectedTaskId) ?? null;
+  const selectedTaskImage = selectedTask ? raceMilestoneImage(selectedTask.id) : null;
   const completedCount = submissions.length;
   const totalCount = RACE_TASKS.length;
   const taggedTeam = teamSlug
@@ -288,6 +289,26 @@ export function MilestoneSubmitDrawer({
           </>
         ) : selectedTask ? (
           <div className="race-drawer__link-step">
+            {selectedTaskImage ? (
+              <div
+                className={[
+                  "race-drawer__link-hero",
+                  selectedTask.id === "race-onboard-user" ? "race-drawer__link-hero--logo" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              >
+                <Image
+                  src={selectedTaskImage}
+                  alt=""
+                  width={880}
+                  height={550}
+                  className="race-drawer__link-hero-image"
+                  sizes="(max-width: 550px) 100vw, 550px"
+                  priority
+                />
+              </div>
+            ) : null}
             <p className="race-drawer__link-title">{selectedTask.title}</p>
             <p className="race-drawer__link-points">{formatTaskPoints(selectedTask)}</p>
             <ul className="race-drawer__link-details">
