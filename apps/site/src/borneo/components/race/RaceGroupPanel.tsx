@@ -123,10 +123,10 @@ export function RaceGroupPanel({
       {inGroup ? (
         <div className="race-group-panel__status">
           <p className="race-group-panel__title">
-            {raceTeamLabel(group.leaderName)}
-            {group.isLeader ? " · You’re the leader" : ""}
+            {group.isLeader ? "You're the leader" : raceTeamLabel(group.leaderName)}
           </p>
           <p className="race-group-panel__meta">
+            {group.isLeader ? `${raceTeamLabel(group.leaderName)} · ` : null}
             {group.memberCount} / {MAX_RACE_GROUP_SIZE} in your group
           </p>
           <button
