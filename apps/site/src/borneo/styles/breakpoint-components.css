@@ -131,7 +131,7 @@
 }
 
 /* site-main already pads the page — keep section blocks aligned with PageHeader */
-.site-main > .bp-article {
+.site-main .bp-article {
   padding-inline: 0;
 }
 

@@ -58,8 +58,7 @@ export default async function TeamDetailPage({ params }: TeamDetailPageProps) {
 
   return (
     <main className="site-main site-main--stack">
-      <div className="max-w-[90rem] mx-auto px-4 md:px-8 py-16 md:py-24 w-full">
-        <SectionArticle>
+      <SectionArticle>
           <div className="team-detail">
             <Link href="/teams" className="team-detail__back">
               <span aria-hidden="true">&lt;</span> Back to teams
@@ -87,7 +86,6 @@ export default async function TeamDetailPage({ params }: TeamDetailPageProps) {
             {!canEdit ? <TeamDetailActions slug={slug} /> : null}
           </div>
         </SectionArticle>
-      </div>
     </main>
   );
 }

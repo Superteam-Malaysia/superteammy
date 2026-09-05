@@ -26,8 +26,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   return (
     <main className="site-main site-main--stack">
-      <div className="max-w-[90rem] mx-auto px-4 md:px-8 py-16 md:py-24">
-        <SectionArticle>
+      <SectionArticle>
           <SectionIntro
             title="Participant sign-in"
             lead="Sign in with Telegram — the same account you used when registering on Luma. No password or email link needed."
@@ -40,7 +39,6 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             <TelegramLoginButton />
           </div>
         </SectionArticle>
-      </div>
     </main>
   );
 }

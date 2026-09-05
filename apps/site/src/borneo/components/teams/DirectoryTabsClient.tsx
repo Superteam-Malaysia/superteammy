@@ -163,12 +163,12 @@ export function DirectoryTabsClient({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-center md:mb-8 mb-6"
+          className="text-left md:text-center md:mb-8 mb-6"
         >
           <h1 className="font-[family-name:var(--font-orbitron)] uppercase text-3xl md:text-4xl lg:text-7xl font-black text-white mb-3">
             Teams &amp; Mentors
           </h1>
-          <p className="md:text-lg text-[14px] text-white/90 md:max-w-2xl px-4 md:px-0 mx-auto">
+          <p className="md:text-lg text-[14px] text-white/90 md:max-w-2xl md:mx-auto">
             Explore hackathon teams, registered builders, and workshop leaders plus Demo Day judges at
             Startup Village Borneo
           </p>
@@ -228,11 +228,11 @@ export function DirectoryTabsClient({
 
           {filteredUnassigned.length > 0 ? (
             <section id="team-not-yet-defined" className="space-y-6">
-              <div className="text-center md:text-left">
+              <div className="text-left">
                 <h2 className="font-[family-name:var(--font-orbitron)] uppercase text-lg md:text-xl font-bold text-white tracking-wide">
                   Team not yet defined
                 </h2>
-                <p className="mt-2 text-sm text-white/70 max-w-xl mx-auto md:mx-0">
+                <p className="mt-2 text-sm text-white/70 max-w-xl">
                   Registered builders who are not on a hackathon team yet.
                 </p>
               </div>

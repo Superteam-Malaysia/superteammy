@@ -18,8 +18,7 @@ export default async function NewTeamPage() {
 
   return (
     <main className="site-main site-main--stack">
-      <div className="max-w-[90rem] mx-auto px-4 md:px-8 py-16 md:py-24">
-        <SectionArticle>
+      <SectionArticle>
           <SectionIntro
             title="Create a team"
             lead="Showcase your project in the teams directory. Create and manage teams from your profile."
@@ -29,7 +28,6 @@ export default async function NewTeamPage() {
             <TeamForm mode="create" />
           </div>
         </SectionArticle>
-      </div>
     </main>
   );
 }

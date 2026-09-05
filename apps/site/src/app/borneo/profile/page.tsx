@@ -34,8 +34,7 @@ export default async function ProfilePage() {
 
   return (
     <main className="site-main site-main--stack">
-      <div className="max-w-[90rem] mx-auto px-4 md:px-8 py-16 md:py-24">
-        <SectionArticle>
+      <SectionArticle>
           <SectionIntro
             title="My profile"
             lead="Update your builder card and manage your hackathon team."
@@ -66,7 +65,6 @@ export default async function ProfilePage() {
             <LogoutButton />
           </div>
         </SectionArticle>
-      </div>
     </main>
   );
 }
