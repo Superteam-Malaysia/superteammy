@@ -1,7 +1,6 @@
--- Farah Kamal — X @ImaniKml only (no Telegram on profile)
+-- Farah Kamal — no Telegram on public profile (X only: @ImaniKml)
 UPDATE participants
 SET
-  twitter_url = 'https://x.com/ImaniKml',
   telegram = NULL,
   updated_at = NOW()
 WHERE guest_id = 'gst-uhy68HsMG1o8jCA'

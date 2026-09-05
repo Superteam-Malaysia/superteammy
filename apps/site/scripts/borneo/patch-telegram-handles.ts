@@ -35,6 +35,9 @@ const TWITTER_PATCHES: Record<string, string> = {
   "hpy5c8whjc@privaterelay.appleid.com": "https://x.com/ImaniKml",
 };
 
+/** Clear mistaken Telegram handles — X/social only on profile. */
+const TELEGRAM_CLEAR_EMAILS = new Set(["hpy5c8whjc@privaterelay.appleid.com"]);
+
 function toTelegramField(value: string): string {
   const trimmed = value.trim();
   if (trimmed.startsWith("https://") || trimmed.startsWith("http://")) return trimmed;
@@ -83,6 +86,22 @@ async function main() {
       console.log(`X patched: ${row.name ?? email} → ${twitterUrl}`);
     } else {
       console.warn(`X not found: ${email}`);
+    }
+  }
+
+  for (const email of TELEGRAM_CLEAR_EMAILS) {
+    const emailNormalized = normalizeEmail(email);
+
+    const [row] = await db
+      .update(participants)
+      .set({ telegram: null, updatedAt: new Date() })
+      .where(eq(participants.emailNormalized, emailNormalized))
+      .returning({ id: participants.id, name: participants.name });
+
+    if (row) {
+      console.log(`Telegram cleared: ${row.name ?? email}`);
+    } else {
+      console.warn(`Telegram clear not found: ${email}`);
     }
   }
 
