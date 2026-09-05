@@ -2,7 +2,6 @@
 
 import Link from "@borneo/components/Link";
 import { useCallback, useState } from "react";
-import { RACE_CUTOFF } from "@borneo/data/race-tasks";
 import { CtaButton } from "@borneo/components/ui";
 import { RaceFeed } from "./RaceFeed";
 import { MilestoneSubmitGate } from "./MilestoneSubmitDrawer";
@@ -58,10 +57,6 @@ export function RacePageContent({
           Complete milestones across Kuching — post proof on X, paste the link here. Your post shows up in the feed.
         </p>
       </header>
-
-      <p className="race-page__cutoff">
-        {RACE_CUTOFF.label} · {RACE_CUTOFF.time} cutoff
-      </p>
 
       <RaceGroupPanel isSignedIn={isSignedIn} initialGroup={initialGroup} />
 
