@@ -4,7 +4,6 @@ import { useCallback, useState } from "react";
 import { CtaButton } from "@borneo/components/ui";
 import { RaceFeed } from "./RaceFeed";
 import { MilestoneSubmitGate } from "./MilestoneSubmitDrawer";
-import { RaceGroupPanel } from "./RaceGroupPanel";
 import type { ParticipantTeamOption, PublicRaceSubmission, RaceFeedItem } from "@borneo/lib/race/submissions";
 import type { ParticipantRaceGroup } from "@borneo/lib/race/group-types";
 
@@ -13,20 +12,19 @@ type RaceSubmissionContext = {
   teams: ParticipantTeamOption[];
   tagTeamSlug: string | null;
   initialSubmissions: PublicRaceSubmission[];
+  initialGroup: ParticipantRaceGroup | null;
   cutoffPassed: boolean;
 };
 
 type RacePageContentProps = {
   isSignedIn?: boolean;
   initialFeed: RaceFeedItem[];
-  initialGroup?: ParticipantRaceGroup | null;
   submission?: RaceSubmissionContext | null;
 };
 
 export function RacePageContent({
   isSignedIn = false,
   initialFeed,
-  initialGroup = null,
   submission = null,
 }: RacePageContentProps) {
   const [feed, setFeed] = useState(initialFeed);
@@ -51,8 +49,6 @@ export function RacePageContent({
           Complete milestones across Kuching — post proof on X, paste the link here. Your post shows up in the feed.
         </p>
       </header>
-
-      <RaceGroupPanel isSignedIn={isSignedIn} initialGroup={initialGroup} />
 
       <div className="race-page__actions">
         <CtaButton

@@ -708,8 +708,7 @@
 }
 
 .race-page__hero,
-.race-page__actions,
-.race-group-panel {
+.race-page__actions {
   width: 100%;
   max-width: var(--race-content-max);
   margin-inline: auto;
@@ -871,6 +870,92 @@
   font-family: var(--font-mono);
   font-size: 0.75rem;
   color: var(--color-wisp);
+}
+
+.race-group-panel--drawer {
+  margin: 0 0 0.75rem;
+  padding: 0 0 0.875rem;
+  border: none;
+  border-bottom: 1px solid var(--color-transparent-wisp-10);
+  border-radius: 0;
+  gap: 0.75rem;
+}
+
+.race-group-panel--drawer .race-group-panel__lead {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: color-mix(in srgb, var(--color-wisp) 60%, transparent);
+}
+
+.race-group-panel--drawer .race-group-panel__title {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.race-group-panel--drawer .race-group-panel__meta {
+  margin: 0.2rem 0 0;
+}
+
+.race-group-panel--drawer .race-group-panel__pick,
+.race-group-panel--drawer .race-group-panel__status {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.race-group-panel--drawer .race-group-panel__leader-btn,
+.race-group-panel--drawer .race-group-panel__join-btn {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  padding: 0.6875rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-transparent-wisp-10);
+  background: color-mix(in srgb, var(--color-wisp) 8%, transparent);
+}
+
+.race-group-panel--drawer .race-group-panel__leader-btn {
+  border-color: color-mix(in srgb, var(--color-byte) 40%, transparent);
+  background: color-mix(in srgb, var(--color-byte) 14%, transparent);
+}
+
+.race-group-panel--drawer .race-group-panel__leader-btn:hover,
+.race-group-panel--drawer .race-group-panel__join-btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-byte) 22%, transparent);
+}
+
+.race-group-panel--drawer .race-group-panel__join-btn:not(:disabled) {
+  border-color: color-mix(in srgb, var(--color-byte) 35%, transparent);
+  background: color-mix(in srgb, var(--color-byte) 10%, transparent);
+}
+
+.race-group-panel--drawer .race-group-panel__join {
+  gap: 0.5rem;
+}
+
+.race-group-panel--drawer .race-group-panel__join-label {
+  gap: 0.35rem;
+  font-size: 0.8125rem;
+}
+
+.race-group-panel--drawer .race-group-panel__join-label > span {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-wisp) 50%, transparent);
+}
+
+.race-group-panel--drawer .race-group-panel__leave {
+  margin: 0;
+  align-self: flex-start;
+}
+
+.race-group-panel--drawer .team-form__error {
+  margin: 0;
 }
 
 .race-feed {

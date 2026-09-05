@@ -24,7 +24,6 @@ export default async function AmazingRacePage() {
   ]);
 
   let submission = null;
-  let initialGroup = null;
 
   if (participant) {
     const [teams, initialSubmissions, group] = await Promise.all([
@@ -33,13 +32,13 @@ export default async function AmazingRacePage() {
       getParticipantRaceGroup(participant.id),
     ]);
     const initialTeam = teams[0] ?? null;
-    initialGroup = group;
 
     submission = {
       participantName: participant.name ?? participant.firstName ?? "You",
       teams,
       tagTeamSlug: initialTeam?.slug ?? null,
       initialSubmissions,
+      initialGroup: group,
       cutoffPassed: isRaceCutoffPassed(),
     };
   }
@@ -49,7 +48,6 @@ export default async function AmazingRacePage() {
       <RacePageContent
         isSignedIn={!!participant}
         initialFeed={feed}
-        initialGroup={initialGroup}
         submission={submission}
       />
     </main>

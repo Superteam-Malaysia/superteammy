@@ -8,9 +8,14 @@ import { withBasePath } from "@borneo/lib/base-path";
 type RaceGroupPanelProps = {
   isSignedIn: boolean;
   initialGroup: ParticipantRaceGroup | null;
+  variant?: "page" | "drawer";
 };
 
-export function RaceGroupPanel({ isSignedIn, initialGroup }: RaceGroupPanelProps) {
+export function RaceGroupPanel({
+  isSignedIn,
+  initialGroup,
+  variant = "page",
+}: RaceGroupPanelProps) {
   const [group, setGroup] = useState<ParticipantRaceGroup | null>(initialGroup);
   const [pending, setPending] = useState<"leader" | "join" | "leave" | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -81,9 +86,14 @@ export function RaceGroupPanel({ isSignedIn, initialGroup }: RaceGroupPanelProps
     }
   }
 
+  const panelClass =
+    variant === "drawer" ? "race-group-panel race-group-panel--drawer" : "race-group-panel";
+
   if (!isSignedIn) {
+    if (variant === "drawer") return null;
+
     return (
-      <section className="race-group-panel">
+      <section className={panelClass}>
         <p className="race-group-panel__lead">
           Sign in to join an Amazing Race group (max {MAX_RACE_GROUP_SIZE} people).
         </p>
@@ -101,7 +111,7 @@ export function RaceGroupPanel({ isSignedIn, initialGroup }: RaceGroupPanelProps
   const inGroup = group.groupNumber != null;
 
   return (
-    <section className="race-group-panel" aria-label="Amazing Race group">
+    <section className={panelClass} aria-label="Amazing Race group">
       {inGroup ? (
         <div className="race-group-panel__status">
           <p className="race-group-panel__title">
@@ -139,7 +149,7 @@ export function RaceGroupPanel({ isSignedIn, initialGroup }: RaceGroupPanelProps
             <label className="race-group-panel__join-label">
               <span>Join a group</span>
               <select
-                className="race-group-panel__select team-form__input"
+                className="race-group-panel__select team-form__select"
                 value={selectedGroup}
                 disabled={Boolean(pending) || joinOptions.length === 0}
                 onChange={(event) => setSelectedGroup(event.target.value)}

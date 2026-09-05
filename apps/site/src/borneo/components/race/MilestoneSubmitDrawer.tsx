@@ -3,7 +3,7 @@
 import Link from "@borneo/components/Link";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
-import { RACE_TASKS } from "@borneo/data/race-tasks";
+import { RACE_TASKS, type RaceTask } from "@borneo/data/race-tasks";
 import { raceMilestoneImage } from "@borneo/data/race-milestone-images";
 import { CtaButton } from "@borneo/components/ui";
 import { withBasePath } from "@borneo/lib/base-path";
@@ -12,7 +12,8 @@ import type {
   PublicRaceSubmission,
   RaceFeedItem,
 } from "@borneo/lib/race/submissions";
-import type { RaceTask } from "@borneo/data/race-tasks";
+import type { ParticipantRaceGroup } from "@borneo/lib/race/group-types";
+import { RaceGroupPanel } from "./RaceGroupPanel";
 
 function formatTaskPoints(task: RaceTask): string {
   if (task.pointsNote) return task.pointsNote;
@@ -30,6 +31,7 @@ type MilestoneSubmitDrawerProps = {
   teams: ParticipantTeamOption[];
   tagTeamSlug: string | null;
   initialSubmissions: PublicRaceSubmission[];
+  initialGroup: ParticipantRaceGroup | null;
   cutoffPassed: boolean;
   onSubmitted: (item: RaceFeedItem) => void;
 };
@@ -41,6 +43,7 @@ export function MilestoneSubmitDrawer({
   teams,
   tagTeamSlug,
   initialSubmissions,
+  initialGroup,
   cutoffPassed,
   onSubmitted,
 }: MilestoneSubmitDrawerProps) {
@@ -197,6 +200,8 @@ export function MilestoneSubmitDrawer({
             ×
           </button>
         </header>
+
+        <RaceGroupPanel isSignedIn initialGroup={initialGroup} variant="drawer" />
 
         <p className="race-drawer__team-note">
           Submitting as <strong>{participantName}</strong>
@@ -367,6 +372,7 @@ type MilestoneSubmitGateProps = {
     teams: ParticipantTeamOption[];
     tagTeamSlug: string | null;
     initialSubmissions: PublicRaceSubmission[];
+    initialGroup: ParticipantRaceGroup | null;
     cutoffPassed: boolean;
   } | null;
   onSubmitted: (item: RaceFeedItem) => void;
@@ -413,6 +419,7 @@ export function MilestoneSubmitGate({
       teams={submission.teams}
       tagTeamSlug={submission.tagTeamSlug}
       initialSubmissions={submission.initialSubmissions}
+      initialGroup={submission.initialGroup}
       cutoffPassed={submission.cutoffPassed}
       onSubmitted={onSubmitted}
     />
