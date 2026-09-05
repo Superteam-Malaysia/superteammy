@@ -1,7 +1,32 @@
-import { and, eq, or } from "drizzle-orm";
+import { and, asc, eq, or } from "drizzle-orm";
 import { getDb } from "@borneo/lib/db";
 import { teamMembers, teams } from "@borneo/lib/db/schema";
 import type { TeamMemberRole } from "@borneo/lib/db/schema";
+
+export type ParticipantTeamSummary = {
+  slug: string;
+  name: string;
+  role: string;
+};
+
+/** Teams this participant belongs to — no approval filter (for /profile). */
+export async function getParticipantHackathonTeams(
+  participantId: string,
+): Promise<ParticipantTeamSummary[]> {
+  if (!process.env.DATABASE_URL) return [];
+
+  const db = getDb();
+  return db
+    .select({
+      slug: teams.slug,
+      name: teams.name,
+      role: teamMembers.role,
+    })
+    .from(teamMembers)
+    .innerJoin(teams, eq(teamMembers.teamId, teams.id))
+    .where(eq(teamMembers.participantId, participantId))
+    .orderBy(asc(teams.name));
+}
 
 export async function getTeamMembership(teamId: string, participantId: string) {
   const db = getDb();

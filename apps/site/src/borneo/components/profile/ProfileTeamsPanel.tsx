@@ -11,13 +11,20 @@ type ProfileTeamsPanelProps = {
 };
 
 export function ProfileTeamsPanel({ teams }: ProfileTeamsPanelProps) {
+  const editableTeams = teams.filter((team) => team.canEdit);
+  const primaryManage = editableTeams[0];
+
   return (
     <section className="profile-teams" aria-labelledby="profile-teams-heading">
       <div className="profile-teams__head">
         <h2 id="profile-teams-heading" className="profile-teams__title">
           Hackathon team
         </h2>
-        <p className="profile-teams__lead">Create or manage your team here.</p>
+        <p className="profile-teams__lead">
+          {teams.length > 0
+            ? "Your team appears in the directory. Update details and members on the team page."
+            : "Create or manage your team here."}
+        </p>
       </div>
 
       {teams.length > 0 ? (
@@ -45,9 +52,25 @@ export function ProfileTeamsPanel({ teams }: ProfileTeamsPanelProps) {
       )}
 
       <div className="profile-teams__actions">
-        <CtaButton href="/teams/new" variant="byte" size="md" showArrow={false}>
-          Create team
-        </CtaButton>
+        {primaryManage ? (
+          <CtaButton href={`/teams/${primaryManage.slug}`} variant="byte" size="md" showArrow={false}>
+            Manage team
+          </CtaButton>
+        ) : (
+          <CtaButton href="/teams/new" variant="byte" size="md" showArrow={false}>
+            Create team
+          </CtaButton>
+        )}
+        {teams.length > 0 && !primaryManage ? (
+          <CtaButton href="/teams/new" variant="ghost-wisp" size="md" showArrow={false}>
+            Create team
+          </CtaButton>
+        ) : null}
+        {teams.length > 0 && primaryManage ? (
+          <Link href="/teams/new" className="profile-teams__browse">
+            Create another team
+          </Link>
+        ) : null}
         <Link href="/teams" className="profile-teams__browse">
           Browse teams directory
         </Link>

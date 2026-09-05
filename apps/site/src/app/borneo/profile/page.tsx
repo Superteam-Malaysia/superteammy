@@ -6,10 +6,9 @@ import { ProfileAdminLinks } from "@borneo/components/profile/ProfileAdminLinks"
 import { ProfileTeamsPanel } from "@borneo/components/profile/ProfileTeamsPanel";
 import { requireParticipant } from "@borneo/lib/auth/participant";
 import { isOrganizer } from "@borneo/lib/auth/organizer";
-import { getPublicParticipantsByIds } from "@borneo/lib/participants/public-directory";
 import { participantInitials } from "@borneo/lib/participants/team-categories";
 import { participantToProfileForm } from "@borneo/lib/profile/form";
-import { listEditableTeamSlugs } from "@borneo/lib/teams/access";
+import { canEditTeam, getParticipantHackathonTeams } from "@borneo/lib/teams/access";
 import { uploadPublicUrl } from "@borneo/lib/uploads/public-url";
 
 export const metadata: Metadata = {
@@ -21,15 +20,15 @@ export const dynamic = "force-dynamic";
 
 export default async function ProfilePage() {
   const participant = await requireParticipant();
-  const [directoryProfile] = await getPublicParticipantsByIds([participant.id]);
+  const teamRows = await getParticipantHackathonTeams(participant.id);
   const displayName = participant.name ?? participant.email;
   const initials = participantInitials(displayName);
   const avatarUrl = uploadPublicUrl(participant.avatarUrl);
-  const hackathonTeams = directoryProfile?.hackathonTeams ?? [];
-  const editableSlugs = new Set(await listEditableTeamSlugs(participant.id));
-  const profileTeams = hackathonTeams.map((team) => ({
-    ...team,
-    canEdit: editableSlugs.has(team.slug),
+  const hackathonTeams = teamRows.map(({ slug, name }) => ({ slug, name }));
+  const profileTeams = teamRows.map((team) => ({
+    slug: team.slug,
+    name: team.name,
+    canEdit: canEditTeam(team.role),
   }));
 
   return (
