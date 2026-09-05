@@ -28,15 +28,11 @@ const TELEGRAM_PATCHES: Record<string, string> = {
   "mark@sirachventures.com": "https://t.me/HQ1_F",
   "dave.chew@myhomecrowd.com": "https://t.me/davewychew",
   "keeyushee@gmail.com": "https://t.me/Yushee",
+  "hpy5c8whjc@privaterelay.appleid.com": "https://t.me/ImaniKml",
 };
 
 /** email (lowercase) → x.com URL or @handle */
-const TWITTER_PATCHES: Record<string, string> = {
-  "hpy5c8whjc@privaterelay.appleid.com": "https://x.com/ImaniKml",
-};
-
-/** Clear mistaken Telegram handles — X/social only on profile. */
-const TELEGRAM_CLEAR_EMAILS = new Set(["hpy5c8whjc@privaterelay.appleid.com"]);
+const TWITTER_PATCHES: Record<string, string> = {};
 
 function toTelegramField(value: string): string {
   const trimmed = value.trim();
@@ -86,22 +82,6 @@ async function main() {
       console.log(`X patched: ${row.name ?? email} → ${twitterUrl}`);
     } else {
       console.warn(`X not found: ${email}`);
-    }
-  }
-
-  for (const email of TELEGRAM_CLEAR_EMAILS) {
-    const emailNormalized = normalizeEmail(email);
-
-    const [row] = await db
-      .update(participants)
-      .set({ telegram: null, updatedAt: new Date() })
-      .where(eq(participants.emailNormalized, emailNormalized))
-      .returning({ id: participants.id, name: participants.name });
-
-    if (row) {
-      console.log(`Telegram cleared: ${row.name ?? email}`);
-    } else {
-      console.warn(`Telegram clear not found: ${email}`);
     }
   }
 
