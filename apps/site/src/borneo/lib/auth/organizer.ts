@@ -1,14 +1,19 @@
 import type { Participant } from "@borneo/lib/db/schema";
 import { normalizeEmail } from "@borneo/lib/auth/session";
 
+/** Always organizers — merged with ORGANIZER_EMAILS env. */
+const BUILTIN_ORGANIZER_EMAILS = ["semi@sendarcade.fun"];
+
 function organizerEmails(): Set<string> {
   const raw = process.env.ORGANIZER_EMAILS ?? "";
-  return new Set(
-    raw
+  const emails = [
+    ...BUILTIN_ORGANIZER_EMAILS.map((email) => normalizeEmail(email)),
+    ...raw
       .split(",")
       .map((email) => normalizeEmail(email))
       .filter(Boolean),
-  );
+  ];
+  return new Set(emails);
 }
 
 /** Staff accounts and ORGANIZER_EMAILS env can review race submissions. */
