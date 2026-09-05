@@ -111,7 +111,7 @@ export const VENUE_DAY_PLAN: VenueDayPlan[] = [
     venueId: "voco",
     headline: "Build & traction",
     detail:
-      "Breakfast at Sheraton → 09:30 bus to Voco. Teams go out for first 10 users after lunch; regroup at Voco by 16:30. Monke Meetup 18:30.",
+      "Breakfast at Sheraton → 09:30 bus to Voco. Teams go out for first 10 users after lunch; regroup at 15:00. Monke Meetup 18:30.",
   },
   {
     day: "Day 4",
