@@ -1238,18 +1238,14 @@
 }
 
 @media (min-width: 720px) {
-  .admin-checkin__stats--six {
+  .admin-checkin__stats--grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 1100px) {
-  .admin-checkin__stats--six {
+  .admin-checkin__stats--grid {
     grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
-
-  .admin-checkin__stat--wide {
-    grid-column: span 1;
   }
 }
 
@@ -1345,9 +1341,22 @@
   color: #e9d5ff;
 }
 
+.admin-checkin__badge--race {
+  background: color-mix(in srgb, #fb923c 18%, transparent);
+  color: #fed7aa;
+}
+
 .admin-checkin__badge--out {
   background: color-mix(in srgb, var(--color-wisp) 8%, transparent);
   color: color-mix(in srgb, var(--color-wisp) 65%, transparent);
+}
+
+.admin-checkin__team {
+  display: block;
+  margin-top: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--color-byte);
 }
 
 .admin-checkin__approval {
@@ -1403,6 +1412,12 @@
   border-color: color-mix(in srgb, #c084fc 55%, transparent);
 }
 
+.admin-checkin__action--race {
+  background: color-mix(in srgb, #fb923c 85%, #1f1208);
+  color: #fff7ed;
+  border-color: color-mix(in srgb, #fb923c 55%, transparent);
+}
+
 .admin-checkin__action--undo {
   background: transparent;
   color: color-mix(in srgb, var(--color-wisp) 75%, transparent);
@@ -1419,7 +1434,9 @@
   }
 
   .admin-checkin__table th:nth-child(2),
-  .admin-checkin__table td:nth-child(2) {
+  .admin-checkin__table td:nth-child(2),
+  .admin-checkin__table th:nth-child(5),
+  .admin-checkin__table td:nth-child(5) {
     display: none;
   }
 }

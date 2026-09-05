@@ -1,11 +1,7 @@
 import { NextResponse } from "next/server";
 import { getParticipantForSession } from "@borneo/lib/auth/participant";
 import { requireOrganizerApi } from "@borneo/lib/auth/organizer";
-import {
-  getGuestForCheckIn,
-  listGuestsForCheckIn,
-  updateGuestChecklist,
-} from "@borneo/lib/checkin/admin";
+import { listGuestsForCheckIn, updateGuestChecklist } from "@borneo/lib/checkin/admin";
 
 export async function GET() {
   const participant = await getParticipantForSession();
@@ -44,27 +40,36 @@ export async function PATCH(request: Request) {
     typeof body === "object" && body && "merchReceived" in body
       ? (body as { merchReceived: unknown }).merchReceived
       : undefined;
+  const amazingRaceLeader =
+    typeof body === "object" && body && "amazingRaceLeader" in body
+      ? (body as { amazingRaceLeader: unknown }).amazingRaceLeader
+      : undefined;
 
   if (!participantId) {
     return NextResponse.json({ error: "participantId is required" }, { status: 400 });
   }
 
-  if (typeof checkedIn !== "boolean" && typeof merchReceived !== "boolean") {
+  if (
+    typeof checkedIn !== "boolean" &&
+    typeof merchReceived !== "boolean" &&
+    typeof amazingRaceLeader !== "boolean"
+  ) {
     return NextResponse.json(
-      { error: "checkedIn and/or merchReceived must be boolean" },
+      { error: "checkedIn, merchReceived, and/or amazingRaceLeader must be boolean" },
       { status: 400 },
     );
   }
 
-  await updateGuestChecklist(participantId, {
+  const guests = await updateGuestChecklist(participantId, {
     ...(typeof checkedIn === "boolean" ? { checkedIn } : {}),
     ...(typeof merchReceived === "boolean" ? { merchReceived } : {}),
+    ...(typeof amazingRaceLeader === "boolean" ? { amazingRaceLeader } : {}),
   });
 
-  const guest = await getGuestForCheckIn(participantId);
+  const guest = guests.find((row) => row.id === participantId);
   if (!guest) {
     return NextResponse.json({ error: "Guest not found" }, { status: 404 });
   }
 
-  return NextResponse.json({ guest });
+  return NextResponse.json({ guest, guests });
 }

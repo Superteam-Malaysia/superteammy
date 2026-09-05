@@ -35,6 +35,7 @@ export const participants = pgTable("participants", {
   approvalStatus: text("approval_status"),
   checkedInAt: timestamp("checked_in_at", { withTimezone: true }),
   merchReceivedAt: timestamp("merch_received_at", { withTimezone: true }),
+  amazingRaceLeader: boolean("amazing_race_leader").notNull().default(false),
   ticketTypeId: text("ticket_type_id"),
   ticketName: text("ticket_name"),
   passportFirstName: text("passport_first_name"),
