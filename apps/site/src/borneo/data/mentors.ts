@@ -6,7 +6,7 @@ import type { PublicMentor, PublicMentorWorkshop } from "@borneo/lib/mentors/typ
 
 export type { PublicMentor, PublicMentorWorkshop } from "@borneo/lib/mentors/types";
 
-/** Organizers / mentors shown in the directory but not tied to a workshop slot. */
+/** Organizers shown in the mentors directory but not tied to a workshop slot. */
 const STANDALONE_MENTORS: PublicMentor[] = [
   {
     id: "han",

@@ -1,22 +1,23 @@
 #!/usr/bin/env tsx
 /**
- * Seed staff / mentor accounts that are not in the Luma guest export.
- * Ensures every mentors-directory person appears on the organizer check-in list.
+ * Seed organizer staff accounts that are not in the Luma guest export.
+ * Only Semi, Han, and Marianne — mentors/judges are not staff check-in rows.
  *
  * Usage: DATABASE_URL=... npm run borneo:db:seed-staff
  */
 import "dotenv/config";
-import { sql } from "drizzle-orm";
+import { and, like, notInArray, sql } from "drizzle-orm";
 import { getPublicMentors, mentorTelegramHandle } from "../../src/borneo/data/mentors";
 import { normalizeEmail } from "../../src/borneo/lib/auth/session";
 import { closeDb, getDb } from "../../src/borneo/lib/db";
 import { participants } from "../../src/borneo/lib/db/schema";
 
-const ORGANIZER_IDS = new Set(["han", "marianne", "semi"]);
+const STAFF_IDS = new Set(["han", "marianne", "semi"]);
+const STAFF_GUEST_IDS = [...STAFF_IDS].map((id) => `staff-${id}`);
 
-function staffEmail(mentorId: string, email: string | null): string {
+function staffEmail(staffId: string, email: string | null): string {
   if (email?.trim()) return email.trim();
-  return `staff+${mentorId}@svb.local`;
+  return `staff+${staffId}@svb.local`;
 }
 
 function telegramHref(value: string | null): string | null {
@@ -31,57 +32,73 @@ function mentorTelegramUrl(mentor: ReturnType<typeof getPublicMentors>[number]):
   return telegramHref(mentorTelegramHandle(mentor));
 }
 
-function matchesGuestName(mentorName: string, guestName: string | null): boolean {
-  const needle = mentorName.toLowerCase().trim();
+function matchesGuestName(staffName: string, guestName: string | null): boolean {
+  const needle = staffName.toLowerCase().trim();
   const haystack = (guestName ?? "").toLowerCase().trim();
   if (!needle || !haystack) return false;
   return haystack === needle || haystack.startsWith(`${needle} `) || haystack.startsWith(`${needle}|`);
 }
 
+async function removeMentorStaffRows(db: ReturnType<typeof getDb>) {
+  const stray = await db
+    .select({ guestId: participants.guestId, name: participants.name })
+    .from(participants)
+    .where(and(like(participants.guestId, "staff-%"), notInArray(participants.guestId, STAFF_GUEST_IDS)));
+
+  if (stray.length === 0) return 0;
+
+  await db
+    .delete(participants)
+    .where(and(like(participants.guestId, "staff-%"), notInArray(participants.guestId, STAFF_GUEST_IDS)));
+
+  for (const row of stray) {
+    console.log(`Removed non-staff row: ${row.name} · ${row.guestId}`);
+  }
+
+  return stray.length;
+}
+
 async function main() {
   const db = getDb();
-  const mentors = getPublicMentors();
+  const staff = getPublicMentors().filter((mentor) => STAFF_IDS.has(mentor.id));
 
   const guestRows = await db
     .select({ guestId: participants.guestId, name: participants.name })
     .from(participants);
 
+  const removed = await removeMentorStaffRows(db);
+
   let seeded = 0;
   let skipped = 0;
 
-  for (const mentor of mentors) {
-    const guestId = `staff-${mentor.id}`;
+  for (const person of staff) {
+    const guestId = `staff-${person.id}`;
     const alreadyGuest = guestRows.some(
-      (row) => !row.guestId.startsWith("staff-") && matchesGuestName(mentor.name, row.name),
+      (row) => !row.guestId.startsWith("staff-") && matchesGuestName(person.name, row.name),
     );
 
     if (alreadyGuest) {
-      console.log(`Skipped staff seed (Luma guest exists): ${mentor.name}`);
+      console.log(`Skipped staff seed (Luma guest exists): ${person.name}`);
       skipped += 1;
       continue;
     }
 
-    const email = staffEmail(mentor.id, mentor.email);
+    const email = staffEmail(person.id, person.email);
     const emailNormalized = normalizeEmail(email);
-    const isOrganizer = ORGANIZER_IDS.has(mentor.id);
-    const roleLabel = isOrganizer ? "Organizer" : "Mentor";
-    const workshopTitles = mentor.workshops.map((workshop) => workshop.title).join(" · ");
-    const projectIdea =
-      workshopTitles ||
-      `${roleLabel} · ${mentor.organization ?? "Startup Village Borneo"}`;
+    const projectIdea = `${person.organization ?? "Superteam Malaysia"} · Startup Village Borneo organizer`;
 
     const values = {
       guestId,
       email,
       emailNormalized,
-      name: mentor.name,
-      firstName: mentor.name.split(/\s+/)[0] ?? mentor.name,
-      lastName: mentor.name.split(/\s+/).slice(1).join(" ") || null,
-      telegram: mentorTelegramUrl(mentor),
-      ticketName: roleLabel,
+      name: person.name,
+      firstName: person.name.split(/\s+/)[0] ?? person.name,
+      lastName: person.name.split(/\s+/).slice(1).join(" ") || null,
+      telegram: mentorTelegramUrl(person),
+      ticketName: "Organizer",
       projectIdea,
-      proofOfWork: mentor.organization ?? null,
-      teamSetup: mentor.organization ?? "Startup Village Borneo",
+      proofOfWork: person.organization ?? null,
+      teamSetup: person.organization ?? "Superteam Malaysia",
       approvalStatus: "approved",
       updatedAt: new Date(),
     };
@@ -105,11 +122,13 @@ async function main() {
         },
       });
 
-    console.log(`Seeded staff: ${mentor.name} · ${guestId} · ${email}`);
+    console.log(`Seeded staff: ${person.name} · ${guestId} · ${email}`);
     seeded += 1;
   }
 
-  console.log(`Staff seed done — ${seeded} upserted, ${skipped} skipped (already in Luma export).`);
+  console.log(
+    `Staff seed done — ${seeded} upserted, ${skipped} skipped (Luma guest), ${removed} mentor rows removed.`,
+  );
   await closeDb();
 }
 
