@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 /**
- * Patch participant Telegram handles by email (normalized).
+ * Patch participant social handles by email (normalized).
  * Usage: DATABASE_URL=... npm run borneo:db:patch-telegram-handles
  */
 import "dotenv/config";
@@ -30,11 +30,23 @@ const TELEGRAM_PATCHES: Record<string, string> = {
   "keeyushee@gmail.com": "https://t.me/Yushee",
 };
 
+/** email (lowercase) → x.com URL or @handle */
+const TWITTER_PATCHES: Record<string, string> = {
+  "hpy5c8whjc@privaterelay.appleid.com": "https://x.com/ImaniKml",
+};
+
 function toTelegramField(value: string): string {
   const trimmed = value.trim();
   if (trimmed.startsWith("https://") || trimmed.startsWith("http://")) return trimmed;
   if (trimmed.startsWith("@")) return `https://t.me/${trimmed.slice(1)}`;
   return `https://t.me/${trimmed}`;
+}
+
+function toTwitterField(value: string): string {
+  const trimmed = value.trim();
+  if (trimmed.startsWith("https://") || trimmed.startsWith("http://")) return trimmed;
+  const handle = trimmed.replace(/^@/, "");
+  return `https://x.com/${handle}`;
 }
 
 async function main() {
@@ -51,9 +63,26 @@ async function main() {
       .returning({ id: participants.id, name: participants.name, telegram: participants.telegram });
 
     if (row) {
-      console.log(`Patched: ${row.name ?? email} → ${telegram}`);
+      console.log(`Telegram patched: ${row.name ?? email} → ${telegram}`);
     } else {
-      console.warn(`Not found: ${email}`);
+      console.warn(`Telegram not found: ${email}`);
+    }
+  }
+
+  for (const [email, handle] of Object.entries(TWITTER_PATCHES)) {
+    const emailNormalized = normalizeEmail(email);
+    const twitterUrl = toTwitterField(handle);
+
+    const [row] = await db
+      .update(participants)
+      .set({ twitterUrl, updatedAt: new Date() })
+      .where(eq(participants.emailNormalized, emailNormalized))
+      .returning({ id: participants.id, name: participants.name, twitterUrl: participants.twitterUrl });
+
+    if (row) {
+      console.log(`X patched: ${row.name ?? email} → ${twitterUrl}`);
+    } else {
+      console.warn(`X not found: ${email}`);
     }
   }
 
