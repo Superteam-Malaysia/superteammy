@@ -17,9 +17,7 @@ export function ProfileTeamsPanel({ teams }: ProfileTeamsPanelProps) {
         <h2 id="profile-teams-heading" className="profile-teams__title">
           Hackathon team
         </h2>
-        <p className="profile-teams__lead">
-          Create or manage your team here. The teams directory is browse-only for everyone else.
-        </p>
+        <p className="profile-teams__lead">Create or manage your team here.</p>
       </div>
 
       {teams.length > 0 ? (
