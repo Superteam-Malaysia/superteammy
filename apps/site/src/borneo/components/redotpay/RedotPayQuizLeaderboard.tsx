@@ -1,4 +1,8 @@
-import { getRedotPayQuizLeaderboard } from "@borneo/lib/redotpay-quiz/attempt";
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+import type { QuizLeaderboardRow } from "@borneo/lib/redotpay-quiz/attempt";
+import { withBasePath } from "@borneo/lib/base-path";
 
 function formatDuration(ms: number | null): string {
   if (ms == null) return "—";
@@ -9,16 +13,38 @@ function formatDuration(ms: number | null): string {
   return `${minutes}m ${remainder}s`;
 }
 
-export async function RedotPayQuizLeaderboard() {
-  const rows = await getRedotPayQuizLeaderboard();
+const REFRESH_MS = 30_000;
+
+export function RedotPayQuizLeaderboard() {
+  const [rows, setRows] = useState<QuizLeaderboardRow[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const refresh = useCallback(async () => {
+    const res = await fetch(withBasePath("/api/redotpay/quiz/leaderboard"), { cache: "no-store" });
+    if (!res.ok) return;
+    const data = (await res.json()) as { leaderboard?: QuizLeaderboardRow[] };
+    setRows(data.leaderboard ?? []);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    void refresh();
+    const timer = window.setInterval(() => {
+      void refresh();
+    }, REFRESH_MS);
+    return () => window.clearInterval(timer);
+  }, [refresh]);
 
   return (
     <section className="redotpay-leaderboard" aria-label="RedotPay quiz leaderboard">
       <h2 className="redotpay-leaderboard__title">RedotPay quiz · internal leaderboard</h2>
       <p className="redotpay-leaderboard__hint">
-        Staff only — ranked by score, then fastest finish.
+        Staff only — ranked by score, then fastest finish. Updates every 30s. Timed-out attempts
+        log as 0/10.
       </p>
-      {rows.length === 0 ? (
+      {loading ? (
+        <p className="redotpay-leaderboard__empty">Loading…</p>
+      ) : rows.length === 0 ? (
         <p className="redotpay-leaderboard__empty">No completed attempts yet.</p>
       ) : (
         <div className="redotpay-leaderboard__table-wrap">
