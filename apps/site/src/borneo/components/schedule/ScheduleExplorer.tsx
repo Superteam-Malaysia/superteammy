@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { SCHEDULE_DAYS } from "@borneo/data/schedule";
 import { AddToCalendarButton } from "./AddToCalendarButton";
 import { DayCalendar } from "./DayCalendar";
-import { SectionArticle, SectionHeading } from "@borneo/components/ui";
+import { SectionArticle, SectionIntro } from "@borneo/components/ui";
 
 const LEGEND = [
   { label: "Program", className: "schedule-legend__swatch--wisp" },
@@ -24,11 +24,10 @@ export function ScheduleExplorer({ initialDay = 1 }: { initialDay?: number }) {
     <SectionArticle>
       <div className="schedule-explorer">
         <div className="schedule-explorer__main">
-          <SectionHeading>{day.title}</SectionHeading>
-          <p className="mt-4 text-sm text-[var(--color-wisp)]/60 text-label text-label-muted">
-            {day.subtitle}
-            {day.venueNote ? ` · ${day.venueNote}` : ""}
-          </p>
+          <SectionIntro
+            title={day.title}
+            lead={`${day.subtitle}${day.venueNote ? ` · ${day.venueNote}` : ""}`}
+          />
 
           <div className="schedule-explorer__calendar-mobile">
             <AddToCalendarButton />

@@ -211,7 +211,7 @@
 
 .schedule-explorer__calendar-mobile {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   margin-top: 1.5rem;
 }
 
@@ -452,9 +452,11 @@
 
 .schedule-sticky-tabs {
   position: sticky;
-  top: 3.5rem;
+  top: var(--site-nav-height);
   z-index: 10;
   padding-bottom: 0.5rem;
+  background: color-mix(in srgb, var(--color-null) 90%, transparent);
+  backdrop-filter: blur(10px);
 }
 
 .schedule-legend {
@@ -1948,6 +1950,19 @@
 
   .admin-checkin__group-title {
     font-size: 0.9375rem;
+  }
+
+  .schedule-event {
+    left: 3.75rem;
+  }
+
+  .schedule-hour-line span {
+    width: 2.75rem;
+  }
+
+  .schedule-day-tab {
+    padding: 0.65rem 0.85rem;
+    font-size: 0.6875rem;
   }
 }
 

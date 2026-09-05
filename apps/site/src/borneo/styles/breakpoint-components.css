@@ -130,6 +130,11 @@
   background: transparent;
 }
 
+/* site-main already pads the page — keep section blocks aligned with PageHeader */
+.site-main > .bp-article {
+  padding-inline: 0;
+}
+
 @media (min-width: 768px) {
   .bp-article {
     padding: var(--space-s);
