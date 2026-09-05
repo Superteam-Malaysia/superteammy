@@ -3,6 +3,7 @@
 import Link from "@borneo/components/Link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { MAX_RACE_GROUP_SIZE, type ParticipantRaceGroup } from "@borneo/lib/race/group-types";
+import { raceTeamLabel } from "@borneo/lib/race/group-label";
 import { withBasePath } from "@borneo/lib/base-path";
 
 type RaceGroupPanelProps = {
@@ -122,8 +123,8 @@ export function RaceGroupPanel({
       {inGroup ? (
         <div className="race-group-panel__status">
           <p className="race-group-panel__title">
-            Group {group.groupNumber}
-            {group.isLeader ? " · Leader" : ""}
+            {raceTeamLabel(group.leaderName)}
+            {group.isLeader ? " · You’re the leader" : ""}
           </p>
           <p className="race-group-panel__meta">
             {group.memberCount} / {MAX_RACE_GROUP_SIZE} in your group
@@ -167,9 +168,10 @@ export function RaceGroupPanel({
                 {joinOptions.map((number) => {
                   const summary = group.groups.find((item) => item.number === number);
                   const count = summary?.memberCount ?? 0;
+                  const label = raceTeamLabel(summary?.leaderName);
                   return (
                     <option key={number} value={number}>
-                      Group {number} ({count}/{MAX_RACE_GROUP_SIZE})
+                      {label} ({count}/{MAX_RACE_GROUP_SIZE})
                     </option>
                   );
                 })}

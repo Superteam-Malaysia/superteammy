@@ -2,6 +2,8 @@ import { desc, eq } from "drizzle-orm";
 import { parseGroupNumber } from "@borneo/lib/checkin/group-number";
 import { getDb } from "@borneo/lib/db";
 import { participants, raceSubmissions, raceTeams, teamMembers, teams } from "@borneo/lib/db/schema";
+import { getRaceGroupLeaderNames } from "@borneo/lib/race/groups";
+import { raceTeamLabel } from "@borneo/lib/race/group-label";
 import { getRaceTask, raceThreadUrlsMatch, extractTweetIdFromUrl } from "@borneo/lib/race/validation";
 
 export type PublicRaceSubmission = {
@@ -17,6 +19,7 @@ export type RaceFeedItem = PublicRaceSubmission & {
   submitterId: string;
   submitterName: string;
   groupNumber: number | null;
+  groupLabel: string | null;
 };
 
 export type AdminRaceSubmission = PublicRaceSubmission & {
@@ -194,6 +197,7 @@ export const SEED_RACE_FEED: Omit<RaceFeedItem, "id">[] = [
     submitterId: "seed-han",
     submitterName: "Han",
     groupNumber: null,
+    groupLabel: null,
   },
 ];
 
@@ -216,6 +220,7 @@ export async function listPublicRaceFeed(): Promise<RaceFeedItem[]> {
 
   try {
     const db = getDb();
+    const leaderNames = await getRaceGroupLeaderNames();
     const rows = await db
       .select({
         id: raceSubmissions.id,
@@ -234,12 +239,15 @@ export async function listPublicRaceFeed(): Promise<RaceFeedItem[]> {
     const dbItems: RaceFeedItem[] = rows.flatMap((row) => {
       const mapped = mapSubmissionRow(row);
       if (!mapped) return [];
+      const groupNumber = parseGroupNumber(row.raceTeamName);
+      const leaderName = groupNumber != null ? leaderNames.get(groupNumber) : undefined;
       return [
         {
           ...mapped,
           submitterId: row.submitterId,
           submitterName: row.submitterName ?? "Participant",
-          groupNumber: parseGroupNumber(row.raceTeamName),
+          groupNumber,
+          groupLabel: groupNumber != null ? raceTeamLabel(leaderName) : null,
         },
       ];
     });

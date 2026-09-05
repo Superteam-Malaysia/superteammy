@@ -42,8 +42,8 @@ export function RaceFeedPost({ item }: RaceFeedPostProps) {
         <div className="race-feed-post__meta">
           <p className="race-feed-post__person">
             <span className="race-feed-post__person-name">{displayName}</span>
-            {item.groupNumber != null ? (
-              <span className="race-feed-post__group-tag">Group {item.groupNumber}</span>
+            {item.groupLabel ? (
+              <span className="race-feed-post__group-tag">{item.groupLabel}</span>
             ) : null}
           </p>
           <p className="race-feed-post__milestone">

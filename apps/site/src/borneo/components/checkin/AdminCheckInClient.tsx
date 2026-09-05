@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { raceTeamLabel } from "@borneo/lib/race/group-label";
 import type { CheckInGuest } from "@borneo/lib/checkin/admin";
 import { withBasePath } from "@borneo/lib/base-path";
 
@@ -79,6 +80,20 @@ function mergeGuests(prev: CheckInGuest[], updated: CheckInGuest[]): CheckInGues
   return [...byId.values()].sort((a, b) => a.name.localeCompare(b.name));
 }
 
+function groupTitle(group: GroupBlock): string {
+  return raceTeamLabel(group.leader?.name);
+}
+
+function buildGroupLeaderNames(guests: CheckInGuest[]): Map<number, string> {
+  const map = new Map<number, string>();
+  for (const guest of guests) {
+    if (guest.amazingRaceLeader && guest.groupNumber != null && guest.name.trim()) {
+      map.set(guest.groupNumber, guest.name.trim());
+    }
+  }
+  return map;
+}
+
 function buildGroupBlocks(guests: CheckInGuest[], query: string): GroupBlock[] {
   const byNumber = new Map<number, { leader: CheckInGuest | null; members: CheckInGuest[] }>();
 
@@ -102,6 +117,7 @@ function buildGroupBlocks(guests: CheckInGuest[], query: string): GroupBlock[] {
     }))
     .filter((group) => {
       if (!query) return true;
+      if (groupTitle(group).toLowerCase().includes(query)) return true;
       if (group.leader && matchesSearch(group.leader, query)) return true;
       return group.members.some((member) => matchesSearch(member, query));
     })
@@ -165,6 +181,8 @@ export function AdminCheckInClient({ initialGuests }: AdminCheckInClientProps) {
     [guests, filter, query],
   );
 
+  const groupLeaderNames = useMemo(() => buildGroupLeaderNames(approvedGuests), [approvedGuests]);
+
   const groupBlocks = useMemo(
     () => buildGroupBlocks(approvedGuests.filter((guest) => guest.groupNumber != null), query),
     [approvedGuests, query],
@@ -212,6 +230,15 @@ export function AdminCheckInClient({ initialGuests }: AdminCheckInClientProps) {
     void patchGuest(guest, "merch", { merchReceived: !guest.merchReceivedAt });
   }
 
+  function guestTeamLabel(guest: CheckInGuest): string | null {
+    if (guest.groupNumber == null) return null;
+    const leaderName =
+      guest.amazingRaceLeader && guest.name.trim()
+        ? guest.name.trim()
+        : groupLeaderNames.get(guest.groupNumber);
+    return raceTeamLabel(leaderName);
+  }
+
   function renderGuestRow(guest: CheckInGuest, showGroup = true) {
     const checkedIn = Boolean(guest.checkedInAt);
     const merchReceived = Boolean(guest.merchReceivedAt);
@@ -234,7 +261,7 @@ export function AdminCheckInClient({ initialGuests }: AdminCheckInClientProps) {
           <td>
             {guest.groupNumber != null ? (
               <span className="admin-checkin__badge admin-checkin__badge--race">
-                {guest.groupNumber}
+                {guestTeamLabel(guest)}
                 {guest.amazingRaceLeader ? " · Leader" : ""}
               </span>
             ) : (
@@ -390,7 +417,7 @@ export function AdminCheckInClient({ initialGuests }: AdminCheckInClientProps) {
             {groupBlocks.map((group) => (
               <section key={group.number} className="admin-checkin__group">
                 <header className="admin-checkin__group-header">
-                  <h3 className="admin-checkin__group-title">Group {group.number}</h3>
+                  <h3 className="admin-checkin__group-title">{groupTitle(group)}</h3>
                   <p className="admin-checkin__group-meta">
                     {(group.leader ? 1 : 0) + group.members.length} guest
                     {(group.leader ? 1 : 0) + group.members.length === 1 ? "" : "s"}

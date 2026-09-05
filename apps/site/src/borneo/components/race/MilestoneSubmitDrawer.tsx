@@ -7,6 +7,7 @@ import { RACE_TASKS, type RaceTask } from "@borneo/data/race-tasks";
 import { raceMilestoneImage } from "@borneo/data/race-milestone-images";
 import { CtaButton } from "@borneo/components/ui";
 import { withBasePath } from "@borneo/lib/base-path";
+import { raceTeamLabel } from "@borneo/lib/race/group-label";
 import type {
   PublicRaceSubmission,
   RaceFeedItem,
@@ -145,6 +146,13 @@ export function MilestoneSubmitDrawer({
         submitterId: "self",
         submitterName: participantName,
         groupNumber,
+        groupLabel:
+          groupNumber != null
+            ? raceTeamLabel(
+                initialGroup?.leaderName ??
+                  (initialGroup?.isLeader ? participantName : null),
+              )
+            : null,
       };
       setSubmissions((prev) => {
         const rest = prev.filter((row) => row.taskId !== selectedTaskId);

@@ -80,6 +80,42 @@ async function groupHasLeader(db: ReturnType<typeof getDb>, raceTeamId: string):
   return Boolean(row);
 }
 
+async function groupLeaderName(
+  db: ReturnType<typeof getDb>,
+  raceTeamId: string,
+): Promise<string | null> {
+  const [row] = await db
+    .select({ name: participants.name })
+    .from(participants)
+    .where(and(eq(participants.raceTeamId, raceTeamId), eq(participants.amazingRaceLeader, true)))
+    .limit(1);
+
+  return row?.name?.trim() || null;
+}
+
+/** group number → leader display name */
+export async function getRaceGroupLeaderNames(): Promise<Map<number, string>> {
+  if (!process.env.DATABASE_URL) return new Map();
+
+  const db = getDb();
+  const rows = await db
+    .select({
+      raceTeamName: raceTeams.name,
+      leaderName: participants.name,
+    })
+    .from(participants)
+    .innerJoin(raceTeams, eq(participants.raceTeamId, raceTeams.id))
+    .where(eq(participants.amazingRaceLeader, true));
+
+  const map = new Map<number, string>();
+  for (const row of rows) {
+    const number = parseGroupNumber(row.raceTeamName);
+    const name = row.leaderName?.trim();
+    if (number != null && name) map.set(number, name);
+  }
+  return map;
+}
+
 export async function listRaceGroupSummaries(): Promise<RaceGroupSummary[]> {
   if (!process.env.DATABASE_URL) return [];
 
@@ -99,6 +135,7 @@ export async function listRaceGroupSummaries(): Promise<RaceGroupSummary[]> {
       memberCount,
       isFull: memberCount >= MAX_RACE_GROUP_SIZE,
       hasLeader: await groupHasLeader(db, team.id),
+      leaderName: await groupLeaderName(db, team.id),
     });
   }
 
@@ -146,6 +183,7 @@ export async function getParticipantRaceGroup(participantId: string): Promise<Pa
       groupNumber: null,
       isLeader: false,
       memberCount: 0,
+      leaderName: null,
       nextGroupNumber: 1,
       groups: [],
     };
@@ -162,6 +200,7 @@ export async function getParticipantRaceGroup(participantId: string): Promise<Pa
     groupNumber: current.groupNumber,
     isLeader: current.amazingRaceLeader,
     memberCount: current.memberCount,
+    leaderName: current.raceTeamId ? await groupLeaderName(db, current.raceTeamId) : null,
     nextGroupNumber,
     groups,
   };

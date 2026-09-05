@@ -5,12 +5,14 @@ export type RaceGroupSummary = {
   memberCount: number;
   isFull: boolean;
   hasLeader: boolean;
+  leaderName: string | null;
 };
 
 export type ParticipantRaceGroup = {
   groupNumber: number | null;
   isLeader: boolean;
   memberCount: number;
+  leaderName: string | null;
   nextGroupNumber: number;
   groups: RaceGroupSummary[];
 };
