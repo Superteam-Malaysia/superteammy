@@ -4,8 +4,8 @@ import { useMemo, useRef, useState } from "react";
 import { TransformComponent, TransformWrapper, type ReactZoomPanPinchRef } from "react-zoom-pan-pinch";
 import { IconClose, IconResetZoom, IconSearch, IconZoomIn, IconZoomOut } from "../ui/icons";
 import {
-  BREAKPOINT_VENUE_ZONES,
   FLOOR_CONFIG,
+  SVB_VENUE_ZONES,
   type FloorId,
   type MapZone,
 } from "./event-map-data";
@@ -321,9 +321,9 @@ export type EventMapProps = {
 
 /** EL-51–62 — Interactive venue map (reverse-engineered from Breakpoint EventMap). */
 export function EventMap({
-  venueName = "Etihad Arena",
-  zones = BREAKPOINT_VENUE_ZONES,
-  defaultZoneId,
+  venueName = "Sheraton Kuching",
+  zones = SVB_VENUE_ZONES,
+  defaultZoneId = "sheraton-lobby",
 }: EventMapProps) {
   const [floor, setFloor] = useState<FloorId>("ground");
   const [search, setSearch] = useState("");

@@ -1,7 +1,6 @@
 export { RaceTaskCard } from "./RaceTaskCard";
 export { RaceGroupPanel } from "./RaceGroupPanel";
 export { RacePageContent } from "./RacePageContent";
-export { RaceSubmissionsPanel } from "./RaceSubmissionsPanel";
 export { RaceFeed } from "./RaceFeed";
 export { RaceFeedPost } from "./RaceFeedPost";
 export { MilestoneSubmitDrawer, MilestoneSubmitGate } from "./MilestoneSubmitDrawer";

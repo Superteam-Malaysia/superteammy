@@ -110,7 +110,7 @@ export default function SubmissionsPage() {
                     : i === 2
                       ? "The wallet task is about teaching real users — document confusion, not conversions."
                       : i === 3
-                        ? "Required tags: @superteamMY, @solana, SOCOE on every content post."
+                        ? "Required tags: @superteamMY, @solana, @socoe_s on every content post."
                         : "Build during session hours; race in evenings and gaps between workshops.",
             }))}
           />
@@ -120,7 +120,7 @@ export default function SubmissionsPage() {
       <SectionArticle>
         <SectionIntro title="Individual X posts" />
         <p className="mt-4 text-sm text-[var(--color-wisp)]/60">
-          Tag @superteamMY, @solana, and SOCOE on every qualifying post.
+          Tag @superteamMY, @solana, and @socoe_s on every qualifying post.
         </p>
         <ul className="mt-8 grid gap-4 md:grid-cols-2 list-none">
           {CONTENT_TASKS.map((task) => (

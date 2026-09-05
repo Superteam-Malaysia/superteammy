@@ -1,11 +1,29 @@
-import { RACE_CUTOFF, RACE_TASKS, type RaceTask } from "@borneo/data/race-tasks";
+import { CONTENT_TASKS, RACE_CUTOFF, RACE_TASKS, type RaceTask } from "@borneo/data/race-tasks";
 
 const THREAD_HOSTS = new Set(["twitter.com", "x.com", "www.twitter.com", "mobile.twitter.com"]);
 
 const raceTaskIds = new Set(RACE_TASKS.map((task) => task.id));
 
+/** Retired milestone ids — still resolve for early feed rows. */
+const RETIRED_RACE_TASKS: RaceTask[] = [
+  {
+    id: "race-landed-in-kuching",
+    number: 1,
+    title: "First impressions of Kuching",
+    shortDescription: "Individual content post — see Content Award.",
+    details: [],
+    pointsBase: 10,
+    category: "content",
+    theme: "content",
+  },
+];
+
 export function getRaceTask(taskId: string): RaceTask | undefined {
-  return RACE_TASKS.find((task) => task.id === taskId);
+  return (
+    RACE_TASKS.find((task) => task.id === taskId) ??
+    CONTENT_TASKS.find((task) => task.id === taskId) ??
+    RETIRED_RACE_TASKS.find((task) => task.id === taskId)
+  );
 }
 
 export function isValidRaceTaskId(taskId: string): boolean {

@@ -30,7 +30,7 @@ export const CONTENT_AWARD = {
   judged: "Remotely within 24 hours after the event",
   summary:
     "Ten $100 prizes for standout content about Kuching and Startup Village Borneo — judged after Demo Day.",
-  tags: ["@superteamMY", "@solana", "SOCOE"],
+  tags: ["@superteamMY", "@solana", "@socoe_s"],
   tasks: [
     {
       id: "first-impressions",
@@ -48,7 +48,7 @@ export const CONTENT_AWARD = {
     },
   ],
   rules: [
-    "Tag @superteamMY, @solana, and SOCOE on every post.",
+    "Tag @superteamMY, @solana, and @socoe_s on every post.",
     "Final impressions due 10 September — judged remotely after the event.",
     "Quality and authenticity beat production polish.",
   ],

@@ -70,24 +70,6 @@ export const CONTENT_TASKS: RaceTask[] = [
 
 export const RACE_TASKS: RaceTask[] = [
   {
-    id: "race-landed-in-kuching",
-    number: 1,
-    title: "Landed in Kuching",
-    shortDescription:
-      "Share your first take on the city — video or photos on X when you arrive.",
-    details: [
-      "Post on X when you land — arrival energy, street scenes, or first bites.",
-      "Tag @superteamMY, @solana, and @socoe_s.",
-      "Due by 6 September 2026.",
-      "Quality over polish — authentic reactions beat produced reels.",
-    ],
-    pointsBase: 10,
-    pointsNote: "10 pts per qualifying team post",
-    category: "race",
-    theme: "content",
-    deadline: "6 Sept 2026",
-  },
-  {
     id: "race-bourdain",
     number: 3,
     title: "The Bourdain pilgrimage",
@@ -391,12 +373,4 @@ export const RACE_SUBMISSION_RULES = [
   "Teach wallet users; never pressure anyone about money or investment.",
   "Content posts must tag @superteamMY, @solana, and @socoe_s.",
   "Your build comes first — race runs in evenings and gaps.",
-];
-
-export const SAMPLE_LEADERBOARD = [
-  { rank: 1, team: "Borneo Builders", points: 62, trend: [12, 28, 45, 58, 62] },
-  { rank: 2, team: "Kuching Coders", points: 54, trend: [10, 22, 38, 48, 54] },
-  { rank: 3, team: "Sarawak Stack", points: 47, trend: [8, 18, 30, 42, 47] },
-  { rank: 4, team: "Monke Foundry", points: 41, trend: [6, 14, 25, 35, 41] },
-  { rank: 5, team: "Laksa Labs", points: 36, trend: [5, 12, 20, 28, 36] },
 ];

@@ -13,8 +13,8 @@ function teamInitials(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-function cardDescription(team: PublicTeam): string {
-  return team.description?.trim() || team.tagline?.trim() || "Project details coming soon.";
+function cardDescription(team: PublicTeam): string | null {
+  return team.description?.trim() || team.tagline?.trim() || null;
 }
 
 type TeamDirectoryCardProps = {
@@ -69,7 +69,9 @@ export function TeamDirectoryCard({ team, index = 0 }: TeamDirectoryCardProps) {
               {team.memberCount} {team.memberCount === 1 ? "member" : "members"}
             </p>
 
-            <p className="team-directory-card__desc">{cardDescription(team)}</p>
+            {cardDescription(team) ? (
+              <p className="team-directory-card__desc">{cardDescription(team)}</p>
+            ) : null}
 
             {team.memberCount > 0 ? (
               <div className="team-directory-card__members" aria-label={`${team.name} members`}>
