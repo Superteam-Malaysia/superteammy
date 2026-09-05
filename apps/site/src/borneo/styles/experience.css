@@ -1220,6 +1220,169 @@
   white-space: nowrap;
 }
 
+.admin-checkin__links {
+  margin: 0.75rem 0 0;
+}
+
+.admin-checkin__link {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--color-byte);
+}
+
+.admin-checkin__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.admin-checkin__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--color-transparent-wisp-10);
+  background: color-mix(in srgb, var(--team-colosseum-panel, #0d1117) 80%, transparent);
+}
+
+.admin-checkin__stat-value {
+  font-family: var(--font-orbitron);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-wisp);
+}
+
+.admin-checkin__stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-wisp) 55%, transparent);
+}
+
+.admin-checkin__toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.admin-checkin__search {
+  width: 100%;
+  max-width: 28rem;
+}
+
+.admin-checkin__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.admin-checkin__filter {
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--color-transparent-wisp-10);
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-wisp) 70%, transparent);
+  cursor: pointer;
+}
+
+.admin-checkin__filter--active {
+  border-color: var(--color-byte);
+  color: var(--color-byte);
+}
+
+.admin-checkin__count {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: color-mix(in srgb, var(--color-wisp) 55%, transparent);
+}
+
+.admin-checkin__name {
+  display: block;
+  font-weight: 600;
+  color: var(--color-wisp);
+}
+
+.admin-checkin__badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.admin-checkin__badge--in {
+  background: color-mix(in srgb, var(--color-byte) 18%, transparent);
+  color: var(--color-byte);
+}
+
+.admin-checkin__badge--out {
+  background: color-mix(in srgb, var(--color-wisp) 8%, transparent);
+  color: color-mix(in srgb, var(--color-wisp) 65%, transparent);
+}
+
+.admin-checkin__approval {
+  display: block;
+  margin-top: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: color-mix(in srgb, var(--color-wisp) 45%, transparent);
+}
+
+.admin-checkin__action {
+  min-width: 5.5rem;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid transparent;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.admin-checkin__action:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.admin-checkin__action--check {
+  background: var(--color-byte);
+  color: #04120a;
+  border-color: var(--color-byte);
+}
+
+.admin-checkin__action--undo {
+  background: transparent;
+  color: color-mix(in srgb, var(--color-wisp) 75%, transparent);
+  border-color: var(--color-transparent-wisp-10);
+}
+
+.admin-checkin__row--done {
+  background: color-mix(in srgb, var(--color-byte) 4%, transparent);
+}
+
+@media (max-width: 720px) {
+  .admin-checkin__stats {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-checkin__table th:nth-child(2),
+  .admin-checkin__table td:nth-child(2),
+  .admin-checkin__table th:nth-child(4),
+  .admin-checkin__table td:nth-child(4) {
+    display: none;
+  }
+}
+
 /* Telegram login — native link (same-window) so mobile browsers open the app, not a popup */
 .telegram-login-wrap {
   max-width: 20rem;

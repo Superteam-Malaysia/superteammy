@@ -95,6 +95,7 @@ async function main() {
         target: participants.guestId,
         set: {
           ...values,
+          checkedInAt: sql`coalesce(excluded.checked_in_at, ${participants.checkedInAt})`,
           importedAt: sql`now()`,
         },
       });
