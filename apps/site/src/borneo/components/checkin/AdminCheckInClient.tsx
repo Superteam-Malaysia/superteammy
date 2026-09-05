@@ -22,21 +22,52 @@ type GroupBlock = {
   members: CheckInGuest[];
 };
 
-function matchesSearch(guest: CheckInGuest, query: string): boolean {
+function telegramSearchValue(value: string | null): string | null {
+  if (!value?.trim()) return null;
+  const fromUrl = value.trim().match(/(?:https?:\/\/)?(?:t\.me|telegram\.me)\/([^/?#]+)/i)?.[1];
+  return (fromUrl ?? value.trim().replace(/^@/, "")).toLowerCase();
+}
+
+function guestTeamSearchLabel(
+  guest: CheckInGuest,
+  groupLeaderNames: Map<number, string>,
+): string | null {
+  if (guest.groupNumber == null) return null;
+  const leaderName =
+    guest.amazingRaceLeader && guest.name.trim()
+      ? guest.name.trim()
+      : groupLeaderNames.get(guest.groupNumber);
+  return raceTeamLabel(leaderName);
+}
+
+function matchesSearch(
+  guest: CheckInGuest,
+  query: string,
+  groupLeaderNames: Map<number, string>,
+): boolean {
   if (!query) return true;
+
   const haystack = [
     guest.name,
+    guest.firstName,
+    guest.lastName,
+    guest.passportFirstName,
+    guest.passportLastName,
     guest.email,
     guest.telegram,
+    telegramSearchValue(guest.telegram),
     guest.ticketName,
     guest.guestId,
     guest.approvalStatus,
+    guestTeamSearchLabel(guest, groupLeaderNames),
     guest.groupNumber != null ? String(guest.groupNumber) : null,
   ]
     .filter(Boolean)
     .join(" ")
     .toLowerCase();
-  return haystack.includes(query);
+
+  const tokens = query.split(/\s+/).filter(Boolean);
+  return tokens.every((token) => haystack.includes(token));
 }
 
 function matchesFilter(guest: CheckInGuest, filter: CheckInFilter): boolean {
@@ -94,7 +125,11 @@ function buildGroupLeaderNames(guests: CheckInGuest[]): Map<number, string> {
   return map;
 }
 
-function buildGroupBlocks(guests: CheckInGuest[], query: string): GroupBlock[] {
+function buildGroupBlocks(
+  guests: CheckInGuest[],
+  query: string,
+  groupLeaderNames: Map<number, string>,
+): GroupBlock[] {
   const byNumber = new Map<number, { leader: CheckInGuest | null; members: CheckInGuest[] }>();
 
   for (const guest of guests) {
@@ -119,8 +154,8 @@ function buildGroupBlocks(guests: CheckInGuest[], query: string): GroupBlock[] {
     .filter((group) => {
       if (!query) return true;
       if (groupTitle(group).toLowerCase().includes(query)) return true;
-      if (group.leader && matchesSearch(group.leader, query)) return true;
-      return group.members.some((member) => matchesSearch(member, query));
+      if (group.leader && matchesSearch(group.leader, query, groupLeaderNames)) return true;
+      return group.members.some((member) => matchesSearch(member, query, groupLeaderNames));
     })
     .sort((a, b) => a.number - b.number);
 }
@@ -165,19 +200,40 @@ export function AdminCheckInClient({ initialGuests }: AdminCheckInClientProps) {
     };
   }, [approvedGuests, groupStats]);
 
+  const groupLeaderNames = useMemo(() => buildGroupLeaderNames(guests), [guests]);
+
   const visibleGuests = useMemo(
     () =>
-      guests.filter(
-        (guest) => matchesFilter(guest, filter) && matchesSearch(guest, query),
-      ),
-    [guests, filter, query],
+      guests.filter((guest) => {
+        if (!matchesSearch(guest, query, groupLeaderNames)) return false;
+        if (query) return true;
+        return matchesFilter(guest, filter);
+      }),
+    [guests, filter, query, groupLeaderNames],
   );
 
-  const groupLeaderNames = useMemo(() => buildGroupLeaderNames(approvedGuests), [approvedGuests]);
-
   const groupBlocks = useMemo(
-    () => buildGroupBlocks(approvedGuests.filter((guest) => guest.groupNumber != null), query),
-    [approvedGuests, query],
+    () =>
+      buildGroupBlocks(
+        guests.filter((guest) => guest.approvalStatus === "approved" && guest.groupNumber != null),
+        query,
+        groupLeaderNames,
+      ),
+    [guests, query, groupLeaderNames],
+  );
+
+  const searchOnlyGuests = useMemo(
+    () =>
+      query && filter !== "groups"
+        ? []
+        : query
+          ? guests.filter(
+              (guest) =>
+                matchesSearch(guest, query, groupLeaderNames) &&
+                guest.groupNumber == null,
+            )
+          : [],
+    [guests, filter, query, groupLeaderNames],
   );
 
   async function patchGuest(
@@ -241,6 +297,11 @@ export function AdminCheckInClient({ initialGuests }: AdminCheckInClientProps) {
       <tr key={guest.id} className={checkedIn && merchReceived ? "admin-checkin__row--done" : undefined}>
         <td>
           <span className="admin-checkin__name">{guest.name}</span>
+          {guest.passportFirstName || guest.passportLastName ? (
+            <span className="admin-submissions-table__email">
+              {[guest.passportFirstName, guest.passportLastName].filter(Boolean).join(" ")}
+            </span>
+          ) : null}
           <span className="admin-submissions-table__email">{guest.email}</span>
           {guest.telegram ? (
             <span className="admin-submissions-table__email">{guest.telegram}</span>
@@ -369,7 +430,7 @@ export function AdminCheckInClient({ initialGuests }: AdminCheckInClientProps) {
           type="search"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search name, email, team…"
+          placeholder="Search name, passport, email, team…"
           className="admin-checkin__search team-form__input"
           aria-label="Search guests"
         />
@@ -396,12 +457,12 @@ export function AdminCheckInClient({ initialGuests }: AdminCheckInClientProps) {
       <p className="admin-checkin__count">
         {showingGroups
           ? `Showing ${groupBlocks.length} group${groupBlocks.length === 1 ? "" : "s"}`
-          : `Showing ${visibleGuests.length} guest${visibleGuests.length === 1 ? "" : "s"}`}{" "}
-        · groups are assigned on the Amazing Race page
+          : `Showing ${visibleGuests.length} guest${visibleGuests.length === 1 ? "" : "s"}`}
+        {query ? " · search spans all guests" : " · groups are assigned on the Amazing Race page"}
       </p>
 
       {showingGroups ? (
-        groupBlocks.length === 0 ? (
+        groupBlocks.length === 0 && searchOnlyGuests.length === 0 ? (
           <p className="text-sm text-[var(--color-wisp)]/60">No groups match this search.</p>
         ) : (
           <div className="admin-checkin__groups">
@@ -428,6 +489,18 @@ export function AdminCheckInClient({ initialGuests }: AdminCheckInClientProps) {
                 </div>
               </section>
             ))}
+
+            {searchOnlyGuests.length > 0 ? (
+              <section className="admin-checkin__group">
+                <header className="admin-checkin__group-header">
+                  <h3 className="admin-checkin__group-title">Matching guests (no group)</h3>
+                  <p className="admin-checkin__group-meta">
+                    {searchOnlyGuests.length} guest{searchOnlyGuests.length === 1 ? "" : "s"}
+                  </p>
+                </header>
+                {renderGuestTable(searchOnlyGuests, false)}
+              </section>
+            ) : null}
           </div>
         )
       ) : visibleGuests.length === 0 ? (

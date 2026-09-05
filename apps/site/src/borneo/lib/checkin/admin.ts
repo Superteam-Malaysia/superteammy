@@ -20,6 +20,10 @@ export type CheckInGuest = {
   id: string;
   guestId: string;
   name: string;
+  firstName: string | null;
+  lastName: string | null;
+  passportFirstName: string | null;
+  passportLastName: string | null;
   email: string;
   telegram: string | null;
   ticketName: string | null;
@@ -47,6 +51,8 @@ function mapRow(row: {
   name: string | null;
   firstName: string | null;
   lastName: string | null;
+  passportFirstName: string | null;
+  passportLastName: string | null;
   email: string;
   telegram: string | null;
   ticketName: string | null;
@@ -61,6 +67,10 @@ function mapRow(row: {
     id: row.id,
     guestId: row.guestId,
     name: displayName(row),
+    firstName: row.firstName?.trim() || null,
+    lastName: row.lastName?.trim() || null,
+    passportFirstName: row.passportFirstName?.trim() || null,
+    passportLastName: row.passportLastName?.trim() || null,
     email: row.email,
     telegram: row.telegram,
     ticketName: row.ticketName,

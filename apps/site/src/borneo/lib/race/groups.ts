@@ -388,6 +388,8 @@ export async function listParticipantsForCheckIn() {
       name: participants.name,
       firstName: participants.firstName,
       lastName: participants.lastName,
+      passportFirstName: participants.passportFirstName,
+      passportLastName: participants.passportLastName,
       email: participants.email,
       telegram: participants.telegram,
       ticketName: participants.ticketName,
