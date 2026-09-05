@@ -27,6 +27,7 @@ const TELEGRAM_PATCHES: Record<string, string> = {
   "chinbingyong@gmail.com": "https://t.me/mage777",
   "mark@sirachventures.com": "https://t.me/HQ1_F",
   "dave.chew@myhomecrowd.com": "https://t.me/davewychew",
+  "keeyushee@gmail.com": "https://t.me/Yushee",
 };
 
 function toTelegramField(value: string): string {
