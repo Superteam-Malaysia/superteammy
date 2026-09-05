@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "@borneo/components/Link";
-import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { MILESTONE_SUBMIT_TASKS, type RaceTask } from "@borneo/data/race-tasks";
 import { raceMilestoneImage } from "@borneo/data/race-milestone-images";
@@ -14,6 +13,7 @@ import type {
 } from "@borneo/lib/race/submissions";
 import type { ParticipantRaceGroup } from "@borneo/lib/race/group-types";
 import { RaceGroupPanel } from "./RaceGroupPanel";
+import { MilestoneImage } from "./MilestoneImage";
 
 function formatTaskPoints(task: RaceTask): string {
   if (task.pointsNote) return task.pointsNote;
@@ -256,14 +256,9 @@ export function MilestoneSubmitDrawer({
                             .filter(Boolean)
                             .join(" ")}
                         >
-                          <Image
+                          <MilestoneImage
                             src={imageSrc}
-                            alt=""
-                            width={96}
-                            height={96}
-                            unoptimized
                             className="race-drawer__milestone-image"
-                            sizes="3.5rem"
                           />
                         </span>
                       ) : null}
@@ -293,14 +288,9 @@ export function MilestoneSubmitDrawer({
                   .filter(Boolean)
                   .join(" ")}
               >
-                <Image
+                <MilestoneImage
                   src={selectedTaskImage}
-                  alt=""
-                  width={880}
-                  height={550}
-                  unoptimized
                   className="race-drawer__link-hero-image"
-                  sizes="(max-width: 550px) 100vw, 550px"
                   priority
                 />
               </div>

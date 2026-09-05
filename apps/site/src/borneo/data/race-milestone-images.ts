@@ -1,10 +1,7 @@
 import { withBasePath } from "@borneo/lib/base-path";
 
-/** Bump when milestone JPGs change — busts Next/image and CDN caches. */
-const MILESTONE_ASSET_VERSION = "2";
-
 function milestoneAsset(filename: string): string {
-  return withBasePath(`/race/milestones/${filename}?v=${MILESTONE_ASSET_VERSION}`);
+  return withBasePath(`/race/milestones/${filename}`);
 }
 
 /** Thumbnail for each Amazing Race milestone — local assets under public/borneo/race/milestones/. */
