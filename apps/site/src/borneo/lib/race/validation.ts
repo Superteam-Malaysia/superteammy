@@ -8,9 +8,7 @@ import {
 
 const THREAD_HOSTS = new Set(["twitter.com", "x.com", "www.twitter.com", "mobile.twitter.com"]);
 
-const submitTaskIds = new Set(MILESTONE_SUBMIT_TASKS.map((task) => task.id));
-
-/** Retired milestone ids — still resolve for early feed rows. */
+/** Retired milestone ids — still resolve for early feed rows and link updates. */
 const RETIRED_RACE_TASKS: RaceTask[] = [
   {
     id: "race-landed-in-kuching",
@@ -24,6 +22,9 @@ const RETIRED_RACE_TASKS: RaceTask[] = [
   },
 ];
 
+const submitTaskIds = new Set(MILESTONE_SUBMIT_TASKS.map((task) => task.id));
+const legacySubmitTaskIds = new Set(RETIRED_RACE_TASKS.map((task) => task.id));
+
 export function getRaceTask(taskId: string): RaceTask | undefined {
   return (
     RACE_TASKS.find((task) => task.id === taskId) ??
@@ -33,7 +34,7 @@ export function getRaceTask(taskId: string): RaceTask | undefined {
 }
 
 export function isValidRaceTaskId(taskId: string): boolean {
-  return submitTaskIds.has(taskId);
+  return submitTaskIds.has(taskId) || legacySubmitTaskIds.has(taskId);
 }
 
 export function isRaceCutoffPassed(now = new Date()): boolean {

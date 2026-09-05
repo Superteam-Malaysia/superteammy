@@ -45,14 +45,13 @@ function mapSubmissionRow(row: {
   submittedAt: Date;
 }) {
   const task = getRaceTask(row.taskId);
-  if (!task) return null;
   return {
     id: row.id,
     taskId: row.taskId,
     threadUrl: row.threadUrl,
     submittedAt: row.submittedAt.toISOString(),
-    taskTitle: task.title,
-    taskNumber: task.number,
+    taskTitle: task?.title ?? "Race milestone",
+    taskNumber: task?.number ?? 0,
   };
 }
 
