@@ -378,7 +378,7 @@ export function AdminCheckInClient({ initialGuests }: AdminCheckInClientProps) {
           type="search"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search name, email, group…"
+          placeholder="Search name, email, team…"
           className="admin-checkin__search team-form__input"
           aria-label="Search guests"
         />
