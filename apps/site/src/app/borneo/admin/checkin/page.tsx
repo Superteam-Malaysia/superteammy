@@ -23,18 +23,19 @@ export default async function AdminCheckInPage() {
   const guests = await listGuestsForCheckIn();
   const approved = guests.filter((guest) => guest.approvalStatus === "approved");
   const checkedIn = approved.filter((guest) => guest.checkedInAt).length;
+  const merchReceived = approved.filter((guest) => guest.merchReceivedAt).length;
 
   return (
     <main className="site-main site-main--stack">
       <PageHeader
         title="Guest check-in"
-        lead="Mark guests as they arrive on-site. Only organizers can view this page."
+        lead="Mark arrivals and merch pickup on-site. Only organizers can view this page."
       />
 
       <SectionArticle className="border border-[color:var(--color-transparent-wisp-10)] p-6 md:p-8">
         <SectionIntro
-          title={`${checkedIn} / ${approved.length} approved guests checked in`}
-          lead="Search by name or email, tap Check in at the door, Undo if you made a mistake. Luma CSV imports also sync checked_in_at when present."
+          title={`${checkedIn} / ${approved.length} checked in · ${merchReceived} / ${approved.length} merch received`}
+          lead="Search by name or email. Tap Check in at the door and Merch received at the merch desk. Undo if you made a mistake."
         />
         <p className="admin-checkin__links">
           <Link href={withBasePath("/admin/submissions")} className="admin-checkin__link">

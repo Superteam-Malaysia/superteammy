@@ -4,7 +4,7 @@ import { requireOrganizerApi } from "@borneo/lib/auth/organizer";
 import {
   getGuestForCheckIn,
   listGuestsForCheckIn,
-  setGuestCheckIn,
+  updateGuestChecklist,
 } from "@borneo/lib/checkin/admin";
 
 export async function GET() {
@@ -40,12 +40,27 @@ export async function PATCH(request: Request) {
     typeof body === "object" && body && "checkedIn" in body
       ? (body as { checkedIn: unknown }).checkedIn
       : undefined;
+  const merchReceived =
+    typeof body === "object" && body && "merchReceived" in body
+      ? (body as { merchReceived: unknown }).merchReceived
+      : undefined;
 
-  if (!participantId || typeof checkedIn !== "boolean") {
-    return NextResponse.json({ error: "participantId and checkedIn are required" }, { status: 400 });
+  if (!participantId) {
+    return NextResponse.json({ error: "participantId is required" }, { status: 400 });
   }
 
-  await setGuestCheckIn(participantId, checkedIn);
+  if (typeof checkedIn !== "boolean" && typeof merchReceived !== "boolean") {
+    return NextResponse.json(
+      { error: "checkedIn and/or merchReceived must be boolean" },
+      { status: 400 },
+    );
+  }
+
+  await updateGuestChecklist(participantId, {
+    ...(typeof checkedIn === "boolean" ? { checkedIn } : {}),
+    ...(typeof merchReceived === "boolean" ? { merchReceived } : {}),
+  });
+
   const guest = await getGuestForCheckIn(participantId);
   if (!guest) {
     return NextResponse.json({ error: "Guest not found" }, { status: 404 });

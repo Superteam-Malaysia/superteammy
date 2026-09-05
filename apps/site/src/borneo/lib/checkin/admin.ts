@@ -11,6 +11,7 @@ export type CheckInGuest = {
   ticketName: string | null;
   approvalStatus: string | null;
   checkedInAt: string | null;
+  merchReceivedAt: string | null;
 };
 
 function displayName(row: {
@@ -34,6 +35,7 @@ function mapRow(row: {
   ticketName: string | null;
   approvalStatus: string | null;
   checkedInAt: Date | null;
+  merchReceivedAt: Date | null;
 }): CheckInGuest {
   return {
     id: row.id,
@@ -44,6 +46,7 @@ function mapRow(row: {
     ticketName: row.ticketName,
     approvalStatus: row.approvalStatus,
     checkedInAt: row.checkedInAt?.toISOString() ?? null,
+    merchReceivedAt: row.merchReceivedAt?.toISOString() ?? null,
   };
 }
 
@@ -58,6 +61,7 @@ const checkInSelect = {
   ticketName: participants.ticketName,
   approvalStatus: participants.approvalStatus,
   checkedInAt: participants.checkedInAt,
+  merchReceivedAt: participants.merchReceivedAt,
 };
 
 export async function listGuestsForCheckIn(): Promise<CheckInGuest[]> {
@@ -85,13 +89,23 @@ export async function getGuestForCheckIn(participantId: string): Promise<CheckIn
   return row ? mapRow(row) : null;
 }
 
-export async function setGuestCheckIn(participantId: string, checkedIn: boolean): Promise<void> {
+export async function updateGuestChecklist(
+  participantId: string,
+  updates: { checkedIn?: boolean; merchReceived?: boolean },
+): Promise<void> {
+  const patch: {
+    checkedInAt?: Date | null;
+    merchReceivedAt?: Date | null;
+    updatedAt: Date;
+  } = { updatedAt: new Date() };
+
+  if (typeof updates.checkedIn === "boolean") {
+    patch.checkedInAt = updates.checkedIn ? new Date() : null;
+  }
+  if (typeof updates.merchReceived === "boolean") {
+    patch.merchReceivedAt = updates.merchReceived ? new Date() : null;
+  }
+
   const db = getDb();
-  await db
-    .update(participants)
-    .set({
-      checkedInAt: checkedIn ? new Date() : null,
-      updatedAt: new Date(),
-    })
-    .where(eq(participants.id, participantId));
+  await db.update(participants).set(patch).where(eq(participants.id, participantId));
 }
