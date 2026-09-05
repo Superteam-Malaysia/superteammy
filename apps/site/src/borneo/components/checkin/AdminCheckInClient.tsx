@@ -1,8 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { raceTeamLabel } from "@borneo/lib/race/group-label";
 import type { CheckInGuest } from "@borneo/lib/checkin/admin";
+import {
+  buildGroupLeaderNames,
+  matchesCheckInSearch,
+  normalizeCheckInSearch,
+} from "@borneo/lib/checkin/search";
 import { withBasePath } from "@borneo/lib/base-path";
 
 type CheckInFilter =
@@ -21,54 +26,6 @@ type GroupBlock = {
   leader: CheckInGuest | null;
   members: CheckInGuest[];
 };
-
-function telegramSearchValue(value: string | null): string | null {
-  if (!value?.trim()) return null;
-  const fromUrl = value.trim().match(/(?:https?:\/\/)?(?:t\.me|telegram\.me)\/([^/?#]+)/i)?.[1];
-  return (fromUrl ?? value.trim().replace(/^@/, "")).toLowerCase();
-}
-
-function guestTeamSearchLabel(
-  guest: CheckInGuest,
-  groupLeaderNames: Map<number, string>,
-): string | null {
-  if (guest.groupNumber == null) return null;
-  const leaderName =
-    guest.amazingRaceLeader && guest.name.trim()
-      ? guest.name.trim()
-      : groupLeaderNames.get(guest.groupNumber);
-  return raceTeamLabel(leaderName);
-}
-
-function matchesSearch(
-  guest: CheckInGuest,
-  query: string,
-  groupLeaderNames: Map<number, string>,
-): boolean {
-  if (!query) return true;
-
-  const haystack = [
-    guest.name,
-    guest.firstName,
-    guest.lastName,
-    guest.passportFirstName,
-    guest.passportLastName,
-    guest.email,
-    guest.telegram,
-    telegramSearchValue(guest.telegram),
-    guest.ticketName,
-    guest.guestId,
-    guest.approvalStatus,
-    guestTeamSearchLabel(guest, groupLeaderNames),
-    guest.groupNumber != null ? String(guest.groupNumber) : null,
-  ]
-    .filter(Boolean)
-    .join(" ")
-    .toLowerCase();
-
-  const tokens = query.split(/\s+/).filter(Boolean);
-  return tokens.every((token) => haystack.includes(token));
-}
 
 function matchesFilter(guest: CheckInGuest, filter: CheckInFilter): boolean {
   const isApproved = guest.approvalStatus === "approved";
@@ -115,16 +72,6 @@ function groupTitle(group: GroupBlock): string {
   return raceTeamLabel(group.leader!.name)!;
 }
 
-function buildGroupLeaderNames(guests: CheckInGuest[]): Map<number, string> {
-  const map = new Map<number, string>();
-  for (const guest of guests) {
-    if (guest.amazingRaceLeader && guest.groupNumber != null && guest.name.trim()) {
-      map.set(guest.groupNumber, guest.name.trim());
-    }
-  }
-  return map;
-}
-
 function buildGroupBlocks(
   guests: CheckInGuest[],
   query: string,
@@ -153,9 +100,9 @@ function buildGroupBlocks(
     .filter((group) => group.leader != null)
     .filter((group) => {
       if (!query) return true;
-      if (groupTitle(group).toLowerCase().includes(query)) return true;
-      if (group.leader && matchesSearch(group.leader, query, groupLeaderNames)) return true;
-      return group.members.some((member) => matchesSearch(member, query, groupLeaderNames));
+      if (normalizeCheckInSearch(groupTitle(group)).includes(query)) return true;
+      if (group.leader && matchesCheckInSearch(group.leader, query, groupLeaderNames)) return true;
+      return group.members.some((member) => matchesCheckInSearch(member, query, groupLeaderNames));
     })
     .sort((a, b) => a.number - b.number);
 }
@@ -170,8 +117,34 @@ export function AdminCheckInClient({ initialGuests }: AdminCheckInClientProps) {
   const [search, setSearch] = useState("");
   const [pending, setPending] = useState<{ id: string; action: PendingAction } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [refreshError, setRefreshError] = useState<string | null>(null);
 
-  const query = search.trim().toLowerCase();
+  const query = normalizeCheckInSearch(search);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function refreshGuests() {
+      try {
+        const res = await fetch(withBasePath("/api/admin/checkin"), { cache: "no-store" });
+        const data = (await res.json()) as { error?: string; guests?: CheckInGuest[] };
+        if (cancelled) return;
+        if (!res.ok || !Array.isArray(data.guests)) {
+          setRefreshError(data.error ?? "Could not refresh guest list.");
+          return;
+        }
+        setGuests(data.guests);
+        setRefreshError(null);
+      } catch {
+        if (!cancelled) setRefreshError("Could not refresh guest list.");
+      }
+    }
+
+    void refreshGuests();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const approvedGuests = useMemo(
     () => guests.filter((guest) => guest.approvalStatus === "approved"),
@@ -205,7 +178,7 @@ export function AdminCheckInClient({ initialGuests }: AdminCheckInClientProps) {
   const visibleGuests = useMemo(
     () =>
       guests.filter((guest) => {
-        if (!matchesSearch(guest, query, groupLeaderNames)) return false;
+        if (query && !matchesCheckInSearch(guest, query, groupLeaderNames)) return false;
         if (query) return true;
         return matchesFilter(guest, filter);
       }),
@@ -224,15 +197,12 @@ export function AdminCheckInClient({ initialGuests }: AdminCheckInClientProps) {
 
   const searchOnlyGuests = useMemo(
     () =>
-      query && filter !== "groups"
-        ? []
-        : query
-          ? guests.filter(
-              (guest) =>
-                matchesSearch(guest, query, groupLeaderNames) &&
-                guest.groupNumber == null,
-            )
-          : [],
+      query && filter === "groups"
+        ? guests.filter(
+            (guest) =>
+              matchesCheckInSearch(guest, query, groupLeaderNames) && guest.groupNumber == null,
+          )
+        : [],
     [guests, filter, query, groupLeaderNames],
   );
 
@@ -427,12 +397,18 @@ export function AdminCheckInClient({ initialGuests }: AdminCheckInClientProps) {
 
       <div className="admin-checkin__toolbar">
         <input
-          type="search"
+          id="admin-checkin-search"
+          name="guest-search"
+          type="text"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
           placeholder="Search name, passport, email, team…"
           className="admin-checkin__search team-form__input"
           aria-label="Search guests"
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="off"
+          spellCheck={false}
         />
         <div className="admin-checkin__filters" role="tablist" aria-label="Check-in filters">
           {FILTERS.map((item) => (
@@ -452,18 +428,19 @@ export function AdminCheckInClient({ initialGuests }: AdminCheckInClientProps) {
         </div>
       </div>
 
+      {refreshError ? <p className="team-form__error">{refreshError}</p> : null}
       {error ? <p className="team-form__error">{error}</p> : null}
 
       <p className="admin-checkin__count">
         {showingGroups
           ? `Showing ${groupBlocks.length} group${groupBlocks.length === 1 ? "" : "s"}`
           : `Showing ${visibleGuests.length} guest${visibleGuests.length === 1 ? "" : "s"}`}
-        {query ? " · search spans all guests" : " · groups are assigned on the Amazing Race page"}
+        {query ? ` · searching “${search.trim()}” across all guests` : " · groups are assigned on the Amazing Race page"}
       </p>
 
       {showingGroups ? (
         groupBlocks.length === 0 && searchOnlyGuests.length === 0 ? (
-          <p className="text-sm text-[var(--color-wisp)]/60">No groups match this search.</p>
+          <p className="text-sm text-[var(--color-wisp)]/60">No guests match this search.</p>
         ) : (
           <div className="admin-checkin__groups">
             {groupBlocks.map((group) => (
@@ -504,7 +481,9 @@ export function AdminCheckInClient({ initialGuests }: AdminCheckInClientProps) {
           </div>
         )
       ) : visibleGuests.length === 0 ? (
-        <p className="text-sm text-[var(--color-wisp)]/60">No guests match this filter.</p>
+        <p className="text-sm text-[var(--color-wisp)]/60">
+          {query ? `No guests match “${search.trim()}”.` : "No guests match this filter."}
+        </p>
       ) : (
         renderGuestTable(visibleGuests)
       )}

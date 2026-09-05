@@ -5,15 +5,20 @@ import {
   listGuestsForCheckIn,
   updateGuestChecklist,
 } from "@borneo/lib/checkin/admin";
+import { filterCheckInGuestsBySearch } from "@borneo/lib/checkin/search";
 
-export async function GET() {
+export async function GET(request: Request) {
   const participant = await getParticipantForSession();
   const auth = requireOrganizerApi(participant);
   if ("error" in auth) {
     return NextResponse.json({ error: auth.error }, { status: auth.status });
   }
 
-  const guests = await listGuestsForCheckIn();
+  const query = new URL(request.url).searchParams.get("q")?.trim() ?? "";
+  const guests = query
+    ? filterCheckInGuestsBySearch(await listGuestsForCheckIn(), query)
+    : await listGuestsForCheckIn();
+
   return NextResponse.json({ guests });
 }
 
