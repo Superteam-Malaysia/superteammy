@@ -737,7 +737,7 @@
 }
 
 .race-page__lead {
-  margin-top: 0.75rem;
+  margin: 0;
   font-size: 0.9375rem;
   line-height: 1.55;
   color: color-mix(in srgb, var(--color-wisp) 65%, transparent);
