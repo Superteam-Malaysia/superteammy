@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "@borneo/components/Link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -10,7 +9,6 @@ import {
 import { MentorDirectoryClient } from "@borneo/components/directory/MentorDirectoryClient";
 import { ParticipantDirectoryClient } from "@borneo/components/directory/ParticipantDirectoryClient";
 import { TeamEcosystemClient } from "@borneo/components/teams/TeamEcosystemClient";
-import { CtaButton } from "@borneo/components/ui";
 import type { PublicMentor } from "@borneo/lib/mentors/types";
 import { getUnassignedBuilders } from "@borneo/lib/participants/unassigned-builders";
 import type { PublicParticipant } from "@borneo/lib/participants/types";
@@ -23,7 +21,6 @@ type DirectoryTabsClientProps = {
   teams: PublicTeam[];
   people: PublicParticipant[];
   mentors: PublicMentor[];
-  isSignedIn: boolean;
 };
 
 const MENTOR_FILTERS = ["All", "Workshop leaders", "Judges"] as const;
@@ -68,7 +65,6 @@ export function DirectoryTabsClient({
   teams,
   people,
   mentors,
-  isSignedIn,
 }: DirectoryTabsClientProps) {
   const [tab, setTabState] = useState<DirectoryTab>(initialTab);
   const [searchQuery, setSearchQuery] = useState("");
@@ -182,14 +178,9 @@ export function DirectoryTabsClient({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.08 }}
-          className="flex flex-wrap items-center justify-between gap-4 md:mb-6 mb-4"
+          className="md:mb-6 mb-4"
         >
           <DirectorySectionTabs tab={tab} onTabChange={setTab} />
-          {tab === "teams" && isSignedIn ? (
-            <CtaButton href="/teams/new" variant="byte" size="sm">
-              Create team
-            </CtaButton>
-          ) : null}
         </motion.div>
 
         <motion.div
@@ -229,9 +220,7 @@ export function DirectoryTabsClient({
               <p className="text-lg text-muted mb-2">No teams found</p>
               <p className="text-sm text-muted-dark">
                 {teams.length === 0
-                  ? isSignedIn
-                    ? "Create a team to showcase your project."
-                    : "Sign in to create a team."
+                  ? "Teams will appear here once participants create them."
                   : "Try adjusting your search or category filter."}
               </p>
             </div>
@@ -255,15 +244,6 @@ export function DirectoryTabsClient({
         <div role="tabpanel" hidden={tab !== "mentors"} aria-hidden={tab !== "mentors"}>
           <MentorDirectoryClient mentors={filteredMentors} expandMentorId={expandMentorId} />
         </div>
-
-        {!isSignedIn && tab === "teams" ? (
-          <p className="mt-10 text-center text-sm text-white/70">
-            <Link href="/login" className="text-link-wisp">
-              Sign in
-            </Link>{" "}
-            to create a team and add builders from the directory.
-          </p>
-        ) : null}
       </div>
     </div>
   );

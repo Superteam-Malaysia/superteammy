@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { DirectoryTabsClient } from "@borneo/components/teams/DirectoryTabsClient";
 import { parseDirectoryTab } from "@borneo/lib/directory/tabs";
 import { getPublicMentors } from "@borneo/data/mentors";
-import { getParticipantForSession } from "@borneo/lib/auth/participant";
 import { getPublicParticipants } from "@borneo/lib/participants/public-directory";
 import { getPublicTeams } from "@borneo/lib/teams/public-teams";
 
@@ -20,11 +19,10 @@ type TeamsPageProps = {
 
 export default async function TeamsPage({ searchParams }: TeamsPageProps) {
   const params = await searchParams;
-  const [teams, people, mentors, participant] = await Promise.all([
+  const [teams, people, mentors] = await Promise.all([
     getPublicTeams(),
     getPublicParticipants(),
     Promise.resolve(getPublicMentors()),
-    getParticipantForSession(),
   ]);
 
   return (
@@ -34,7 +32,6 @@ export default async function TeamsPage({ searchParams }: TeamsPageProps) {
         teams={teams}
         people={people}
         mentors={mentors}
-        isSignedIn={!!participant}
       />
     </main>
   );

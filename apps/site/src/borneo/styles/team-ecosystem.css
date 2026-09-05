@@ -930,6 +930,100 @@
   color: var(--team-colosseum-accent);
 }
 
+.profile-teams {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem 1.35rem;
+  border: 1px solid color-mix(in srgb, var(--team-colosseum-accent) 22%, transparent);
+  background: color-mix(in srgb, var(--team-colosseum-panel, #0d1117) 82%, transparent);
+}
+
+.profile-teams__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.profile-teams__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-wisp);
+}
+
+.profile-teams__lead,
+.profile-teams__empty {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--color-wisp) 68%, transparent);
+}
+
+.profile-teams__list {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.profile-teams__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  padding: 0.85rem 0;
+  border-top: 1px solid var(--color-transparent-wisp-10);
+}
+
+.profile-teams__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.profile-teams__name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-wisp);
+}
+
+.profile-teams__view {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: color-mix(in srgb, var(--color-wisp) 62%, transparent);
+  text-decoration: none;
+}
+
+.profile-teams__view:hover {
+  color: var(--color-wisp);
+}
+
+.profile-teams__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.85rem 1.25rem;
+  padding-top: 0.35rem;
+}
+
+.profile-teams__browse {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: color-mix(in srgb, var(--color-wisp) 70%, transparent);
+  text-decoration: none;
+}
+
+.profile-teams__browse:hover {
+  color: var(--color-wisp);
+}
+
 .profile-edit {
   display: grid;
   gap: 2.5rem;

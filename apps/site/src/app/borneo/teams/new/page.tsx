@@ -22,7 +22,7 @@ export default async function NewTeamPage() {
         <SectionArticle>
           <SectionIntro
             title="Create a team"
-            lead="Showcase your project in the teams directory. You can add builders from the directory after creating your team."
+            lead="Showcase your project in the teams directory. Create and manage teams from your profile."
             accent="byte"
           />
           <div className="mt-10">

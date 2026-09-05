@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import { SectionArticle, SectionIntro } from "@borneo/components/ui";
 import { LogoutButton } from "@borneo/components/auth/LogoutButton";
 import { ProfileEditForm } from "@borneo/components/profile/ProfileEditForm";
+import { ProfileTeamsPanel } from "@borneo/components/profile/ProfileTeamsPanel";
 import { requireParticipant } from "@borneo/lib/auth/participant";
 import { getPublicParticipantsByIds } from "@borneo/lib/participants/public-directory";
 import { participantInitials } from "@borneo/lib/participants/team-categories";
 import { participantToProfileForm } from "@borneo/lib/profile/form";
+import { listEditableTeamSlugs } from "@borneo/lib/teams/access";
 import { uploadPublicUrl } from "@borneo/lib/uploads/public-url";
 
 export const metadata: Metadata = {
@@ -22,6 +24,11 @@ export default async function ProfilePage() {
   const initials = participantInitials(displayName);
   const avatarUrl = uploadPublicUrl(participant.avatarUrl);
   const hackathonTeams = directoryProfile?.hackathonTeams ?? [];
+  const editableSlugs = new Set(await listEditableTeamSlugs(participant.id));
+  const profileTeams = hackathonTeams.map((team) => ({
+    ...team,
+    canEdit: editableSlugs.has(team.slug),
+  }));
 
   return (
     <main className="site-main site-main--stack">
@@ -29,9 +36,13 @@ export default async function ProfilePage() {
         <SectionArticle>
           <SectionIntro
             title="My profile"
-            lead="Update the details shown on your builder card and team directory entry."
+            lead="Update your builder card and manage your hackathon team. The teams directory is for browsing only."
             accent="green"
           />
+
+          <div className="mt-10">
+            <ProfileTeamsPanel teams={profileTeams} />
+          </div>
 
           <div className="mt-10">
             <ProfileEditForm
