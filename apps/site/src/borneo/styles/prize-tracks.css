@@ -293,6 +293,15 @@
   text-transform: none;
 }
 
+.prize-tracks__breakdown-note {
+  display: block;
+  margin-top: 0.25rem;
+  color: color-mix(in srgb, var(--color-wisp) 55%, transparent);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .prize-tracks__marquee-track {
     animation: none;

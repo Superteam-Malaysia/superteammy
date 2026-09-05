@@ -18,7 +18,7 @@ export default function PrizesPage() {
     <main className="site-main prizes-page">
       <PageHeader
         title={`${PRIZE_TOTAL} prize pool`}
-        lead="Prizes are settled off-app per event operations. This site is the program bible — not a payment portal."
+        lead="USD prizes are settled off-app per event operations. Meteora and RedotPay run separate partner challenges — this site is the program bible, not a payment portal."
       />
       <SectionArticle>
         <SectionIntro title="Prize breakdown" accent="byte" />
@@ -32,7 +32,14 @@ export default function PrizesPage() {
           <tbody>
             {PRIZE_ROWS.map((row) => (
               <tr key={row.label} className="border-t border-[color:var(--color-transparent-wisp-10)] first:border-t-0">
-                <td className="py-4 font-[family-name:var(--font-mono)] text-sm">{row.label}</td>
+                <td className="py-4 font-[family-name:var(--font-mono)] text-sm">
+                  {row.label}
+                  {row.note ? (
+                    <span className="mt-1 block text-xs text-[color:var(--color-transparent-wisp-55)] normal-case tracking-normal">
+                      {row.note}
+                    </span>
+                  ) : null}
+                </td>
                 <td className="py-4 text-right font-[family-name:var(--font-display)] text-xl">
                   {row.amount}
                 </td>

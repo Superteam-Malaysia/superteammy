@@ -28,11 +28,11 @@ export function PrizeTracksPanel() {
     <div className="prize-tracks">
       <div className="prize-tracks__intro">
         <h2 className="prize-tracks__title">
-          Four prize tracks.
+          {PRIZE_TRACKS.length} prize tracks.
           <br />
           <span className="prize-tracks__title-highlight">
             <span className="prize-tracks__title-highlight-bg" aria-hidden />
-            {PRIZE_TOTAL} USD
+            {PRIZE_TOTAL} USD + partner prizes
           </span>
         </h2>
       </div>
@@ -59,7 +59,12 @@ export function PrizeTracksPanel() {
         <ul className="prize-tracks__breakdown-list">
           {PRIZE_ROWS.map((row) => (
             <li key={row.label} className="prize-tracks__breakdown-row">
-              <span>{row.label}</span>
+              <span>
+                {row.label}
+                {row.note ? (
+                  <span className="prize-tracks__breakdown-note">{row.note}</span>
+                ) : null}
+              </span>
               <span>{row.amount}</span>
             </li>
           ))}

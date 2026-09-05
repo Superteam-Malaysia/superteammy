@@ -5,7 +5,9 @@ export type PrizeTrack = {
   amount?: string;
 };
 
-/** Prize pool tracks — Summit-style panel copy for the homepage prizes section. */
+/**
+ * Prize pool tracks — Summit-style panel copy for the homepage prizes section.
+ */
 export const PRIZE_TRACKS: PrizeTrack[] = [
   {
     id: "demo-day",
@@ -34,5 +36,19 @@ export const PRIZE_TRACKS: PrizeTrack[] = [
     amount: "2×$500",
     description:
       "Points-weighted stations across Kuching — food, culture, waterfront, and wallet onboarding.",
+  },
+  {
+    id: "meteora",
+    title: "Meteora challenge",
+    amount: "1 SOL",
+    description:
+      "$25 deposit matched — best PnL wins by Sept 8, 8pm MYT. Register your wallet on the challenge page.",
+  },
+  {
+    id: "redotpay",
+    title: "RedotPay Card Quiz",
+    amount: "Luggage tags",
+    description:
+      "Two card questions per day — first five correct answers each day win a RedotPay luggage tag.",
   },
 ];
