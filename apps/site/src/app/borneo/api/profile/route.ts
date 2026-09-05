@@ -45,10 +45,6 @@ export async function PATCH(request: Request) {
       passportLastName: values.passportLastName || null,
       projectIdea: values.projectIdea || null,
       proofOfWork: values.proofOfWork || null,
-      teamSetup: values.teamSetup || null,
-      commitmentProof: values.commitmentProof || null,
-      jerseySize: values.jerseySize || null,
-      ownAccommodation: values.ownAccommodation || null,
       updatedAt: new Date(),
     })
     .where(eq(participants.id, participant.id))

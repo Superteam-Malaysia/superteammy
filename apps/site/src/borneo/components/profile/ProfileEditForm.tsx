@@ -182,49 +182,6 @@ export function ProfileEditForm({
           />
         </label>
 
-        <label className="team-form__field">
-          <span className="team-form__label">Team setup</span>
-          <textarea
-            value={values.teamSetup}
-            onChange={(e) => update("teamSetup", e.target.value)}
-            className="team-form__textarea"
-            rows={2}
-          />
-        </label>
-
-        <label className="team-form__field">
-          <span className="team-form__label">Commitment proof</span>
-          <textarea
-            value={values.commitmentProof}
-            onChange={(e) => update("commitmentProof", e.target.value)}
-            className="team-form__textarea"
-            rows={2}
-          />
-        </label>
-
-        <div className="profile-form__row">
-          <label className="team-form__field">
-            <span className="team-form__label">Jersey size</span>
-            <input
-              type="text"
-              value={values.jerseySize}
-              onChange={(e) => update("jerseySize", e.target.value)}
-              className="team-form__input"
-              placeholder="M, L, XL…"
-            />
-          </label>
-          <label className="team-form__field">
-            <span className="team-form__label">Own accommodation</span>
-            <input
-              type="text"
-              value={values.ownAccommodation}
-              onChange={(e) => update("ownAccommodation", e.target.value)}
-              className="team-form__input"
-              placeholder="Yes / No / details"
-            />
-          </label>
-        </div>
-
         <div className="team-form__actions">
           <button type="submit" disabled={saving} className="cta cta--byte cta--md disabled:opacity-50">
             {saving ? "Saving…" : "Save profile"}
