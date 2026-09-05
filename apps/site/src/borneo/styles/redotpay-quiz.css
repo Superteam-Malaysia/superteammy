@@ -301,3 +301,63 @@
 .redotpay-q--locked .redotpay-q__sign-in-link {
   pointer-events: auto;
 }
+
+.redotpay-quiz__begin {
+  margin-bottom: 1.5rem;
+}
+
+.redotpay-leaderboard {
+  padding: 1.25rem 1.35rem;
+  border: 1px solid color-mix(in srgb, var(--color-wisp) 12%, transparent);
+  background: color-mix(in srgb, var(--color-null) 92%, transparent);
+}
+
+.redotpay-leaderboard__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-wisp);
+}
+
+.redotpay-leaderboard__hint {
+  margin: 0.4rem 0 1rem;
+  font-size: 0.8125rem;
+  color: color-mix(in srgb, var(--color-wisp) 60%, transparent);
+}
+
+.redotpay-leaderboard__empty {
+  margin: 0;
+  font-size: 0.875rem;
+  color: color-mix(in srgb, var(--color-wisp) 65%, transparent);
+}
+
+.redotpay-leaderboard__table-wrap {
+  overflow-x: auto;
+}
+
+.redotpay-leaderboard__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.redotpay-leaderboard__table th,
+.redotpay-leaderboard__table td {
+  padding: 0.55rem 0.65rem;
+  text-align: left;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-wisp) 10%, transparent);
+}
+
+.redotpay-leaderboard__table th {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-wisp) 55%, transparent);
+}
+
+.redotpay-leaderboard__table td {
+  color: color-mix(in srgb, var(--color-wisp) 85%, transparent);
+}
+

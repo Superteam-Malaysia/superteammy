@@ -3,6 +3,7 @@ import { SectionArticle, SectionIntro } from "@borneo/components/ui";
 import { LogoutButton } from "@borneo/components/auth/LogoutButton";
 import { ProfileEditForm } from "@borneo/components/profile/ProfileEditForm";
 import { ProfileAdminLinks } from "@borneo/components/profile/ProfileAdminLinks";
+import { RedotPayQuizLeaderboard } from "@borneo/components/redotpay/RedotPayQuizLeaderboard";
 import { ProfileTeamsPanel } from "@borneo/components/profile/ProfileTeamsPanel";
 import { requireParticipant } from "@borneo/lib/auth/participant";
 import { isOrganizer } from "@borneo/lib/auth/organizer";
@@ -63,6 +64,12 @@ export default async function ProfilePage() {
             {isOrganizer(participant) ? <ProfileAdminLinks /> : null}
             <LogoutButton />
           </div>
+
+          {isOrganizer(participant) ? (
+            <div className="mt-10">
+              <RedotPayQuizLeaderboard />
+            </div>
+          ) : null}
         </SectionArticle>
     </main>
   );

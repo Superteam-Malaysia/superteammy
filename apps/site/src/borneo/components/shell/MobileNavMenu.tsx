@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "@borneo/components/Link";
 import { useState } from "react";
 import { NAV_LINKS } from "@borneo/data/site";
 import type { NavAuthLink } from "@borneo/lib/auth/nav-auth-link";

@@ -1,18 +1,15 @@
-import { RedotPayQuizPanel } from "@borneo/components/redotpay/RedotPayQuizPanel";
+import { RedotPayQuizTest } from "@borneo/components/redotpay/RedotPayQuizTest";
 import { REDOTPAY_QUIZ } from "@borneo/data/redotpay-quiz";
 import { getParticipantForSession } from "@borneo/lib/auth/participant";
 import { pageMetadata } from "@borneo/lib/metadata";
-import { quizCalendarDate, quizDayIndex, quizHasStarted } from "@borneo/lib/redotpay-quiz/schedule";
-import {
-  getDailyWinnerCount,
-  getParticipantQuizState,
-} from "@borneo/lib/redotpay-quiz/submit";
+import { getParticipantQuizAttempt } from "@borneo/lib/redotpay-quiz/attempt";
+import { quizHasStarted } from "@borneo/lib/redotpay-quiz/schedule";
 import { withBasePath } from "@borneo/lib/base-path";
 
 export const metadata = pageMetadata({
   title: "RedotPay Card Quiz",
   description:
-    "Daily RedotPay card quiz at Startup Village Borneo — two questions per day, luggage tags for the fastest correct answers.",
+    "RedotPay card quiz at Startup Village Borneo — 10 questions, 2 minutes, one attempt per profile.",
   path: "/redotpay",
 });
 
@@ -21,11 +18,8 @@ export const dynamic = "force-dynamic";
 export default async function RedotPayPage() {
   const participant = await getParticipantForSession();
   const signedIn = Boolean(participant);
-  const quizDay = quizCalendarDate();
-  const dayIndex = quizDayIndex();
   const quizStarted = quizHasStarted();
-  const dailyWinnersUsed = await getDailyWinnerCount(quizDay);
-  const submissions = participant ? await getParticipantQuizState(participant.id) : {};
+  const attempt = participant ? await getParticipantQuizAttempt(participant.id) : null;
 
   return (
     <main className="site-main redotpay-page">
@@ -40,12 +34,12 @@ export default async function RedotPayPage() {
               <span className="redotpay-hero__stat-label">Questions</span>
             </div>
             <div className="redotpay-hero__stat">
-              <span className="redotpay-hero__stat-value">2/day</span>
-              <span className="redotpay-hero__stat-label">Release rate</span>
+              <span className="redotpay-hero__stat-value">2 min</span>
+              <span className="redotpay-hero__stat-label">Time limit</span>
             </div>
             <div className="redotpay-hero__stat">
-              <span className="redotpay-hero__stat-value">{REDOTPAY_QUIZ.dailyWinnerCount}</span>
-              <span className="redotpay-hero__stat-label">Tags per day</span>
+              <span className="redotpay-hero__stat-value">1×</span>
+              <span className="redotpay-hero__stat-label">Per profile</span>
             </div>
           </div>
           <img
@@ -59,12 +53,10 @@ export default async function RedotPayPage() {
       </header>
 
       <section className="redotpay-quiz-wrap">
-        <RedotPayQuizPanel
+        <RedotPayQuizTest
           signedIn={signedIn}
-          submissions={submissions}
-          dailyWinnersUsed={dailyWinnersUsed}
-          dayIndex={dayIndex}
           quizStarted={quizStarted}
+          initialAttempt={attempt}
         />
       </section>
     </main>

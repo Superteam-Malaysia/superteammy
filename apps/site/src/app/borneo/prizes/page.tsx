@@ -86,7 +86,7 @@ export default function PrizesPage() {
               <ActionCard
                 tone="mint"
                 title="RedotPay Card Quiz"
-                description={`${REDOTPAY_QUIZ.prize} · 2 questions/day`}
+                description={`${REDOTPAY_QUIZ.prize} · 10 questions · 2 min · 1 attempt`}
                 cta={{ label: "Take the quiz", href: "/redotpay" }}
               />
             </li>

@@ -21,14 +21,14 @@ export type RedotPayQuizQuestion = {
 export const REDOTPAY_QUIZ = {
   title: "RedotPay Card Quiz",
   prize: "RedotPay luggage tags",
-  questionsPerDay: 2,
-  /** First N correct answers each day (MYT) win a luggage tag — one per participant per day. */
-  dailyWinnerCount: 5,
-  /** First calendar day questions unlock — SVB Day 1 (MYT). */
+  totalQuestions: 10,
+  /** Seconds to answer all questions once the attempt starts. */
+  timeLimitSeconds: 120,
+  /** First calendar day the quiz opens — SVB Day 1 (MYT). */
   startDate: "2026-09-05",
   timezone: "Asia/Kuching",
   intro:
-    "Two new card questions drop each day of Startup Village Borneo. Be among the first to answer correctly and claim a RedotPay luggage tag.",
+    "All 10 card questions are live. Sign in, start the quiz, and submit within 2 minutes — one attempt per profile. Your score is logged.",
 } as const;
 
 export const REDOTPAY_QUIZ_QUESTIONS: RedotPayQuizQuestion[] = [
@@ -176,3 +176,5 @@ export const REDOTPAY_QUIZ_QUESTIONS: RedotPayQuizQuestion[] = [
 export const REDOTPAY_QUESTION_BY_ID = Object.fromEntries(
   REDOTPAY_QUIZ_QUESTIONS.map((q) => [q.id, q]),
 ) as Record<string, RedotPayQuizQuestion>;
+
+export const REDOTPAY_QUIZ_TIME_LIMIT_MS = REDOTPAY_QUIZ.timeLimitSeconds * 1000;

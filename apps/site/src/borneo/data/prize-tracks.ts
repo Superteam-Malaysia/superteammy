@@ -49,6 +49,6 @@ export const PRIZE_TRACKS: PrizeTrack[] = [
     title: "RedotPay Card Quiz",
     amount: "Luggage tags",
     description:
-      "Two card questions per day — first five correct answers each day win a RedotPay luggage tag.",
+      "All 10 card questions live — 2 minutes, one attempt per profile. Scores logged for staff review.",
   },
 ];

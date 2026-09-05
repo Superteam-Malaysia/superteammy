@@ -1,6 +1,7 @@
 import {
   boolean,
   customType,
+  integer,
   jsonb,
   pgTable,
   text,
@@ -204,3 +205,24 @@ export const redotpayQuizSubmissions = pgTable(
 
 export type RedotPayQuizSubmission = typeof redotpayQuizSubmissions.$inferSelect;
 export type NewRedotPayQuizSubmission = typeof redotpayQuizSubmissions.$inferInsert;
+
+/** RedotPay card quiz — one timed attempt per participant. */
+export const redotpayQuizAttempts = pgTable(
+  "redotpay_quiz_attempts",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    participantId: uuid("participant_id")
+      .notNull()
+      .references(() => participants.id, { onDelete: "cascade" }),
+    startedAt: timestamp("started_at", { withTimezone: true }).notNull().defaultNow(),
+    submittedAt: timestamp("submitted_at", { withTimezone: true }),
+    score: integer("score").notNull().default(0),
+    totalQuestions: integer("total_questions").notNull().default(10),
+    answers: jsonb("answers"),
+    durationMs: integer("duration_ms"),
+  },
+  (table) => [unique("redotpay_quiz_attempts_participant_unique").on(table.participantId)],
+);
+
+export type RedotPayQuizAttempt = typeof redotpayQuizAttempts.$inferSelect;
+export type NewRedotPayQuizAttempt = typeof redotpayQuizAttempts.$inferInsert;

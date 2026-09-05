@@ -25,7 +25,7 @@ export const PARTNER_PRIZE_ROWS: PrizeRow[] = [
   {
     label: "RedotPay Card Quiz",
     amount: REDOTPAY_QUIZ.prize,
-    note: `${REDOTPAY_QUIZ.dailyWinnerCount} winners/day · partner prize`,
+    note: "10 questions · 2 min · 1 attempt · partner prize",
   },
 ];
 
