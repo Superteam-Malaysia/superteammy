@@ -556,33 +556,6 @@
   color: var(--color-wisp);
 }
 
-.companion-banner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem 1rem;
-  border: 1px solid color-mix(in srgb, var(--color-wisp) 18%, transparent);
-  background: color-mix(in srgb, var(--color-wisp) 6%, transparent);
-  padding: 1rem 1.25rem;
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  letter-spacing: 0.04em;
-  line-height: 1.5;
-  color: var(--color-wisp);
-}
-
-.companion-banner__tag {
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 0.2rem 0.5rem;
-  background: color-mix(in srgb, var(--color-wisp) 18%, transparent);
-  color: var(--color-wisp);
-  border-radius: 2px;
-  flex-shrink: 0;
-}
-
 /* Partner grid */
 .partner-pill {
   font-family: var(--font-mono);
