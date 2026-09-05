@@ -260,6 +260,7 @@ export function MilestoneSubmitDrawer({
                             alt=""
                             width={96}
                             height={96}
+                            unoptimized
                             className="race-drawer__milestone-image"
                             sizes="3.5rem"
                           />
