@@ -1,7 +1,7 @@
 import { desc, eq } from "drizzle-orm";
 import { getDb } from "@borneo/lib/db";
 import { participants, raceSubmissions, teamMembers, teams } from "@borneo/lib/db/schema";
-import { getRaceTask } from "@borneo/lib/race/validation";
+import { getRaceTask, raceThreadUrlsMatch } from "@borneo/lib/race/validation";
 
 export type PublicRaceSubmission = {
   id: string;
@@ -99,6 +99,37 @@ export async function upsertParticipantRaceSubmission(input: {
     .returning();
 
   return row;
+}
+
+/** Returns an error message when this X link is already used on another submission. */
+export async function getRaceThreadUrlConflict(input: {
+  participantId: string;
+  taskId: string;
+  threadUrl: string;
+}): Promise<string | null> {
+  const db = getDb();
+  const rows = await db
+    .select({
+      taskId: raceSubmissions.taskId,
+      threadUrl: raceSubmissions.threadUrl,
+      submitterId: raceSubmissions.submittedBy,
+      submitterName: participants.name,
+    })
+    .from(raceSubmissions)
+    .innerJoin(participants, eq(raceSubmissions.submittedBy, participants.id));
+
+  for (const row of rows) {
+    if (!raceThreadUrlsMatch(row.threadUrl, input.threadUrl)) continue;
+
+    if (row.submitterId === input.participantId && row.taskId === input.taskId) {
+      continue;
+    }
+
+    const who = row.submitterName?.trim() || "Someone else";
+    return `This X link was already submitted${row.submitterId === input.participantId ? " for another milestone" : ` by ${who}`}.`;
+  }
+
+  return null;
 }
 
 /** @deprecated Team-scoped listing — use listParticipantRaceSubmissions. */

@@ -3,6 +3,7 @@ import { getParticipantForSession } from "@borneo/lib/auth/participant";
 import { getTeamMembership } from "@borneo/lib/teams/access";
 import { getTeamRecordBySlug } from "@borneo/lib/teams/public-teams";
 import {
+  getRaceThreadUrlConflict,
   listParticipantRaceSubmissions,
   upsertParticipantRaceSubmission,
 } from "@borneo/lib/race/submissions";
@@ -46,6 +47,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "You are not on that team." }, { status: 403 });
     }
     teamId = record.id;
+  }
+
+  const duplicate = await getRaceThreadUrlConflict({
+    participantId: participant.id,
+    taskId: validation.taskId,
+    threadUrl: validation.threadUrl,
+  });
+  if (duplicate) {
+    return NextResponse.json({ error: duplicate }, { status: 409 });
   }
 
   const row = await upsertParticipantRaceSubmission({

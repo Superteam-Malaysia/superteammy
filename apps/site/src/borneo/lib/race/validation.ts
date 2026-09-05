@@ -44,6 +44,18 @@ export function normalizeThreadUrl(raw: string): string | null {
   return url.toString();
 }
 
+/** True when two thread URLs point at the same X post. */
+export function raceThreadUrlsMatch(a: string, b: string): boolean {
+  const normalizedA = normalizeThreadUrl(a);
+  const normalizedB = normalizeThreadUrl(b);
+  if (!normalizedA || !normalizedB) return false;
+  if (normalizedA === normalizedB) return true;
+
+  const tweetA = extractTweetIdFromUrl(normalizedA);
+  const tweetB = extractTweetIdFromUrl(normalizedB);
+  return Boolean(tweetA && tweetB && tweetA === tweetB);
+}
+
 export function validateRaceSubmissionInput(taskId: string, threadUrl: string) {
   if (!isValidRaceTaskId(taskId)) {
     return { ok: false as const, error: "Unknown race task." };
