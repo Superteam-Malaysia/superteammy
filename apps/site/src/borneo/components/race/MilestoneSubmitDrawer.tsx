@@ -12,6 +12,16 @@ import type {
   PublicRaceSubmission,
   RaceFeedItem,
 } from "@borneo/lib/race/submissions";
+import type { RaceTask } from "@borneo/data/race-tasks";
+
+function formatTaskPoints(task: RaceTask): string {
+  if (task.pointsNote) return task.pointsNote;
+  if (task.pointsMax && task.pointsMax !== task.pointsBase) {
+    return `${task.pointsBase}–${task.pointsMax} points`;
+  }
+  if (task.pointsBase === 0) return "Content award — no race points";
+  return `${task.pointsBase} points`;
+}
 
 type MilestoneSubmitDrawerProps = {
   open: boolean;
@@ -279,7 +289,18 @@ export function MilestoneSubmitDrawer({
         ) : selectedTask ? (
           <div className="race-drawer__link-step">
             <p className="race-drawer__link-title">{selectedTask.title}</p>
-            <p className="race-drawer__link-desc">{selectedTask.shortDescription}</p>
+            <p className="race-drawer__link-points">{formatTaskPoints(selectedTask)}</p>
+            <ul className="race-drawer__link-details">
+              {selectedTask.details.map((detail) => (
+                <li key={detail}>{detail}</li>
+              ))}
+            </ul>
+            {selectedTask.location ? (
+              <p className="race-drawer__link-meta">{selectedTask.location}</p>
+            ) : null}
+            {selectedTask.deadline ? (
+              <p className="race-drawer__link-meta">Due {selectedTask.deadline}</p>
+            ) : null}
 
             {cutoffPassed ? (
               <p className="team-form__error">Submissions are closed — cutoff has passed.</p>
