@@ -19,7 +19,7 @@ export const DEMO_DAY_JUDGES: Judge[] = [
   {
     id: "jacob",
     name: "Jacob",
-    role: "Solana Foundation",
+    role: "Superscrypt",
     photo: withBasePath("/speakers/jacob-ko.jpg"),
   },
   {
