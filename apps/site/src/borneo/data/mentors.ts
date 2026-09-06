@@ -120,12 +120,37 @@ export function getMentorDirectoryIds(): ReadonlySet<string> {
   return new Set(getPublicMentors().map((mentor) => mentor.id));
 }
 
+function mentorOrganizationSlugs(organization: string): string[] {
+  const slugs = new Set<string>();
+  const full = mentorSlug(organization);
+  if (full) slugs.add(full);
+  const primary = organization.split(/[/·|]/)[0]?.trim();
+  if (primary && primary !== organization) {
+    const primarySlug = mentorSlug(primary);
+    if (primarySlug) slugs.add(primarySlug);
+  }
+  return [...slugs];
+}
+
+/** Workshop / judge org slugs — mentor projects, not hackathon teams. */
+export function getMentorOrganizationSlugs(): ReadonlySet<string> {
+  const slugs = new Set<string>();
+  for (const mentor of getPublicMentors()) {
+    if (!mentor.organization) continue;
+    for (const slug of mentorOrganizationSlugs(mentor.organization)) {
+      slugs.add(slug);
+    }
+  }
+  return slugs;
+}
+
 export function isMentorTeamSlug(slug: string, teamName?: string | null): boolean {
   const mentorIds = getMentorDirectoryIds();
-  if (mentorIds.has(slug)) return true;
+  const orgSlugs = getMentorOrganizationSlugs();
+  if (mentorIds.has(slug) || orgSlugs.has(slug)) return true;
   if (teamName) {
     const fromName = mentorSlug(teamName);
-    if (fromName && mentorIds.has(fromName)) return true;
+    if (fromName && (mentorIds.has(fromName) || orgSlugs.has(fromName))) return true;
   }
   return false;
 }

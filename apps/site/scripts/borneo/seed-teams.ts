@@ -450,16 +450,6 @@ const SEED_TEAMS: SeedTeam[] = [
     members: [{ email: "lisa.bechina@gmail.com", role: "owner" }],
   },
   {
-    slug: "sanctum",
-    name: "Sanctum",
-    tagline: "Liquid staking on Solana",
-    description: "Sanctum — liquid staking infrastructure on Solana.",
-    category: "DeFi",
-    websiteUrl: "https://sanctum.so",
-    proofUrl: "https://sanctum.so",
-    members: [{ email: "nicfuryyy@gmail.com", role: "owner" }],
-  },
-  {
     slug: "soda",
     name: "SODA",
     tagline: "Solana-owned derived authority for cross-chain assets",
@@ -515,16 +505,6 @@ const SEED_TEAMS: SeedTeam[] = [
     websiteUrl: "https://www.kuasai.ai",
     proofUrl: "https://www.kuasai.ai",
     members: [{ email: "devwannabe420@gmail.com", role: "owner" }],
-  },
-  {
-    slug: "getblock",
-    name: "GetBlock",
-    tagline: "Blockchain node infrastructure",
-    description: "Access to blockchain networks — GetBlock node infrastructure for builders.",
-    category: "Consumer",
-    websiteUrl: "https://getblock.io",
-    proofUrl: "https://getblock.io",
-    members: [{ email: "cyberwider@gmail.com", role: "owner" }],
   },
   {
     slug: "analytrix",
@@ -656,6 +636,11 @@ async function main() {
   await pruneDeclinedTeamMembers(db);
 
   for (const seed of SEED_TEAMS) {
+    if (isMentorTeamSlug(seed.slug, seed.name)) {
+      console.log(`Skip mentor org (not a hackathon team): ${seed.name} (${seed.slug})`);
+      continue;
+    }
+
     const ownerEmail = seed.members.find((m) => m.role === "owner")?.email;
     const createdBy = ownerEmail ? await participantIdByEmail(db, ownerEmail) : null;
 
