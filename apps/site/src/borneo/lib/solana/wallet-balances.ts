@@ -1,4 +1,5 @@
 import { fetchJupiterTokensByMints, type JupiterToken } from "@borneo/lib/jupiter/token-search";
+import { isValidSolanaWallet } from "@borneo/lib/profile/wallet";
 import {
   fetchMarketSnapshots,
   resolveMintAsset,
@@ -25,6 +26,41 @@ export type WalletBalances = {
 };
 
 const TOKEN_PROGRAM = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+
+type TokenAccountResult = {
+  account: {
+    data: {
+      parsed?: {
+        info?: {
+          mint?: string;
+          tokenAmount?: {
+            uiAmount?: number | null;
+            uiAmountString?: string;
+          };
+        };
+      };
+    };
+  };
+};
+
+type RawBalance = {
+  mint: string | null;
+  amount: number;
+};
+
+type ResolvedMintMeta = {
+  assetId: string | null;
+  name: string | null;
+  symbol: string | null;
+  imageUrl: string | null;
+  price: number | null;
+};
+
+type PriceContext = {
+  snapshots: Map<string, TokensMarketSnapshot>;
+  resolvedByMint: Map<string, ResolvedMintMeta>;
+  jupiterByMint: Map<string, JupiterToken>;
+};
 
 function formatTokenAmount(value: number): string {
   if (!Number.isFinite(value) || value === 0) return "0";
@@ -56,35 +92,6 @@ function shortMint(mint: string): string {
   return `${mint.slice(0, 4)}…${mint.slice(-4)}`;
 }
 
-type TokenAccountResult = {
-  account: {
-    data: {
-      parsed?: {
-        info?: {
-          mint?: string;
-          tokenAmount?: {
-            uiAmount?: number | null;
-            uiAmountString?: string;
-          };
-        };
-      };
-    };
-  };
-};
-
-type RawBalance = {
-  mint: string | null;
-  amount: number;
-};
-
-type ResolvedMintMeta = {
-  assetId: string | null;
-  name: string | null;
-  symbol: string | null;
-  imageUrl: string | null;
-  price: number | null;
-};
-
 function snapshotForMint(
   mint: string | null,
   snapshots: Map<string, TokensMarketSnapshot>,
@@ -95,6 +102,42 @@ function snapshotForMint(
 function snapshotHasMetadata(snapshot: TokensMarketSnapshot | undefined): boolean {
   const token = snapshot?.token;
   return Boolean(token?.symbol?.trim() && token?.name?.trim());
+}
+
+function mintHasPrice(
+  mint: string,
+  snapshots: Map<string, TokensMarketSnapshot>,
+  jupiterByMint: Map<string, JupiterToken>,
+): boolean {
+  const snapshot = snapshots.get(mint);
+  if (typeof snapshot?.token?.price === "number" && Number.isFinite(snapshot.token.price)) {
+    return true;
+  }
+  const jupiter = jupiterByMint.get(mint);
+  return typeof jupiter?.usdPrice === "number" && Number.isFinite(jupiter.usdPrice);
+}
+
+function balanceSortValue(
+  raw: RawBalance,
+  snapshots: Map<string, TokensMarketSnapshot>,
+  resolvedByMint: Map<string, ResolvedMintMeta>,
+  jupiterByMint: Map<string, JupiterToken>,
+): number {
+  const snapshot = snapshotForMint(raw.mint, snapshots);
+  const resolved = raw.mint ? resolvedByMint.get(raw.mint) : null;
+  const jupiter = raw.mint ? jupiterByMint.get(raw.mint) : jupiterByMint.get(WSOL_MINT);
+  const price = snapshot?.token?.price ?? resolved?.price ?? jupiter?.usdPrice ?? null;
+  if (price == null || !Number.isFinite(price)) return 0;
+  const units = raw.mint === null ? raw.amount / 1_000_000_000 : raw.amount;
+  return units * price;
+}
+
+function sumRawBalancesUsd(rawBalances: RawBalance[], ctx: PriceContext): number {
+  return rawBalances.reduce(
+    (sum, raw) =>
+      sum + balanceSortValue(raw, ctx.snapshots, ctx.resolvedByMint, ctx.jupiterByMint),
+    0,
+  );
 }
 
 function buildBalanceRow(
@@ -119,12 +162,7 @@ function buildBalanceRow(
   const logoUrl = xyzToken?.logoURI ?? jupiter?.icon ?? resolved?.imageUrl ?? null;
   const assetId = resolved?.assetId ?? null;
 
-  const price =
-    xyzToken?.price ??
-    resolved?.price ??
-    jupiter?.usdPrice ??
-    null;
-
+  const price = xyzToken?.price ?? resolved?.price ?? jupiter?.usdPrice ?? null;
   const units = raw.mint === null ? raw.amount / 1_000_000_000 : raw.amount;
   const valueUsd =
     price != null && Number.isFinite(price) ? formatUsd(units * price) : null;
@@ -140,22 +178,7 @@ function buildBalanceRow(
   };
 }
 
-function balanceSortValue(
-  raw: RawBalance,
-  snapshots: Map<string, TokensMarketSnapshot>,
-  resolvedByMint: Map<string, ResolvedMintMeta>,
-  jupiterByMint: Map<string, JupiterToken>,
-): number {
-  const snapshot = snapshotForMint(raw.mint, snapshots);
-  const resolved = raw.mint ? resolvedByMint.get(raw.mint) : null;
-  const jupiter = raw.mint ? jupiterByMint.get(raw.mint) : jupiterByMint.get(WSOL_MINT);
-  const price = snapshot?.token?.price ?? resolved?.price ?? jupiter?.usdPrice ?? null;
-  if (price == null || !Number.isFinite(price)) return 0;
-  const units = raw.mint === null ? raw.amount / 1_000_000_000 : raw.amount;
-  return units * price;
-}
-
-export async function fetchWalletBalances(address: string): Promise<WalletBalances> {
+async function fetchRawHoldings(address: string): Promise<RawBalance[]> {
   const [lamports, tokenAccounts] = await Promise.all([
     solanaRpcCall<number>("getBalance", [address]),
     solanaRpcCall<{ value: TokenAccountResult[] }>("getTokenAccountsByOwner", [
@@ -186,58 +209,137 @@ export async function fetchWalletBalances(address: string): Promise<WalletBalanc
     rawBalances.push({ mint, amount });
   }
 
-  const splMints = rawBalances
-    .map((row) => row.mint)
-    .filter((mint): mint is string => Boolean(mint));
+  return rawBalances;
+}
 
-  const mintsForLookup = [WSOL_MINT, ...splMints];
+async function mapWithConcurrency<T, R>(
+  items: T[],
+  limit: number,
+  fn: (item: T) => Promise<R>,
+): Promise<R[]> {
+  if (items.length === 0) return [];
+
+  const results = new Array<R>(items.length);
+  let nextIndex = 0;
+
+  async function worker() {
+    while (nextIndex < items.length) {
+      const index = nextIndex++;
+      results[index] = await fn(items[index]!);
+    }
+  }
+
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, () => worker()));
+  return results;
+}
+
+async function resolveMintsBatch(mints: string[], concurrency = 4): Promise<Map<string, ResolvedMintMeta>> {
+  const resolvedByMint = new Map<string, ResolvedMintMeta>();
+  if (mints.length === 0) return resolvedByMint;
+
+  const entries = await mapWithConcurrency(mints, concurrency, async (mint) => {
+    const resolved = await resolveMintAsset(mint);
+    return [mint, resolved] as const;
+  });
+
+  for (const [mint, resolved] of entries) {
+    resolvedByMint.set(mint, resolved);
+  }
+
+  return resolvedByMint;
+}
+
+async function buildPriceContext(allSplMints: Set<string>): Promise<PriceContext> {
+  const mintsForLookup = [WSOL_MINT, ...allSplMints];
   const snapshots = await fetchMarketSnapshots(mintsForLookup);
+  const jupiterByMint = await fetchJupiterTokensByMints(mintsForLookup);
 
-  const mintsNeedingResolve = [
-    ...new Set(
-      splMints.filter((mint) => !snapshotHasMetadata(snapshots.get(mint))),
-    ),
-  ];
+  const mintsNeedingResolve = [...allSplMints].filter(
+    (mint) => !mintHasPrice(mint, snapshots, jupiterByMint),
+  );
+  const resolvedByMint = await resolveMintsBatch(mintsNeedingResolve, 4);
 
-  const [resolvedEntries, jupiterByMint] = await Promise.all([
-    Promise.all(
-      mintsNeedingResolve.map(async (mint) => [mint, await resolveMintAsset(mint)] as const),
-    ),
-    fetchJupiterTokensByMints(mintsForLookup),
-  ]);
+  return { snapshots, jupiterByMint, resolvedByMint };
+}
 
-  const resolvedByMint = new Map<string, ResolvedMintMeta>(resolvedEntries);
-
+function walletBalancesFromRaw(address: string, rawBalances: RawBalance[], ctx: PriceContext): WalletBalances {
   const rowsWithRaw = rawBalances.map((raw) => ({
     raw,
-    row: buildBalanceRow(raw, snapshots, resolvedByMint, jupiterByMint),
+    row: buildBalanceRow(raw, ctx.snapshots, ctx.resolvedByMint, ctx.jupiterByMint),
   }));
 
   rowsWithRaw.sort((a, b) => {
     const valueDiff =
-      balanceSortValue(b.raw, snapshots, resolvedByMint, jupiterByMint) -
-      balanceSortValue(a.raw, snapshots, resolvedByMint, jupiterByMint);
+      balanceSortValue(b.raw, ctx.snapshots, ctx.resolvedByMint, ctx.jupiterByMint) -
+      balanceSortValue(a.raw, ctx.snapshots, ctx.resolvedByMint, ctx.jupiterByMint);
     if (valueDiff !== 0) return valueDiff;
     if (a.raw.mint === null) return -1;
     if (b.raw.mint === null) return 1;
     return a.row.symbol.localeCompare(b.row.symbol);
   });
 
-  const totalUsd = rawBalances.reduce(
-    (sum, raw) =>
-      sum + balanceSortValue(raw, snapshots, resolvedByMint, jupiterByMint),
-    0,
-  );
-
   return {
     address,
     balances: rowsWithRaw.map(({ row }) => row),
-    totalUsd,
+    totalUsd: sumRawBalancesUsd(rawBalances, ctx),
   };
+}
+
+/** Bulk export — batch price lookups and fetch holdings sequentially with RPC retries. */
+export async function fetchWalletTotalsForExport(addresses: string[]): Promise<Map<string, number>> {
+  const totals = new Map<string, number>();
+  const uniqueAddresses = [...new Set(addresses.map((address) => address.trim()).filter(Boolean))];
+  if (uniqueAddresses.length === 0) return totals;
+
+  const holdingsByAddress = new Map<string, RawBalance[]>();
+  const allSplMints = new Set<string>();
+
+  for (const address of uniqueAddresses) {
+    if (!isValidSolanaWallet(address)) {
+      holdingsByAddress.set(address, []);
+      totals.set(address, 0);
+      continue;
+    }
+
+    try {
+      const raw = await fetchRawHoldings(address);
+      holdingsByAddress.set(address, raw);
+      for (const row of raw) {
+        if (row.mint) allSplMints.add(row.mint);
+      }
+    } catch {
+      holdingsByAddress.set(address, []);
+      totals.set(address, 0);
+    }
+
+    // Pace RPC calls during bulk export.
+    await new Promise((resolve) => setTimeout(resolve, 120));
+  }
+
+  const ctx = await buildPriceContext(allSplMints);
+
+  for (const address of uniqueAddresses) {
+    if (totals.has(address)) continue;
+    const raw = holdingsByAddress.get(address) ?? [];
+    totals.set(address, sumRawBalancesUsd(raw, ctx));
+  }
+
+  return totals;
+}
+
+export async function fetchWalletBalances(address: string): Promise<WalletBalances> {
+  const rawBalances = await fetchRawHoldings(address);
+
+  const splMints = rawBalances
+    .map((row) => row.mint)
+    .filter((mint): mint is string => Boolean(mint));
+
+  const ctx = await buildPriceContext(new Set(splMints));
+  return walletBalancesFromRaw(address, rawBalances, ctx);
 }
 
 /** Total USD for CSV export — sum of every priced token in the wallet. */
 export function formatWalletBalanceForExport(balances: WalletBalances | null): string {
-  if (!balances) return "";
+  if (!balances) return "0.00";
   return balances.totalUsd.toFixed(2);
 }

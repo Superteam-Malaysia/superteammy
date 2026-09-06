@@ -47,7 +47,7 @@ export function AdminMeteoraExportButton() {
         disabled={loading}
         onClick={() => void exportCsv()}
       >
-        {loading ? "Fetching balances…" : "Export CSV"}
+        {loading ? "Fetching live balances…" : "Export CSV"}
       </button>
       {error ? <p className="admin-meteora-export__error">{error}</p> : null}
     </div>
