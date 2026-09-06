@@ -6,9 +6,7 @@ import { RaceFeed } from "./RaceFeed";
 import { MilestoneSubmitGate } from "./MilestoneSubmitDrawer";
 import { RaceGroupPanel } from "./RaceGroupPanel";
 import type { PublicRaceSubmission, RaceFeedItem } from "@borneo/lib/race/submissions";
-import type { RaceLeaderboardRow } from "@borneo/lib/race/leaderboard";
 import type { ParticipantRaceGroup } from "@borneo/lib/race/group-types";
-import { RaceLeaderboard } from "./RaceLeaderboard";
 
 type RaceSubmissionContext = {
   participantName: string;
@@ -20,14 +18,12 @@ type RaceSubmissionContext = {
 type RacePageContentProps = {
   isSignedIn?: boolean;
   initialFeed: RaceFeedItem[];
-  initialLeaderboard?: RaceLeaderboardRow[];
   submission?: RaceSubmissionContext | null;
 };
 
 export function RacePageContent({
   isSignedIn = false,
   initialFeed,
-  initialLeaderboard = [],
   submission = null,
 }: RacePageContentProps) {
   const [feed, setFeed] = useState(initialFeed);
@@ -74,8 +70,6 @@ export function RacePageContent({
           onGroupChange={handleGroupChange}
         />
       ) : null}
-
-      <RaceLeaderboard initialRows={initialLeaderboard} />
 
       <div className="race-page__actions">
         <CtaButton

@@ -15,7 +15,7 @@ export function RaceLeaderboard({ initialRows = [] }: RaceLeaderboardProps) {
   const [loading, setLoading] = useState(initialRows.length === 0);
 
   const refresh = useCallback(async () => {
-    const res = await fetch(withBasePath("/api/race/leaderboard"), { cache: "no-store" });
+    const res = await fetch(withBasePath("/api/admin/race/leaderboard"), { cache: "no-store" });
     if (!res.ok) return;
     const data = (await res.json()) as { leaderboard?: RaceLeaderboardRow[] };
     setRows(data.leaderboard ?? []);
@@ -32,12 +32,9 @@ export function RaceLeaderboard({ initialRows = [] }: RaceLeaderboardProps) {
 
   return (
     <section className="race-leaderboard" aria-label="Amazing Race leaderboard">
-      <div className="race-leaderboard__head">
-        <h2 className="race-leaderboard__title">Leaderboard</h2>
-        <p className="race-leaderboard__hint">
-          Ranked by base points per milestone submission · updates every 30s
-        </p>
-      </div>
+      <p className="race-leaderboard__hint">
+        Updates every 30s
+      </p>
 
       {loading ? (
         <p className="race-leaderboard__empty">Loading standings…</p>

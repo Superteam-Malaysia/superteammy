@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AdminSubmissionsTable } from "@borneo/components/race/AdminSubmissionsTable";
+import { RaceLeaderboard } from "@borneo/components/race/RaceLeaderboard";
 import { PageHeader } from "@borneo/components/shell";
 import { SectionArticle, SectionIntro } from "@borneo/components/ui";
 import { getParticipantForSession } from "@borneo/lib/auth/participant";
 import { isOrganizer } from "@borneo/lib/auth/organizer";
+import { getRaceLeaderboard } from "@borneo/lib/race/leaderboard";
 import { listAllRaceSubmissionsForAdmin } from "@borneo/lib/race/submissions";
 
 export const metadata: Metadata = {
@@ -18,7 +20,10 @@ export default async function AdminSubmissionsPage() {
   const participant = await getParticipantForSession();
   if (!participant || !isOrganizer(participant)) notFound();
 
-  const submissions = await listAllRaceSubmissionsForAdmin();
+  const [submissions, leaderboard] = await Promise.all([
+    listAllRaceSubmissionsForAdmin(),
+    getRaceLeaderboard(),
+  ]);
 
   return (
     <main className="site-main site-main--stack">
@@ -26,6 +31,16 @@ export default async function AdminSubmissionsPage() {
         title="Race submissions"
         lead="Thread URLs submitted by teams for Amazing Race stations. Only organizers can view this page."
       />
+
+      <SectionArticle className="border border-[color:var(--color-transparent-wisp-10)] p-6 md:p-8">
+        <SectionIntro title="Leaderboard" accent="byte" />
+        <p className="mt-2 text-sm text-[color:var(--color-transparent-wisp-55)]">
+          Team standings by base points — variable milestone bonuses not included.
+        </p>
+        <div className="mt-6">
+          <RaceLeaderboard initialRows={leaderboard} />
+        </div>
+      </SectionArticle>
 
       <SectionArticle className="border border-[color:var(--color-transparent-wisp-10)] p-6 md:p-8">
         <SectionIntro title={`${submissions.length} submission${submissions.length === 1 ? "" : "s"}`} />
