@@ -8,6 +8,6 @@ export async function GET() {
     return NextResponse.json({ error: "Sign in required" }, { status: 401 });
   }
 
-  const attempt = await getParticipantQuizAttempt(participant.id);
-  return NextResponse.json({ attempt });
+  const { attempt, retakeAfterBug } = await getParticipantQuizAttempt(participant.id);
+  return NextResponse.json({ attempt, retakeAfterBug });
 }

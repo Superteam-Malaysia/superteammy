@@ -1,4 +1,4 @@
-import { desc, eq, isNotNull, sql } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import {
   REDOTPAY_QUIZ,
   REDOTPAY_QUIZ_QUESTIONS,
@@ -41,6 +41,23 @@ export type QuizLeaderboardRow = {
 };
 
 type AttemptRow = typeof redotpayQuizAttempts.$inferSelect;
+
+/** Closed at 0/10 with no answers — timer bug discarded the payload. */
+export function isUnsavedAutoSubmitAttempt(row: Pick<AttemptRow, "submittedAt" | "score" | "answers">): boolean {
+  if (!row.submittedAt || row.score !== 0) return false;
+  const answers = row.answers;
+  if (answers == null) return true;
+  if (typeof answers !== "object" || Array.isArray(answers)) return false;
+  return Object.keys(answers).length === 0;
+}
+
+async function clearUnsavedAutoSubmitAttempt(participantId: string): Promise<boolean> {
+  const row = await getAttemptRow(participantId);
+  if (!row || !isUnsavedAutoSubmitAttempt(row)) return false;
+  const db = getDb();
+  await db.delete(redotpayQuizAttempts).where(eq(redotpayQuizAttempts.id, row.id));
+  return true;
+}
 
 function toAttemptState(row: AttemptRow, now = quizNow()): QuizAttemptState {
   const expired = !row.submittedAt && isQuizAttemptExpired(row.startedAt, now);
@@ -113,12 +130,22 @@ export async function finalizeExpiredQuizAttempt(participantId: string): Promise
   await closeAttempt(row, {}, 0, quizAttemptExpiresAt(row.startedAt));
 }
 
+export type ParticipantQuizAttemptResult = {
+  attempt: QuizAttemptState | null;
+  /** True when a bugged 0-score attempt was cleared so the user can retake. */
+  retakeAfterBug: boolean;
+};
+
 export async function getParticipantQuizAttempt(
   participantId: string,
-): Promise<QuizAttemptState | null> {
+): Promise<ParticipantQuizAttemptResult> {
   await finalizeExpiredQuizAttempt(participantId);
+  const retakeAfterBug = await clearUnsavedAutoSubmitAttempt(participantId);
   const row = await getAttemptRow(participantId);
-  return row ? toAttemptState(row) : null;
+  return {
+    attempt: row ? toAttemptState(row) : null,
+    retakeAfterBug,
+  };
 }
 
 export type StartQuizResult =
@@ -131,6 +158,7 @@ export async function startRedotPayQuizAttempt(participantId: string): Promise<S
   }
 
   await finalizeExpiredQuizAttempt(participantId);
+  await clearUnsavedAutoSubmitAttempt(participantId);
   const existing = await getAttemptRow(participantId);
 
   if (existing?.submittedAt) {
@@ -185,9 +213,14 @@ export async function submitRedotPayQuizAttempt(
     return { ok: false, error: "Invalid answers payload." };
   }
 
-  const row = await getAttemptRow(participantId);
+  let row = await getAttemptRow(participantId);
   if (!row || row.id !== attemptId) {
     return { ok: false, error: "Invalid quiz attempt." };
+  }
+
+  if (row.submittedAt && isUnsavedAutoSubmitAttempt(row)) {
+    await clearUnsavedAutoSubmitAttempt(participantId);
+    return { ok: false, error: "Your previous attempt did not save — please start the quiz again." };
   }
 
   if (row.submittedAt) {
@@ -229,7 +262,16 @@ export async function getRedotPayQuizLeaderboard(limit = 50): Promise<QuizLeader
     })
     .from(redotpayQuizAttempts)
     .innerJoin(participants, eq(redotpayQuizAttempts.participantId, participants.id))
-    .where(isNotNull(redotpayQuizAttempts.submittedAt))
+    .where(
+      sql`${redotpayQuizAttempts.submittedAt} IS NOT NULL
+        AND NOT (
+          ${redotpayQuizAttempts.score} = 0
+          AND (
+            ${redotpayQuizAttempts.answers} IS NULL
+            OR ${redotpayQuizAttempts.answers} = '{}'::jsonb
+          )
+        )`,
+    )
     .orderBy(
       desc(redotpayQuizAttempts.score),
       sql`${redotpayQuizAttempts.durationMs} ASC NULLS LAST`,

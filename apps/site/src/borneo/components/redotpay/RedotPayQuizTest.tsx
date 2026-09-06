@@ -79,6 +79,7 @@ type RedotPayQuizTestProps = {
   signedIn: boolean;
   quizStarted: boolean;
   initialAttempt: QuizAttemptState | null;
+  retakeAfterBug?: boolean;
 };
 
 function formatCountdown(ms: number): string {
@@ -142,6 +143,7 @@ export function RedotPayQuizTest({
   signedIn,
   quizStarted,
   initialAttempt,
+  retakeAfterBug = false,
 }: RedotPayQuizTestProps) {
   const initial = applyAttemptState(initialAttempt);
   const [attempt, setAttempt] = useState<QuizAttemptState | null>(initial.attempt);
@@ -157,9 +159,14 @@ export function RedotPayQuizTest({
   const [result, setResult] = useState<{ score: number; totalQuestions: number } | null>(
     initial.result,
   );
+  const [retakeNotice, setRetakeNotice] = useState(retakeAfterBug);
   const [resumed, setResumed] = useState(
     Boolean(initial.attempt && !initial.attempt.completed && !initial.attempt.expired),
   );
+
+  useEffect(() => {
+    if (retakeAfterBug) setRetakeNotice(true);
+  }, [retakeAfterBug]);
 
   const inProgress = Boolean(attempt && !attempt.completed && !attempt.expired);
   const completed = Boolean(result || attempt?.completed);
@@ -180,7 +187,14 @@ export function RedotPayQuizTest({
     if (!signedIn) return;
     const res = await fetch(withBasePath("/api/redotpay/quiz/attempt"), { cache: "no-store" });
     if (!res.ok) return;
-    const data = (await res.json()) as { attempt?: QuizAttemptState | null };
+    const data = (await res.json()) as {
+      attempt?: QuizAttemptState | null;
+      retakeAfterBug?: boolean;
+    };
+    if (data.retakeAfterBug) {
+      setRetakeNotice(true);
+      setResult(null);
+    }
     const next = applyAttemptState(data.attempt ?? null);
     setAttempt(next.attempt);
     setRemainingMs(next.remainingMs);
@@ -302,6 +316,7 @@ export function RedotPayQuizTest({
     setAnswers({});
     clearStoredAnswers(data.attemptId);
     setResumed(false);
+    setRetakeNotice(false);
     setResult(null);
   }
 
@@ -373,6 +388,12 @@ export function RedotPayQuizTest({
           <Link href="/login" className="redotpay-q__sign-in-link">
             Sign in to take the quiz
           </Link>
+        </p>
+      ) : null}
+
+      {canStart && retakeNotice ? (
+        <p className="redotpay-quiz__today-hint redotpay-quiz__retake-notice">
+          Your previous attempt did not save when the timer ran out — you can take the quiz again.
         </p>
       ) : null}
 

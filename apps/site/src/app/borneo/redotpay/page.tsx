@@ -19,7 +19,9 @@ export default async function RedotPayPage() {
   const participant = await getParticipantForSession();
   const signedIn = Boolean(participant);
   const quizStarted = quizHasStarted();
-  const attempt = participant ? await getParticipantQuizAttempt(participant.id) : null;
+  const quizState = participant
+    ? await getParticipantQuizAttempt(participant.id)
+    : { attempt: null, retakeAfterBug: false };
 
   return (
     <main className="site-main redotpay-page">
@@ -56,7 +58,8 @@ export default async function RedotPayPage() {
         <RedotPayQuizTest
           signedIn={signedIn}
           quizStarted={quizStarted}
-          initialAttempt={attempt}
+          initialAttempt={quizState.attempt}
+          retakeAfterBug={quizState.retakeAfterBug}
         />
       </section>
     </main>
