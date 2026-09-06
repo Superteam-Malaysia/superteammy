@@ -6,6 +6,7 @@ export type MeteoraWalletRow = {
   participantId: string;
   name: string;
   email: string;
+  telegram: string | null;
   solanaWallet: string;
   updatedAt: string;
 };
@@ -19,6 +20,7 @@ export async function listMeteoraWalletsForAdmin(): Promise<MeteoraWalletRow[]> 
       participantId: participants.id,
       name: participants.name,
       email: participants.email,
+      telegram: participants.telegram,
       solanaWallet: participants.solanaWallet,
       updatedAt: participants.updatedAt,
     })
@@ -30,6 +32,7 @@ export async function listMeteoraWalletsForAdmin(): Promise<MeteoraWalletRow[]> 
     participantId: row.participantId,
     name: row.name?.trim() || row.email,
     email: row.email,
+    telegram: row.telegram?.trim() || null,
     solanaWallet: row.solanaWallet!.trim(),
     updatedAt: row.updatedAt.toISOString(),
   }));

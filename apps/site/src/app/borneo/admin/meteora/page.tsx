@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AdminMeteoraExportButton } from "@borneo/components/admin/AdminMeteoraExportButton";
 import { AdminMeteoraWalletsTable } from "@borneo/components/admin/AdminMeteoraWalletsTable";
 import { PageHeader } from "@borneo/components/shell";
 import { SectionArticle, SectionIntro } from "@borneo/components/ui";
@@ -29,6 +30,9 @@ export default async function AdminMeteoraPage() {
         <p className="mt-2 text-sm text-[color:var(--color-transparent-wisp-55)]">
           Sorted by most recently updated. Wallets cannot be changed after submit.
         </p>
+        <div className="mt-6">
+          <AdminMeteoraExportButton />
+        </div>
         <div className="mt-8">
           <AdminMeteoraWalletsTable rows={rows} />
         </div>

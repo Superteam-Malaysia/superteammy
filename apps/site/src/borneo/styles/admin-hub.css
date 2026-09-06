@@ -117,3 +117,16 @@
   font-size: 0.78rem;
   color: var(--color-wisp);
 }
+
+.admin-meteora-export {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+}
+
+.admin-meteora-export__error {
+  margin: 0;
+  font-size: 0.875rem;
+  color: color-mix(in srgb, var(--color-wisp) 72%, transparent);
+}
