@@ -310,18 +310,6 @@
   color: color-mix(in srgb, var(--color-wisp) 80%, transparent);
 }
 
-.meteora-wallet__locked-badge {
-  margin: 0;
-  width: fit-content;
-  padding: 0.35rem 0.65rem;
-  border: 1px solid color-mix(in srgb, var(--color-mint, #14f195) 35%, transparent);
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--color-mint, #14f195) 85%, var(--color-wisp));
-}
-
 .meteora-wallet__balances {
   display: flex;
   flex-direction: column;
