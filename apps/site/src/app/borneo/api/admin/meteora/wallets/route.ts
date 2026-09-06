@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { requireOrganizerApi } from "@borneo/lib/auth/organizer";
 import { getParticipantForSession } from "@borneo/lib/auth/participant";
-import { listMeteoraWalletsForAdmin } from "@borneo/lib/meteora/admin-wallets";
+import { listMeteoraWalletsWithBalancesForAdmin } from "@borneo/lib/meteora/admin-wallets-export";
+
+export const maxDuration = 300;
 
 export async function GET() {
   const participant = await getParticipantForSession();
@@ -10,6 +12,6 @@ export async function GET() {
     return NextResponse.json({ error: auth.error }, { status: auth.status });
   }
 
-  const wallets = await listMeteoraWalletsForAdmin();
+  const wallets = await listMeteoraWalletsWithBalancesForAdmin();
   return NextResponse.json({ wallets });
 }

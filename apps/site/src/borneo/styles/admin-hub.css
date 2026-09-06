@@ -130,3 +130,48 @@
   font-size: 0.875rem;
   color: color-mix(in srgb, var(--color-wisp) 72%, transparent);
 }
+
+.admin-meteora-wallet-cell {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.admin-meteora-wallet-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.admin-meteora-wallet-copy__btn {
+  padding: 0.2rem 0.45rem;
+  border: 1px solid color-mix(in srgb, var(--color-wisp) 18%, transparent);
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-wisp) 70%, transparent);
+  cursor: pointer;
+}
+
+.admin-meteora-wallet-copy__btn:hover {
+  border-color: color-mix(in srgb, var(--color-byte) 45%, transparent);
+  color: var(--color-wisp);
+}
+
+.admin-meteora-wallet-copy__hint {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-byte) 80%, var(--color-wisp));
+}
+
+.admin-meteora-balance {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  white-space: nowrap;
+  color: var(--color-wisp);
+}

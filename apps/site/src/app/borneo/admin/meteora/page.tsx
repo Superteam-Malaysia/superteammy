@@ -34,7 +34,7 @@ export default async function AdminMeteoraPage() {
           <AdminMeteoraExportButton />
         </div>
         <div className="mt-8">
-          <AdminMeteoraWalletsTable rows={rows} />
+          <AdminMeteoraWalletsTable />
         </div>
       </SectionArticle>
     </main>
