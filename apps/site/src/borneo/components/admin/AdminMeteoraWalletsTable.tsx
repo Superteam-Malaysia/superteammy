@@ -100,6 +100,7 @@ export function AdminMeteoraWalletsTable() {
             <th scope="col">Participant</th>
             <th scope="col">Wallet</th>
             <th scope="col">Balance</th>
+            <th scope="col">$25 match</th>
             <th scope="col">Locked in</th>
           </tr>
         </thead>
@@ -122,6 +123,17 @@ export function AdminMeteoraWalletsTable() {
                 </div>
               </td>
               <td className="admin-meteora-balance">{formatBalanceUsd(row.balanceUsd)}</td>
+              <td>
+                <span
+                  className={
+                    row.receivedMatchUsdcToday
+                      ? "admin-meteora-match admin-meteora-match--yes"
+                      : "admin-meteora-match admin-meteora-match--no"
+                  }
+                >
+                  {row.receivedMatchUsdcToday ? "Received" : "Not yet"}
+                </span>
+              </td>
               <td className="admin-submissions-table__when">{formatWhen(row.updatedAt)}</td>
             </tr>
           ))}

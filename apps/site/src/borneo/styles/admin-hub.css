@@ -175,3 +175,26 @@
   white-space: nowrap;
   color: var(--color-wisp);
 }
+
+.admin-meteora-match {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.45rem;
+  border: 1px solid transparent;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.admin-meteora-match--yes {
+  border-color: color-mix(in srgb, var(--color-byte) 45%, transparent);
+  color: color-mix(in srgb, var(--color-byte) 85%, var(--color-wisp));
+  background: color-mix(in srgb, var(--color-byte) 10%, transparent);
+}
+
+.admin-meteora-match--no {
+  border-color: color-mix(in srgb, var(--color-wisp) 16%, transparent);
+  color: color-mix(in srgb, var(--color-wisp) 55%, transparent);
+}

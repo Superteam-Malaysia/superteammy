@@ -28,7 +28,11 @@ export default async function AdminMeteoraPage() {
           accent="byte"
         />
         <p className="mt-2 text-sm text-[color:var(--color-transparent-wisp-55)]">
-          Sorted by most recently updated. Wallets cannot be changed after submit.
+          Sorted by most recently updated. Wallets cannot be changed after submit.{" "}
+          <strong className="font-normal text-[color:var(--color-transparent-wisp-70)]">
+            $25 match
+          </strong>{" "}
+          checks for ~25 USDC from hanstmy.sol received today (MYT).
         </p>
         <div className="mt-6">
           <AdminMeteoraExportButton />
