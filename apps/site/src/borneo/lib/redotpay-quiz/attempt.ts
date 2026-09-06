@@ -10,6 +10,7 @@ import { participants, redotpayQuizAttempts } from "@borneo/lib/db/schema";
 import {
   isAnswerCorrect,
   isQuizAttemptExpired,
+  isQuizAttemptPastSubmitGrace,
   normalizeAnswer,
   quizAttemptExpiresAt,
   quizHasStarted,
@@ -105,10 +106,10 @@ function gradeAnswers(rawAnswers: Record<string, unknown>): {
   return { normalized, score };
 }
 
-/** Finalize an expired in-progress attempt with score 0. */
+/** Finalize an abandoned attempt with score 0 after the auto-submit grace window. */
 export async function finalizeExpiredQuizAttempt(participantId: string): Promise<void> {
   const row = await getAttemptRow(participantId);
-  if (!row || row.submittedAt || !isQuizAttemptExpired(row.startedAt)) return;
+  if (!row || row.submittedAt || !isQuizAttemptPastSubmitGrace(row.startedAt)) return;
   await closeAttempt(row, {}, 0, quizAttemptExpiresAt(row.startedAt));
 }
 
@@ -137,7 +138,7 @@ export async function startRedotPayQuizAttempt(participantId: string): Promise<S
   }
 
   if (existing && !existing.submittedAt) {
-    if (isQuizAttemptExpired(existing.startedAt)) {
+    if (isQuizAttemptPastSubmitGrace(existing.startedAt)) {
       await closeAttempt(existing, {}, 0, quizAttemptExpiresAt(existing.startedAt));
       return { ok: false, error: "Time expired — your attempt is closed." };
     }
@@ -194,19 +195,23 @@ export async function submitRedotPayQuizAttempt(
   }
 
   const now = quizNow();
-  if (isQuizAttemptExpired(row.startedAt, now)) {
-    await closeAttempt(row, {}, 0, quizAttemptExpiresAt(row.startedAt));
+  const expiresAt = quizAttemptExpiresAt(row.startedAt);
+
+  if (isQuizAttemptPastSubmitGrace(row.startedAt, now)) {
+    await closeAttempt(row, {}, 0, expiresAt);
     return { ok: false, error: "Time expired — answers not accepted." };
   }
 
   const { normalized, score } = gradeAnswers(answers as Record<string, unknown>);
-  await closeAttempt(row, normalized, score, now);
+  const timedOut = isQuizAttemptExpired(row.startedAt, now);
+  const submittedAt = timedOut ? expiresAt : now;
+  await closeAttempt(row, normalized, score, submittedAt);
 
   return {
     ok: true,
     score,
     totalQuestions: row.totalQuestions,
-    durationMs: Math.max(0, now.getTime() - row.startedAt.getTime()),
+    durationMs: Math.max(0, submittedAt.getTime() - row.startedAt.getTime()),
   };
 }
 

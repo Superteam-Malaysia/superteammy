@@ -145,8 +145,11 @@ export function RedotPayQuizTest({
 }: RedotPayQuizTestProps) {
   const initial = applyAttemptState(initialAttempt);
   const [attempt, setAttempt] = useState<QuizAttemptState | null>(initial.attempt);
+  const attemptRef = useRef<QuizAttemptState | null>(initial.attempt);
   const [answers, setAnswers] = useState<AnswersMap>(initial.answers);
   const answersRef = useRef<AnswersMap>(initial.answers);
+  const submittingRef = useRef(false);
+  const submitTestRef = useRef<(payload: AnswersMap) => Promise<void>>(async () => {});
   const [remainingMs, setRemainingMs] = useState(initial.remainingMs);
   const [starting, setStarting] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -161,6 +164,10 @@ export function RedotPayQuizTest({
   const inProgress = Boolean(attempt && !attempt.completed && !attempt.expired);
   const completed = Boolean(result || attempt?.completed);
   const canStart = signedIn && quizStarted && !completed && !inProgress;
+
+  useEffect(() => {
+    attemptRef.current = attempt;
+  }, [attempt]);
 
   useEffect(() => {
     answersRef.current = answers;
@@ -180,6 +187,8 @@ export function RedotPayQuizTest({
     if (next.result) {
       setResult(next.result);
       if (next.attempt?.attemptId) clearStoredAnswers(next.attempt.attemptId);
+    } else if (next.attempt && !next.attempt.completed && next.remainingMs <= 0) {
+      void submitTestRef.current(readStoredAnswers(next.attempt.attemptId));
     } else if (next.attempt && !next.attempt.completed && !next.attempt.expired) {
       setResumed(true);
       setAnswers((prev) => {
@@ -203,14 +212,16 @@ export function RedotPayQuizTest({
   }, [signedIn, quizStarted, syncAttemptFromServer]);
 
   const submitTest = useCallback(async (payload: AnswersMap) => {
-    if (!attempt || attempt.completed || submitting) return;
+    const current = attemptRef.current;
+    if (!current || current.completed || submittingRef.current) return;
+    submittingRef.current = true;
     setSubmitting(true);
     setError(null);
 
     const res = await fetch(withBasePath("/api/redotpay/quiz/submit"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ attemptId: attempt.attemptId, answers: payload }),
+      body: JSON.stringify({ attemptId: current.attemptId, answers: payload }),
     });
 
     const data = (await res.json()) as {
@@ -219,12 +230,13 @@ export function RedotPayQuizTest({
       totalQuestions?: number;
     };
 
+    submittingRef.current = false;
     setSubmitting(false);
     if (!res.ok) {
       setError(data.error ?? "Could not submit.");
       if (data.error?.includes("Time expired")) {
-        setResult({ score: 0, totalQuestions: attempt.totalQuestions });
-        clearStoredAnswers(attempt.attemptId);
+        setResult({ score: 0, totalQuestions: current.totalQuestions });
+        clearStoredAnswers(current.attemptId);
         setAttempt((prev) =>
           prev ? { ...prev, completed: true, expired: true, score: 0, remainingMs: 0 } : prev,
         );
@@ -236,7 +248,7 @@ export function RedotPayQuizTest({
       score: data.score ?? 0,
       totalQuestions: data.totalQuestions ?? REDOTPAY_QUIZ.totalQuestions,
     });
-    if (attempt?.attemptId) clearStoredAnswers(attempt.attemptId);
+    clearStoredAnswers(current.attemptId);
     setAttempt((prev) =>
       prev
         ? {
@@ -247,26 +259,29 @@ export function RedotPayQuizTest({
           }
         : prev,
     );
-  }, [attempt, submitting]);
+  }, []);
+
+  submitTestRef.current = submitTest;
 
   useEffect(() => {
-    if (!inProgress || !attempt) return undefined;
+    if (!inProgress || !attempt?.expiresAt) return undefined;
 
-    setRemainingMs(Math.max(0, new Date(attempt.expiresAt).getTime() - Date.now()));
-    let expiredHandled = false;
+    const expiresAt = attempt.expiresAt;
+    let autoSubmitted = false;
 
-    const timer = window.setInterval(() => {
-      const ms = Math.max(0, new Date(attempt.expiresAt).getTime() - Date.now());
+    const tick = () => {
+      const ms = Math.max(0, new Date(expiresAt).getTime() - Date.now());
       setRemainingMs(ms);
-      if (ms <= 0 && !expiredHandled) {
-        expiredHandled = true;
-        window.clearInterval(timer);
-        void submitTest(answersRef.current);
+      if (ms <= 0 && !autoSubmitted) {
+        autoSubmitted = true;
+        void submitTestRef.current(answersRef.current);
       }
-    }, 250);
+    };
 
+    tick();
+    const timer = window.setInterval(tick, 250);
     return () => window.clearInterval(timer);
-  }, [attempt, inProgress, submitTest]);
+  }, [inProgress, attempt?.expiresAt]);
 
   async function onStart() {
     if (!canStart) return;
@@ -339,7 +354,7 @@ export function RedotPayQuizTest({
             <p className="redotpay-quiz__today-hint">
               {resumed
                 ? "Quiz resumed — your 2-minute timer is still running from when you started. "
-                : "Answer all 10 questions, then submit before the timer hits zero. "}
+                : "Answer all 10 questions — the quiz auto-submits when time runs out. "}
               {answeredCount}/10 answered.
             </p>
           </>

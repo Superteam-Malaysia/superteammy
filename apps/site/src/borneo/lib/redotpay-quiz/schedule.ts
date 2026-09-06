@@ -33,7 +33,14 @@ export function quizAttemptExpiresAt(startedAt: Date): Date {
 }
 
 export function isQuizAttemptExpired(startedAt: Date, now: Date = quizNow()): boolean {
-  return now.getTime() > quizAttemptExpiresAt(startedAt).getTime();
+  return now.getTime() >= quizAttemptExpiresAt(startedAt).getTime();
+}
+
+/** Network grace after the deadline — auto-submit payloads still accepted. */
+export const QUIZ_AUTO_SUBMIT_GRACE_MS = 5_000;
+
+export function isQuizAttemptPastSubmitGrace(startedAt: Date, now: Date = quizNow()): boolean {
+  return now.getTime() > quizAttemptExpiresAt(startedAt).getTime() + QUIZ_AUTO_SUBMIT_GRACE_MS;
 }
 
 export function normalizeAnswer(value: unknown): string[] {
