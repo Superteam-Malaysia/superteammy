@@ -5,5 +5,5 @@ export { RaceFeed } from "./RaceFeed";
 export { RaceFeedPost } from "./RaceFeedPost";
 export { MilestoneSubmitDrawer, MilestoneSubmitGate } from "./MilestoneSubmitDrawer";
 export { MilestoneImage } from "./MilestoneImage";
-export { RaceLeaderboard } from "./RaceLeaderboard";
+export { AdminRaceLeaderboard } from "./AdminRaceLeaderboard";
 export { AdminSubmissionsTable } from "./AdminSubmissionsTable";

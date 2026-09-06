@@ -1694,6 +1694,42 @@
   white-space: nowrap;
 }
 
+.admin-submissions-by-team {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.admin-submissions-by-team__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.admin-submissions-by-team__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.admin-submissions-by-team__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--color-wisp);
+}
+
+.admin-submissions-by-team__points {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-wisp) 62%, transparent);
+}
+
 .admin-checkin__links {
   margin: 0.75rem 0 0;
 }

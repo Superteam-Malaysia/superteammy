@@ -29,6 +29,9 @@ export type AdminRaceSubmission = PublicRaceSubmission & {
   teamName: string | null;
   submitterName: string | null;
   submitterEmail: string | null;
+  raceGroupLabel: string | null;
+  raceGroupNumber: number | null;
+  taskPoints: number;
 };
 
 export type ParticipantTeamOption = {
@@ -151,6 +154,7 @@ export async function listTeamRaceSubmissions(teamId: string): Promise<PublicRac
 
 export async function listAllRaceSubmissionsForAdmin(): Promise<AdminRaceSubmission[]> {
   const db = getDb();
+  const leaderNames = await getRaceGroupLeaderNames();
   const rows = await db
     .select({
       id: raceSubmissions.id,
@@ -163,27 +167,41 @@ export async function listAllRaceSubmissionsForAdmin(): Promise<AdminRaceSubmiss
       teamName: teams.name,
       submitterName: participants.name,
       submitterEmail: participants.email,
+      raceTeamName: raceTeams.name,
     })
     .from(raceSubmissions)
     .innerJoin(participants, eq(raceSubmissions.submittedBy, participants.id))
     .leftJoin(teams, eq(raceSubmissions.teamId, teams.id))
+    .leftJoin(raceTeams, eq(participants.raceTeamId, raceTeams.id))
     .orderBy(desc(raceSubmissions.submittedAt));
 
-  return rows.flatMap((row) => {
-    const mapped = mapSubmissionRow(row);
-    if (!mapped) return [];
+  const mapped = rows.flatMap((row) => {
+    const base = mapSubmissionRow(row);
+    if (!base) return [];
+    const task = getRaceTask(row.taskId);
+    const groupNumber = parseGroupNumber(row.raceTeamName);
+    const leaderName = groupNumber != null ? leaderNames.get(groupNumber) ?? null : null;
+    const raceGroupLabel =
+      raceTeamLabel(leaderName) ??
+      (groupNumber != null ? `Group ${groupNumber}` : null);
+
     return [
       {
-        ...mapped,
+        ...base,
         submitterId: row.submitterId,
         teamId: row.teamId,
         teamSlug: row.teamSlug,
         teamName: row.teamName,
         submitterName: row.submitterName,
         submitterEmail: row.submitterEmail,
+        raceGroupLabel,
+        raceGroupNumber: groupNumber,
+        taskPoints: task?.pointsBase ?? 0,
       },
     ];
   });
+
+  return mapped;
 }
 
 export const SEED_RACE_FEED: Omit<RaceFeedItem, "id">[] = [

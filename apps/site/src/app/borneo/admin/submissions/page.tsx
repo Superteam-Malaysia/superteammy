@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { AdminRaceLeaderboard } from "@borneo/components/race/AdminRaceLeaderboard";
 import { AdminSubmissionsTable } from "@borneo/components/race/AdminSubmissionsTable";
-import { RaceLeaderboard } from "@borneo/components/race/RaceLeaderboard";
 import { PageHeader } from "@borneo/components/shell";
 import { SectionArticle, SectionIntro } from "@borneo/components/ui";
 import { getParticipantForSession } from "@borneo/lib/auth/participant";
@@ -38,14 +38,17 @@ export default async function AdminSubmissionsPage() {
           Team standings by base points — variable milestone bonuses not included.
         </p>
         <div className="mt-6">
-          <RaceLeaderboard initialRows={leaderboard} />
+          <AdminRaceLeaderboard rows={leaderboard} />
         </div>
       </SectionArticle>
 
       <SectionArticle className="border border-[color:var(--color-transparent-wisp-10)] p-6 md:p-8">
-        <SectionIntro title={`${submissions.length} submission${submissions.length === 1 ? "" : "s"}`} />
+        <SectionIntro title={`${submissions.length} submission${submissions.length === 1 ? "" : "s"}`} accent="green" />
+        <p className="mt-2 text-sm text-[color:var(--color-transparent-wisp-55)]">
+          Grouped by Amazing Race team, ordered by leaderboard rank.
+        </p>
         <div className="mt-8">
-          <AdminSubmissionsTable submissions={submissions} />
+          <AdminSubmissionsTable submissions={submissions} leaderboard={leaderboard} />
         </div>
       </SectionArticle>
     </main>
