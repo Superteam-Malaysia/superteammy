@@ -13,8 +13,8 @@ export async function GET() {
 
   const rows = await listMeteoraWalletsForExport();
   const csv = rowsToCsv([
-    ["email", "telegram", "balance"],
-    ...rows.map((row) => [row.email, row.telegram, row.balance]),
+    ["email", "telegram", "wallet", "balance_usd"],
+    ...rows.map((row) => [row.email, row.telegram, row.solanaWallet, row.balance]),
   ]);
 
   const stamp = new Date().toISOString().slice(0, 10);

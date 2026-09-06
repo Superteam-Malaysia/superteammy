@@ -20,6 +20,8 @@ export type WalletBalanceRow = {
 export type WalletBalances = {
   address: string;
   balances: WalletBalanceRow[];
+  /** Sum of current USD value across all priced holdings. */
+  totalUsd: number;
 };
 
 const TOKEN_PROGRAM = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
@@ -221,40 +223,21 @@ export async function fetchWalletBalances(address: string): Promise<WalletBalanc
     return a.row.symbol.localeCompare(b.row.symbol);
   });
 
-  return { address, balances: rowsWithRaw.map(({ row }) => row) };
+  const totalUsd = rawBalances.reduce(
+    (sum, raw) =>
+      sum + balanceSortValue(raw, snapshots, resolvedByMint, jupiterByMint),
+    0,
+  );
+
+  return {
+    address,
+    balances: rowsWithRaw.map(({ row }) => row),
+    totalUsd,
+  };
 }
 
-function parseUsdValue(valueUsd: string | null): number | null {
-  if (!valueUsd) return null;
-  const parsed = Number(valueUsd.replace(/[^0-9.-]/g, ""));
-  return Number.isFinite(parsed) ? parsed : null;
-}
-
-/** Compact balance string for admin CSV export. */
+/** Total USD for CSV export — sum of every priced token in the wallet. */
 export function formatWalletBalanceForExport(balances: WalletBalances | null): string {
-  if (!balances) return "Unavailable";
-  if (balances.balances.length === 0) return "$0.00";
-
-  let totalUsd = 0;
-  let hasUsd = false;
-  for (const row of balances.balances) {
-    const usd = parseUsdValue(row.valueUsd);
-    if (usd != null) {
-      totalUsd += usd;
-      hasUsd = true;
-    }
-  }
-
-  if (hasUsd) {
-    return totalUsd.toLocaleString(undefined, {
-      style: "currency",
-      currency: "USD",
-      maximumFractionDigits: 2,
-    });
-  }
-
-  return balances.balances
-    .slice(0, 4)
-    .map((row) => `${row.amount} ${row.symbol}`)
-    .join("; ");
+  if (!balances) return "";
+  return balances.totalUsd.toFixed(2);
 }

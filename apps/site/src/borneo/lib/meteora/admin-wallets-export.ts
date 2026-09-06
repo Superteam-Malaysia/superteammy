@@ -42,12 +42,12 @@ export async function listMeteoraWalletsForExport(): Promise<MeteoraWalletExport
   if (rows.length === 0) return [];
 
   return mapWithConcurrency(rows, 4, async (row) => {
-    let balance = "Unavailable";
+    let balance = "";
     try {
       const walletBalances = await fetchWalletBalances(row.solanaWallet);
       balance = formatWalletBalanceForExport(walletBalances);
     } catch {
-      balance = "Unavailable";
+      balance = "";
     }
 
     return {
