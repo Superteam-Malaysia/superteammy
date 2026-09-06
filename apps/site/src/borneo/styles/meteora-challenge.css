@@ -388,14 +388,6 @@
   color: var(--color-wisp);
 }
 
-.meteora-wallet__balances-hint,
-.meteora-wallet__balances-note {
-  margin: 0;
-  font-size: 0.8125rem;
-  line-height: 1.45;
-  color: color-mix(in srgb, var(--color-wisp) 58%, transparent);
-}
-
 .meteora-wallet--active .meteora-wallet__submit:not(:disabled):hover {
   opacity: 0.92;
 }

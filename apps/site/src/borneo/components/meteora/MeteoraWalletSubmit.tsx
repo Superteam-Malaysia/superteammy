@@ -157,9 +157,7 @@ export function MeteoraWalletSubmit({
             </button>
           </div>
 
-          {loadingBalances && !balances ? (
-            <p className="meteora-wallet__balances-hint">Reading on-chain balances…</p>
-          ) : balances?.balances.length ? (
+          {balances?.balances.length ? (
             <ul className="meteora-wallet__balance-list">
               {balances.balances.map((row) => (
                 <li key={`${row.symbol}-${row.mint ?? "sol"}`} className="meteora-wallet__balance-row">
@@ -168,14 +166,7 @@ export function MeteoraWalletSubmit({
                 </li>
               ))}
             </ul>
-          ) : (
-            <p className="meteora-wallet__balances-hint">
-              Could not load balances from the public RPC — try Refresh.
-            </p>
-          )}
-          <p className="meteora-wallet__balances-note">
-            Read via Solana public RPC (mainnet). SPL tokens with a non-zero balance are listed.
-          </p>
+          ) : null}
         </section>
       ) : null}
 
