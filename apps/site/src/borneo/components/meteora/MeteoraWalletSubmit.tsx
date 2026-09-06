@@ -1,27 +1,71 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import Link from "@borneo/components/Link";
 import { withBasePath } from "@borneo/lib/base-path";
+import type { WalletBalances } from "@borneo/lib/solana/wallet-balances";
 
 type MeteoraWalletSubmitProps = {
   signedIn: boolean;
   initialWallet: string;
+  initialLocked: boolean;
+  initialBalances: WalletBalances | null;
 };
 
-export function MeteoraWalletSubmit({ signedIn, initialWallet }: MeteoraWalletSubmitProps) {
+type WalletApiState = {
+  solanaWallet: string | null;
+  locked: boolean;
+  balances: WalletBalances | null;
+};
+
+function shortAddress(address: string): string {
+  if (address.length <= 12) return address;
+  return `${address.slice(0, 4)}…${address.slice(-4)}`;
+}
+
+export function MeteoraWalletSubmit({
+  signedIn,
+  initialWallet,
+  initialLocked,
+  initialBalances,
+}: MeteoraWalletSubmitProps) {
   const [wallet, setWallet] = useState(initialWallet);
+  const [locked, setLocked] = useState(initialLocked);
+  const [balances, setBalances] = useState<WalletBalances | null>(initialBalances);
   const [error, setError] = useState<string | null>(null);
-  const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [loadingBalances, setLoadingBalances] = useState(false);
+
+  const refreshBalances = useCallback(async () => {
+    if (!signedIn || !locked) return;
+    setLoadingBalances(true);
+    setError(null);
+
+    const res = await fetch(withBasePath("/api/meteora/wallet"), { cache: "no-store" });
+    const data = (await res.json()) as WalletApiState & { error?: string };
+
+    setLoadingBalances(false);
+    if (!res.ok) {
+      setError(data.error ?? "Could not load wallet balances.");
+      return;
+    }
+
+    if (data.solanaWallet) setWallet(data.solanaWallet);
+    setBalances(data.balances);
+  }, [signedIn, locked]);
+
+  useEffect(() => {
+    if (signedIn && locked && !initialBalances) {
+      void refreshBalances();
+    }
+  }, [signedIn, locked, initialBalances, refreshBalances]);
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
-    if (!signedIn) return;
+    if (!signedIn || locked) return;
 
     setSaving(true);
     setError(null);
-    setSaved(false);
 
     const res = await fetch(withBasePath("/api/meteora/wallet"), {
       method: "PATCH",
@@ -29,16 +73,21 @@ export function MeteoraWalletSubmit({ signedIn, initialWallet }: MeteoraWalletSu
       body: JSON.stringify({ solanaWallet: wallet }),
     });
 
-    const data = (await res.json()) as { error?: string; solanaWallet?: string };
+    const data = (await res.json()) as WalletApiState & { error?: string };
 
     setSaving(false);
     if (!res.ok) {
       setError(data.error ?? "Could not save wallet.");
+      if (data.locked && data.solanaWallet) {
+        setWallet(data.solanaWallet);
+        setLocked(true);
+      }
       return;
     }
 
     if (data.solanaWallet) setWallet(data.solanaWallet);
-    setSaved(true);
+    setLocked(true);
+    setBalances(data.balances ?? null);
   }
 
   return (
@@ -47,15 +96,20 @@ export function MeteoraWalletSubmit({ signedIn, initialWallet }: MeteoraWalletSu
       className={[
         "meteora-wallet",
         signedIn ? "meteora-wallet--active" : "meteora-wallet--locked",
+        locked ? "meteora-wallet--submitted" : "",
       ].join(" ")}
       aria-disabled={!signedIn}
     >
       <div className="meteora-wallet__head">
-        <h2 className="meteora-wallet__title">Submit your wallet</h2>
+        <h2 className="meteora-wallet__title">
+          {locked ? "Wallet locked in" : "Submit your wallet"}
+        </h2>
         <p className="meteora-wallet__lead">
-          {signedIn
-            ? "Use the Solana address you’ll trade with on Meteora — prize payouts go here."
-            : "Sign in to register your wallet for the challenge."}
+          {locked
+            ? "This address is registered for the Meteora challenge and cannot be changed."
+            : signedIn
+              ? "Use the Solana address you’ll trade with on Meteora — you can only submit once."
+              : "Sign in to register your wallet for the challenge."}
         </p>
       </div>
 
@@ -68,7 +122,7 @@ export function MeteoraWalletSubmit({ signedIn, initialWallet }: MeteoraWalletSu
       ) : null}
 
       {error ? <p className="meteora-wallet__error">{error}</p> : null}
-      {saved ? <p className="meteora-wallet__saved">Wallet saved.</p> : null}
+      {locked ? <p className="meteora-wallet__locked-badge">Locked · one attempt only</p> : null}
 
       <label className="meteora-wallet__field">
         <span className="meteora-wallet__label">Solana wallet</span>
@@ -76,11 +130,11 @@ export function MeteoraWalletSubmit({ signedIn, initialWallet }: MeteoraWalletSu
           type="text"
           value={wallet}
           onChange={(e) => {
+            if (locked) return;
             setWallet(e.target.value);
-            setSaved(false);
           }}
-          disabled={!signedIn}
-          readOnly={!signedIn}
+          disabled={!signedIn || locked}
+          readOnly={!signedIn || locked}
           autoComplete="off"
           spellCheck={false}
           className="meteora-wallet__input"
@@ -88,13 +142,53 @@ export function MeteoraWalletSubmit({ signedIn, initialWallet }: MeteoraWalletSu
         />
       </label>
 
-      <button
-        type="submit"
-        disabled={!signedIn || saving}
-        className="cta cta--byte cta--md meteora-wallet__submit disabled:opacity-40"
-      >
-        {saving ? "Submitting…" : "Submit wallet"}
-      </button>
+      {locked && wallet ? (
+        <section className="meteora-wallet__balances" aria-labelledby="meteora-wallet-balances">
+          <div className="meteora-wallet__balances-head">
+            <h3 id="meteora-wallet-balances" className="meteora-wallet__balances-title">
+              Balances · {shortAddress(wallet)}
+            </h3>
+            <button
+              type="button"
+              onClick={() => void refreshBalances()}
+              disabled={loadingBalances}
+              className="meteora-wallet__refresh"
+            >
+              {loadingBalances ? "Refreshing…" : "Refresh"}
+            </button>
+          </div>
+
+          {loadingBalances && !balances ? (
+            <p className="meteora-wallet__balances-hint">Reading on-chain balances…</p>
+          ) : balances?.balances.length ? (
+            <ul className="meteora-wallet__balance-list">
+              {balances.balances.map((row) => (
+                <li key={`${row.symbol}-${row.mint ?? "sol"}`} className="meteora-wallet__balance-row">
+                  <span className="meteora-wallet__balance-symbol">{row.symbol}</span>
+                  <span className="meteora-wallet__balance-amount">{row.amount}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="meteora-wallet__balances-hint">
+              Could not load balances from the public RPC — try Refresh.
+            </p>
+          )}
+          <p className="meteora-wallet__balances-note">
+            Read via Solana public RPC (mainnet). SPL tokens with a non-zero balance are listed.
+          </p>
+        </section>
+      ) : null}
+
+      {!locked ? (
+        <button
+          type="submit"
+          disabled={!signedIn || saving}
+          className="cta cta--byte cta--md meteora-wallet__submit disabled:opacity-40"
+        >
+          {saving ? "Locking in…" : "Lock in wallet"}
+        </button>
+      ) : null}
     </form>
   );
 }

@@ -1,6 +1,7 @@
 import { MeteoraWalletSubmit } from "@borneo/components/meteora/MeteoraWalletSubmit";
 import { METEORA_CHALLENGE } from "@borneo/data/meteora-challenge";
 import { getParticipantForSession } from "@borneo/lib/auth/participant";
+import { getMeteoraWalletState } from "@borneo/lib/meteora/wallet";
 import { pageMetadata } from "@borneo/lib/metadata";
 import { withBasePath } from "@borneo/lib/base-path";
 
@@ -16,7 +17,9 @@ export const dynamic = "force-dynamic";
 export default async function MeteoraPage() {
   const participant = await getParticipantForSession();
   const signedIn = Boolean(participant);
-  const initialWallet = participant?.solanaWallet?.trim() ?? "";
+  const walletState = participant
+    ? await getMeteoraWalletState(participant.id)
+    : { solanaWallet: null, locked: false, balances: null };
 
   return (
     <main className="site-main meteora-page">
@@ -75,7 +78,12 @@ export default async function MeteoraPage() {
       </section>
 
       <div className="meteora-wallet-wrap">
-        <MeteoraWalletSubmit signedIn={signedIn} initialWallet={initialWallet} />
+        <MeteoraWalletSubmit
+          signedIn={signedIn}
+          initialWallet={walletState.solanaWallet ?? ""}
+          initialLocked={walletState.locked}
+          initialBalances={walletState.balances}
+        />
       </div>
     </main>
   );
