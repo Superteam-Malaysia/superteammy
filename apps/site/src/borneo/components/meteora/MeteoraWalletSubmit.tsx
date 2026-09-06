@@ -122,7 +122,6 @@ export function MeteoraWalletSubmit({
       ) : null}
 
       {error ? <p className="meteora-wallet__error">{error}</p> : null}
-      {locked ? <p className="meteora-wallet__locked-badge">Locked · one attempt only</p> : null}
 
       <label className="meteora-wallet__field">
         <span className="meteora-wallet__label">Solana wallet</span>
