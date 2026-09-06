@@ -440,7 +440,7 @@ export const SCHEDULE_DAYS: ScheduleDay[] = [
         start: "12:30",
         end: "12:45",
         description:
-          "Judges: SOCOE (Sam), Solana Foundation (Chaerin, Jacob), No Limit Holdings (Anatoly).",
+          "Judges: SOCOE (Sam), Solana Foundation (Chaerin), Superscrypt (Jacob), No Limit Holdings (Anatoly).",
         color: "wisp",
       },
       {
