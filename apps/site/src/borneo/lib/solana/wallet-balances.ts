@@ -1,20 +1,24 @@
+import {
+  fetchMarketSnapshots,
+  resolveMintAsset,
+  type TokensMarketSnapshot,
+} from "@borneo/lib/tokens-xyz/client";
+import { WSOL_MINT } from "@borneo/lib/tokens-xyz/constants";
 import { solanaRpcCall } from "@borneo/lib/solana/public-rpc";
 
 export type WalletBalanceRow = {
   symbol: string;
+  name: string;
   amount: string;
+  valueUsd: string | null;
   mint: string | null;
+  logoUrl: string | null;
+  assetId: string | null;
 };
 
 export type WalletBalances = {
   address: string;
   balances: WalletBalanceRow[];
-};
-
-const KNOWN_MINT_SYMBOLS: Record<string, string> = {
-  EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v: "USDC",
-  Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB: "USDT",
-  So11111111111111111111111111111111111111112: "WSOL",
 };
 
 const TOKEN_PROGRAM = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
@@ -29,8 +33,27 @@ function formatSol(lamports: number): string {
   return formatTokenAmount(lamports / 1_000_000_000);
 }
 
+function formatUsd(value: number): string | null {
+  if (!Number.isFinite(value) || value <= 0) return null;
+  if (value >= 1) {
+    return value.toLocaleString(undefined, {
+      style: "currency",
+      currency: "USD",
+      maximumFractionDigits: 2,
+    });
+  }
+  return value.toLocaleString(undefined, {
+    style: "currency",
+    currency: "USD",
+    maximumSignificantDigits: 3,
+  });
+}
+
+function shortMint(mint: string): string {
+  return `${mint.slice(0, 4)}…${mint.slice(-4)}`;
+}
+
 type TokenAccountResult = {
-  pubkey: string;
   account: {
     data: {
       parsed?: {
@@ -46,6 +69,68 @@ type TokenAccountResult = {
   };
 };
 
+type RawBalance = {
+  mint: string | null;
+  amount: number;
+};
+
+type ResolvedMintMeta = {
+  assetId: string | null;
+  name: string | null;
+  symbol: string | null;
+  imageUrl: string | null;
+};
+
+function snapshotForMint(
+  mint: string | null,
+  snapshots: Map<string, TokensMarketSnapshot>,
+): TokensMarketSnapshot | undefined {
+  return snapshots.get(mint ?? WSOL_MINT);
+}
+
+function buildBalanceRow(
+  raw: RawBalance,
+  snapshots: Map<string, TokensMarketSnapshot>,
+  resolvedByMint: Map<string, ResolvedMintMeta>,
+): WalletBalanceRow {
+  const snapshot = snapshotForMint(raw.mint, snapshots);
+  const token = snapshot?.token ?? null;
+  const resolved = raw.mint ? resolvedByMint.get(raw.mint) : null;
+
+  const name =
+    raw.mint === null
+      ? (token?.name ?? "Solana")
+      : (token?.name ?? resolved?.name ?? shortMint(raw.mint));
+  const symbol =
+    raw.mint === null
+      ? (token?.symbol ?? "SOL")
+      : (token?.symbol ?? resolved?.symbol ?? shortMint(raw.mint));
+  const logoUrl = token?.logoURI ?? resolved?.imageUrl ?? null;
+  const assetId = resolved?.assetId ?? null;
+  const price = token?.price ?? null;
+  const units = raw.mint === null ? raw.amount / 1_000_000_000 : raw.amount;
+  const valueUsd =
+    price != null && Number.isFinite(price) ? formatUsd(units * price) : null;
+
+  return {
+    symbol,
+    name,
+    amount: raw.mint === null ? formatSol(raw.amount) : formatTokenAmount(raw.amount),
+    valueUsd,
+    mint: raw.mint,
+    logoUrl,
+    assetId,
+  };
+}
+
+function balanceSortValue(raw: RawBalance, snapshots: Map<string, TokensMarketSnapshot>): number {
+  const token = snapshotForMint(raw.mint, snapshots)?.token;
+  const price = token?.price;
+  if (price == null || !Number.isFinite(price)) return 0;
+  const units = raw.mint === null ? raw.amount / 1_000_000_000 : raw.amount;
+  return units * price;
+}
+
 export async function fetchWalletBalances(address: string): Promise<WalletBalances> {
   const [lamports, tokenAccounts] = await Promise.all([
     solanaRpcCall<number>("getBalance", [address]),
@@ -56,13 +141,11 @@ export async function fetchWalletBalances(address: string): Promise<WalletBalanc
     ]),
   ]);
 
-  const rows: WalletBalanceRow[] = [
-    {
-      symbol: "SOL",
-      amount: formatSol(lamports),
-      mint: null,
-    },
-  ];
+  const rawBalances: RawBalance[] = [];
+
+  if (lamports > 0) {
+    rawBalances.push({ mint: null, amount: lamports });
+  }
 
   for (const entry of tokenAccounts.value) {
     const info = entry.account.data.parsed?.info;
@@ -70,24 +153,47 @@ export async function fetchWalletBalances(address: string): Promise<WalletBalanc
     const uiAmount = info?.tokenAmount?.uiAmount;
     const uiAmountString = info?.tokenAmount?.uiAmountString;
     const amount =
-      uiAmountString ??
-      (typeof uiAmount === "number" ? String(uiAmount) : null);
-    if (!mint || !amount || Number(amount) === 0) continue;
-
-    rows.push({
-      symbol: KNOWN_MINT_SYMBOLS[mint] ?? `${mint.slice(0, 4)}…${mint.slice(-4)}`,
-      amount: formatTokenAmount(Number(amount)),
-      mint,
-    });
+      typeof uiAmount === "number"
+        ? uiAmount
+        : uiAmountString
+          ? Number(uiAmountString)
+          : NaN;
+    if (!mint || !Number.isFinite(amount) || amount === 0) continue;
+    rawBalances.push({ mint, amount });
   }
 
-  rows.sort((a, b) => {
-    if (a.symbol === "SOL") return -1;
-    if (b.symbol === "SOL") return 1;
-    if (a.symbol === "USDC") return -1;
-    if (b.symbol === "USDC") return 1;
-    return a.symbol.localeCompare(b.symbol);
+  const mintsForSnapshots = [
+    WSOL_MINT,
+    ...rawBalances.map((row) => row.mint).filter((mint): mint is string => Boolean(mint)),
+  ];
+  const snapshots = await fetchMarketSnapshots(mintsForSnapshots);
+
+  const mintsNeedingResolve = [
+    ...new Set(
+      rawBalances
+        .map((row) => row.mint)
+        .filter((mint): mint is string => Boolean(mint))
+        .filter((mint) => !snapshots.get(mint)?.token),
+    ),
+  ];
+
+  const resolvedEntries = await Promise.all(
+    mintsNeedingResolve.map(async (mint) => [mint, await resolveMintAsset(mint)] as const),
+  );
+  const resolvedByMint = new Map<string, ResolvedMintMeta>(resolvedEntries);
+
+  const rowsWithRaw = rawBalances.map((raw) => ({
+    raw,
+    row: buildBalanceRow(raw, snapshots, resolvedByMint),
+  }));
+
+  rowsWithRaw.sort((a, b) => {
+    const valueDiff = balanceSortValue(b.raw, snapshots) - balanceSortValue(a.raw, snapshots);
+    if (valueDiff !== 0) return valueDiff;
+    if (a.raw.mint === null) return -1;
+    if (b.raw.mint === null) return 1;
+    return a.row.symbol.localeCompare(b.row.symbol);
   });
 
-  return { address, balances: rows };
+  return { address, balances: rowsWithRaw.map(({ row }) => row) };
 }

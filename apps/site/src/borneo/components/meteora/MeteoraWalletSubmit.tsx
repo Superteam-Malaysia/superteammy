@@ -160,9 +160,30 @@ export function MeteoraWalletSubmit({
           {balances?.balances.length ? (
             <ul className="meteora-wallet__balance-list">
               {balances.balances.map((row) => (
-                <li key={`${row.symbol}-${row.mint ?? "sol"}`} className="meteora-wallet__balance-row">
-                  <span className="meteora-wallet__balance-symbol">{row.symbol}</span>
-                  <span className="meteora-wallet__balance-amount">{row.amount}</span>
+                <li key={`${row.mint ?? "sol"}-${row.symbol}`} className="meteora-wallet__balance-row">
+                  <div className="meteora-wallet__balance-meta">
+                    {row.logoUrl ? (
+                      <img
+                        src={row.logoUrl}
+                        alt=""
+                        width={28}
+                        height={28}
+                        className="meteora-wallet__balance-icon"
+                      />
+                    ) : (
+                      <span className="meteora-wallet__balance-icon meteora-wallet__balance-icon--fallback" aria-hidden />
+                    )}
+                    <div className="meteora-wallet__balance-labels">
+                      <span className="meteora-wallet__balance-name">{row.name}</span>
+                      <span className="meteora-wallet__balance-symbol">{row.symbol}</span>
+                    </div>
+                  </div>
+                  <div className="meteora-wallet__balance-values">
+                    <span className="meteora-wallet__balance-amount">{row.amount}</span>
+                    {row.valueUsd ? (
+                      <span className="meteora-wallet__balance-usd">{row.valueUsd}</span>
+                    ) : null}
+                  </div>
                 </li>
               ))}
             </ul>

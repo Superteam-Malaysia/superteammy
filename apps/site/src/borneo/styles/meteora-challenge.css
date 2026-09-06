@@ -366,7 +366,7 @@
 
 .meteora-wallet__balance-row {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
   padding: 0.55rem 0.75rem;
@@ -374,18 +374,67 @@
   background: color-mix(in srgb, var(--color-null) 92%, var(--color-wisp) 4%);
 }
 
+.meteora-wallet__balance-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.meteora-wallet__balance-icon {
+  flex-shrink: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  object-fit: cover;
+}
+
+.meteora-wallet__balance-icon--fallback {
+  display: block;
+  background: color-mix(in srgb, var(--color-wisp) 12%, transparent);
+}
+
+.meteora-wallet__balance-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.meteora-wallet__balance-name {
+  font-size: 0.875rem;
+  color: var(--color-wisp);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .meteora-wallet__balance-symbol {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.68rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--color-wisp) 70%, transparent);
+  color: color-mix(in srgb, var(--color-wisp) 55%, transparent);
+}
+
+.meteora-wallet__balance-values {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.1rem;
+  flex-shrink: 0;
 }
 
 .meteora-wallet__balance-amount {
   font-family: var(--font-mono);
   font-size: 0.875rem;
   color: var(--color-wisp);
+}
+
+.meteora-wallet__balance-usd {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: color-mix(in srgb, var(--color-wisp) 58%, transparent);
 }
 
 .meteora-wallet--active .meteora-wallet__submit:not(:disabled):hover {
