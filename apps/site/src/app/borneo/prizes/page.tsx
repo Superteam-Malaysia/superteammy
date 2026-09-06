@@ -79,6 +79,7 @@ export default function PrizesPage() {
               <ActionCard
                 tone="azure"
                 title="Meteora challenge"
+                logo={{ src: withBasePath("/partners/meteora.svg"), alt: "Meteora" }}
                 description={`${METEORA_CHALLENGE.prize} · $25 match, best PnL`}
                 cta={{ label: "Challenge details", href: "/meteora" }}
               />
