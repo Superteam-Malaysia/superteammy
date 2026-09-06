@@ -1,3 +1,4 @@
+import { fetchJupiterTokensByMints, type JupiterToken } from "@borneo/lib/jupiter/token-search";
 import {
   fetchMarketSnapshots,
   resolveMintAsset,
@@ -79,6 +80,7 @@ type ResolvedMintMeta = {
   name: string | null;
   symbol: string | null;
   imageUrl: string | null;
+  price: number | null;
 };
 
 function snapshotForMint(
@@ -88,26 +90,39 @@ function snapshotForMint(
   return snapshots.get(mint ?? WSOL_MINT);
 }
 
+function snapshotHasMetadata(snapshot: TokensMarketSnapshot | undefined): boolean {
+  const token = snapshot?.token;
+  return Boolean(token?.symbol?.trim() && token?.name?.trim());
+}
+
 function buildBalanceRow(
   raw: RawBalance,
   snapshots: Map<string, TokensMarketSnapshot>,
   resolvedByMint: Map<string, ResolvedMintMeta>,
+  jupiterByMint: Map<string, JupiterToken>,
 ): WalletBalanceRow {
   const snapshot = snapshotForMint(raw.mint, snapshots);
-  const token = snapshot?.token ?? null;
+  const xyzToken = snapshot?.token ?? null;
   const resolved = raw.mint ? resolvedByMint.get(raw.mint) : null;
+  const jupiter = raw.mint ? jupiterByMint.get(raw.mint) : jupiterByMint.get(WSOL_MINT);
 
   const name =
     raw.mint === null
-      ? (token?.name ?? "Solana")
-      : (token?.name ?? resolved?.name ?? shortMint(raw.mint));
+      ? (xyzToken?.name ?? jupiter?.name ?? resolved?.name ?? "Solana")
+      : (xyzToken?.name ?? jupiter?.name ?? resolved?.name ?? shortMint(raw.mint));
   const symbol =
     raw.mint === null
-      ? (token?.symbol ?? "SOL")
-      : (token?.symbol ?? resolved?.symbol ?? shortMint(raw.mint));
-  const logoUrl = token?.logoURI ?? resolved?.imageUrl ?? null;
+      ? (xyzToken?.symbol ?? jupiter?.symbol ?? resolved?.symbol ?? "SOL")
+      : (xyzToken?.symbol ?? jupiter?.symbol ?? resolved?.symbol ?? shortMint(raw.mint));
+  const logoUrl = xyzToken?.logoURI ?? jupiter?.icon ?? resolved?.imageUrl ?? null;
   const assetId = resolved?.assetId ?? null;
-  const price = token?.price ?? null;
+
+  const price =
+    xyzToken?.price ??
+    resolved?.price ??
+    jupiter?.usdPrice ??
+    null;
+
   const units = raw.mint === null ? raw.amount / 1_000_000_000 : raw.amount;
   const valueUsd =
     price != null && Number.isFinite(price) ? formatUsd(units * price) : null;
@@ -123,9 +138,16 @@ function buildBalanceRow(
   };
 }
 
-function balanceSortValue(raw: RawBalance, snapshots: Map<string, TokensMarketSnapshot>): number {
-  const token = snapshotForMint(raw.mint, snapshots)?.token;
-  const price = token?.price;
+function balanceSortValue(
+  raw: RawBalance,
+  snapshots: Map<string, TokensMarketSnapshot>,
+  resolvedByMint: Map<string, ResolvedMintMeta>,
+  jupiterByMint: Map<string, JupiterToken>,
+): number {
+  const snapshot = snapshotForMint(raw.mint, snapshots);
+  const resolved = raw.mint ? resolvedByMint.get(raw.mint) : null;
+  const jupiter = raw.mint ? jupiterByMint.get(raw.mint) : jupiterByMint.get(WSOL_MINT);
+  const price = snapshot?.token?.price ?? resolved?.price ?? jupiter?.usdPrice ?? null;
   if (price == null || !Number.isFinite(price)) return 0;
   const units = raw.mint === null ? raw.amount / 1_000_000_000 : raw.amount;
   return units * price;
@@ -162,33 +184,37 @@ export async function fetchWalletBalances(address: string): Promise<WalletBalanc
     rawBalances.push({ mint, amount });
   }
 
-  const mintsForSnapshots = [
-    WSOL_MINT,
-    ...rawBalances.map((row) => row.mint).filter((mint): mint is string => Boolean(mint)),
-  ];
-  const snapshots = await fetchMarketSnapshots(mintsForSnapshots);
+  const splMints = rawBalances
+    .map((row) => row.mint)
+    .filter((mint): mint is string => Boolean(mint));
+
+  const mintsForLookup = [WSOL_MINT, ...splMints];
+  const snapshots = await fetchMarketSnapshots(mintsForLookup);
 
   const mintsNeedingResolve = [
     ...new Set(
-      rawBalances
-        .map((row) => row.mint)
-        .filter((mint): mint is string => Boolean(mint))
-        .filter((mint) => !snapshots.get(mint)?.token),
+      splMints.filter((mint) => !snapshotHasMetadata(snapshots.get(mint))),
     ),
   ];
 
-  const resolvedEntries = await Promise.all(
-    mintsNeedingResolve.map(async (mint) => [mint, await resolveMintAsset(mint)] as const),
-  );
+  const [resolvedEntries, jupiterByMint] = await Promise.all([
+    Promise.all(
+      mintsNeedingResolve.map(async (mint) => [mint, await resolveMintAsset(mint)] as const),
+    ),
+    fetchJupiterTokensByMints(mintsForLookup),
+  ]);
+
   const resolvedByMint = new Map<string, ResolvedMintMeta>(resolvedEntries);
 
   const rowsWithRaw = rawBalances.map((raw) => ({
     raw,
-    row: buildBalanceRow(raw, snapshots, resolvedByMint),
+    row: buildBalanceRow(raw, snapshots, resolvedByMint, jupiterByMint),
   }));
 
   rowsWithRaw.sort((a, b) => {
-    const valueDiff = balanceSortValue(b.raw, snapshots) - balanceSortValue(a.raw, snapshots);
+    const valueDiff =
+      balanceSortValue(b.raw, snapshots, resolvedByMint, jupiterByMint) -
+      balanceSortValue(a.raw, snapshots, resolvedByMint, jupiterByMint);
     if (valueDiff !== 0) return valueDiff;
     if (a.raw.mint === null) return -1;
     if (b.raw.mint === null) return 1;
