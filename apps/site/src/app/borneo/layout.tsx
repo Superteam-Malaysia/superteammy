@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Archivo, Orbitron } from "next/font/google";
 import "./globals.css";
+import { SessionPersistence } from "@borneo/components/auth/SessionPersistence";
 import { HalftoneShell } from "@borneo/components/halftone";
 import { SiteNav } from "@borneo/components/shell/SiteNav";
 import { SiteFooter } from "@borneo/components/shell/SiteFooter";
@@ -30,6 +31,7 @@ export default async function BorneoLayout({ children }: { children: React.React
       className={`borneo-root ${archivo.variable} ${orbitron.variable} min-h-full flex flex-col text-[var(--color-wisp)] antialiased`}
     >
       <HalftoneShell>
+        <SessionPersistence />
         <ScrollToTop />
         <SiteNav authLink={authLink} />
         <div className="site-content flex-1">{children}</div>

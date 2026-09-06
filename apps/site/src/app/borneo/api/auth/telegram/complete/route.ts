@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
-import {
-  createSessionToken,
-  sessionCookieOptions,
-  withBasePath,
-} from "@borneo/lib/auth/session";
+import { issueParticipantSession } from "@borneo/lib/auth/issue-session";
+import { sessionCookieOptions, withBasePath } from "@borneo/lib/auth/session";
 import { consumeTelegramStartToken } from "@borneo/lib/auth/telegram-bot-login";
 
 export async function POST(request: Request) {
@@ -24,14 +21,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "not_ready" }, { status: 401 });
   }
 
-  const sessionToken = await createSessionToken({
-    sub: participant.id,
+  const { sessionToken, deviceToken } = await issueParticipantSession({
+    id: participant.id,
     email: participant.email,
   });
 
   const response = NextResponse.json({
     ok: true,
-    redirect: withBasePath("/profile"),
+    redirect: `${withBasePath("/profile")}?device_seed=${encodeURIComponent(deviceToken)}`,
+    deviceToken,
   });
   response.cookies.set(sessionCookieOptions(sessionToken));
   return response;

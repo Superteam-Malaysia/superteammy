@@ -2,10 +2,11 @@ import { NextResponse } from "next/server";
 import { and, eq, gt, isNull } from "drizzle-orm";
 import { getDb } from "@borneo/lib/db";
 import { authTokens, participants } from "@borneo/lib/db/schema";
+import { issueParticipantSession } from "@borneo/lib/auth/issue-session";
 import {
   appOrigin,
-  createSessionToken,
   hashToken,
+  resolveAppOrigin,
   sessionCookieOptions,
   withBasePath,
 } from "@borneo/lib/auth/session";
@@ -56,12 +57,15 @@ export async function GET(request: Request) {
     .set({ usedAt: now })
     .where(eq(authTokens.id, authToken.id));
 
-  const sessionToken = await createSessionToken({
-    sub: participant.id,
+  const { sessionToken, deviceToken } = await issueParticipantSession({
+    id: participant.id,
     email: participant.email,
   });
 
-  const response = NextResponse.redirect(`${appOrigin()}${profilePath}`);
+  const siteOrigin = resolveAppOrigin(new URL(request.url).origin);
+  const response = NextResponse.redirect(
+    `${siteOrigin}${profilePath}?device_seed=${encodeURIComponent(deviceToken)}`,
+  );
   response.cookies.set(sessionCookieOptions(sessionToken));
   return response;
 }

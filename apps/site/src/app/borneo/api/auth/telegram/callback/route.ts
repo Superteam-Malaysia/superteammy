@@ -3,8 +3,8 @@ import { eq } from "drizzle-orm";
 import { getDb } from "@borneo/lib/db";
 import { participants } from "@borneo/lib/db/schema";
 import { resolveParticipantForTelegramAuth } from "@borneo/lib/auth/find-participant-telegram";
+import { issueParticipantSession } from "@borneo/lib/auth/issue-session";
 import {
-  createSessionToken,
   resolveAppOrigin,
   sessionCookieOptions,
   withBasePath,
@@ -58,13 +58,16 @@ export async function GET(request: Request) {
       .where(eq(participants.id, participant.id));
   }
 
-  const sessionToken = await createSessionToken({
-    sub: participant.id,
+  const { sessionToken, deviceToken } = await issueParticipantSession({
+    id: participant.id,
     email: participant.email,
   });
 
   const siteOrigin = resolveAppOrigin(new URL(request.url).origin);
-  const response = NextResponse.redirect(`${siteOrigin}${withBasePath("/profile")}`);
+  const profilePath = withBasePath("/profile");
+  const response = NextResponse.redirect(
+    `${siteOrigin}${profilePath}?device_seed=${encodeURIComponent(deviceToken)}`,
+  );
   response.cookies.set(sessionCookieOptions(sessionToken));
   return response;
 }

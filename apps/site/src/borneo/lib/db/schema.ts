@@ -92,6 +92,18 @@ export const authTokens = pgTable("auth_tokens", {
     .defaultNow(),
 });
 
+/** Reusable device sign-in tokens (localStorage / open-in-browser sync). */
+export const deviceAuthTokens = pgTable("device_auth_tokens", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  participantId: uuid("participant_id")
+    .notNull()
+    .references(() => participants.id, { onDelete: "cascade" }),
+  tokenHash: text("token_hash").notNull().unique(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  lastUsedAt: timestamp("last_used_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 /** Pending login via t.me bot deep link (mobile-friendly). */
 export const telegramLoginSessions = pgTable("telegram_login_sessions", {
   id: uuid("id").defaultRandom().primaryKey(),

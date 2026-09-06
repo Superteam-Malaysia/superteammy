@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { persistDeviceToken } from "@borneo/components/auth/SessionPersistence";
 import { withBasePath } from "@borneo/lib/base-path";
 
 const POLL_STORAGE_KEY = "svb_telegram_poll_token";
@@ -84,7 +85,11 @@ export function TelegramLoginButton() {
 
             if (completeRes.ok) {
               stopPolling();
-              const complete = (await completeRes.json()) as { redirect?: string };
+              const complete = (await completeRes.json()) as {
+                redirect?: string;
+                deviceToken?: string;
+              };
+              persistDeviceToken(complete.deviceToken);
               window.location.assign(complete.redirect ?? withBasePath("/profile"));
             }
           } else if (data.status === "rejected") {

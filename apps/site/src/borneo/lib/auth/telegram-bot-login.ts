@@ -6,6 +6,7 @@ import {
   resolveAppOrigin,
   withBasePath,
 } from "@borneo/lib/auth/session";
+import { issueDeviceAuthToken } from "@borneo/lib/auth/device-token";
 import { resolveParticipantForTelegramAuth } from "@borneo/lib/auth/find-participant-telegram";
 import { normalizeTelegramUsername } from "@borneo/lib/auth/telegram";
 import {
@@ -175,13 +176,14 @@ export async function completeTelegramAppLoginFromBot(params: {
   }
 
   const siteOrigin = resolveAppOrigin(session.returnOrigin);
-  const finishUrl = `${siteOrigin}${withBasePath("/api/auth/telegram/finish")}?token=${finishToken}`;
+  const deviceToken = await issueDeviceAuthToken(participant.id);
+  const openUrl = `${siteOrigin}${withBasePath("/api/auth/device")}?token=${deviceToken}`;
 
   await sendTelegramMessage(
     params.chatId,
-    `Signed in as ${participant.name ?? participant.email}. Tap below to open your SVB profile.`,
+    `Signed in as ${participant.name ?? participant.email}. Tap below to open your SVB profile — works in Safari, Chrome, or Brave too.`,
     {
-      inline_keyboard: [[{ text: "Open SVB profile", url: finishUrl }]],
+      inline_keyboard: [[{ text: "Open SVB profile", url: openUrl }]],
     },
   );
 }
