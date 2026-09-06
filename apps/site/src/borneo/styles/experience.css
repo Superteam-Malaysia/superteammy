@@ -1049,6 +1049,115 @@
   margin: 0;
 }
 
+.race-leaderboard {
+  width: 100%;
+  max-width: var(--race-content-max);
+  margin-inline: auto;
+  padding: 1.25rem 1rem;
+  border: 1px solid var(--color-transparent-wisp-10);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--color-ink) 92%, transparent);
+}
+
+.race-leaderboard__head {
+  margin-bottom: 1rem;
+}
+
+.race-leaderboard__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-wisp);
+}
+
+.race-leaderboard__hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: color-mix(in srgb, var(--color-wisp) 58%, transparent);
+}
+
+.race-leaderboard__empty {
+  margin: 0;
+  font-size: 0.875rem;
+  color: color-mix(in srgb, var(--color-wisp) 65%, transparent);
+}
+
+.race-leaderboard__table-wrap {
+  overflow-x: auto;
+}
+
+.race-leaderboard__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.race-leaderboard__table th,
+.race-leaderboard__table td {
+  padding: 0.55rem 0.65rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-transparent-wisp-10);
+  vertical-align: top;
+}
+
+.race-leaderboard__table th {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-wisp) 55%, transparent);
+}
+
+.race-leaderboard__table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.race-leaderboard__rank {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--color-wisp);
+  white-space: nowrap;
+}
+
+.race-leaderboard__team {
+  font-weight: 600;
+  color: var(--color-wisp);
+  min-width: 8rem;
+}
+
+.race-leaderboard__group-num {
+  display: block;
+  margin-top: 0.15rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--color-wisp) 52%, transparent);
+}
+
+.race-leaderboard__points {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--color-wisp);
+  white-space: nowrap;
+}
+
+.race-leaderboard__milestones {
+  font-family: var(--font-mono);
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--color-wisp) 78%, transparent);
+}
+
+.race-leaderboard__members {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: color-mix(in srgb, var(--color-wisp) 72%, transparent);
+  min-width: 10rem;
+}
+
 .race-feed {
   display: flex;
   flex-direction: column;
