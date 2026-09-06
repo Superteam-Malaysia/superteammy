@@ -95,6 +95,21 @@ export function appOrigin(): string {
   return "http://localhost:3000";
 }
 
+const ALLOWED_APP_ORIGINS = [
+  process.env.APP_URL?.replace(/\/$/, ""),
+  "https://my.superteam.fun",
+  "https://stmy.fun",
+].filter((value): value is string => Boolean(value));
+
+/** Prefer the site the user started login from (stmy.fun vs my.superteam.fun). */
+export function resolveAppOrigin(preferred?: string | null): string {
+  const normalized = preferred?.trim().replace(/\/$/, "");
+  if (normalized && ALLOWED_APP_ORIGINS.includes(normalized)) {
+    return normalized;
+  }
+  return appOrigin();
+}
+
 export function withBasePath(path: string): string {
   const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "/borneo";
   if (!path.startsWith("/")) path = `/${path}`;

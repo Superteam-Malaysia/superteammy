@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
-import { eq, isNotNull } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { getDb } from "@borneo/lib/db";
 import { participants } from "@borneo/lib/db/schema";
+import { resolveParticipantForTelegramAuth } from "@borneo/lib/auth/find-participant-telegram";
 import {
-  appOrigin,
   createSessionToken,
+  resolveAppOrigin,
   sessionCookieOptions,
   withBasePath,
 } from "@borneo/lib/auth/session";
@@ -13,8 +14,9 @@ import {
   verifyTelegramAuth,
 } from "@borneo/lib/auth/telegram";
 
-function loginRedirect(error: string) {
-  return NextResponse.redirect(`${appOrigin()}${withBasePath("/login")}?error=${error}`);
+function loginRedirect(error: string, request: Request) {
+  const siteOrigin = resolveAppOrigin(new URL(request.url).origin);
+  return NextResponse.redirect(`${siteOrigin}${withBasePath("/login")}?error=${error}`);
 }
 
 export async function GET(request: Request) {
@@ -29,39 +31,24 @@ export async function GET(request: Request) {
   try {
     auth = verifyTelegramAuth(payload);
   } catch {
-    return loginRedirect("bot_not_configured");
+    return loginRedirect("bot_not_configured", request);
   }
 
   if (!auth) {
-    return loginRedirect("invalid_auth");
+    return loginRedirect("invalid_auth", request);
   }
 
   const telegramUserId = String(auth.id);
   const authUsername = normalizeTelegramUsername(auth.username);
   const db = getDb();
 
-  const [linked] = await db
-    .select()
-    .from(participants)
-    .where(eq(participants.telegramUserId, telegramUserId))
-    .limit(1);
-
-  let participant: typeof linked | null = linked ?? null;
-
-  if (!participant && authUsername) {
-    const registered = await db
-      .select()
-      .from(participants)
-      .where(isNotNull(participants.telegram));
-
-    participant =
-      registered.find(
-        (row) => normalizeTelegramUsername(row.telegram) === authUsername,
-      ) ?? null;
-  }
+  const participant = await resolveParticipantForTelegramAuth({
+    telegramUserId,
+    authUsername,
+  });
 
   if (!participant) {
-    return loginRedirect(authUsername ? "not_registered" : "missing_telegram");
+    return loginRedirect(authUsername ? "not_registered" : "missing_telegram", request);
   }
 
   if (participant.telegramUserId !== telegramUserId) {
@@ -76,7 +63,8 @@ export async function GET(request: Request) {
     email: participant.email,
   });
 
-  const response = NextResponse.redirect(`${appOrigin()}${withBasePath("/profile")}`);
+  const siteOrigin = resolveAppOrigin(new URL(request.url).origin);
+  const response = NextResponse.redirect(`${siteOrigin}${withBasePath("/profile")}`);
   response.cookies.set(sessionCookieOptions(sessionToken));
   return response;
 }

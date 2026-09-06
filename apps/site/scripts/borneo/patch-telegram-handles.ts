@@ -29,6 +29,7 @@ const TELEGRAM_PATCHES: Record<string, string> = {
   "dave.chew@myhomecrowd.com": "https://t.me/davewychew",
   "keeyushee@gmail.com": "https://t.me/Yushee",
   "hpy5c8whjc@privaterelay.appleid.com": "https://t.me/ImaniKml",
+  "toanbku@gmail.com": "https://t.me/toanhq",
 };
 
 /** email (lowercase) → x.com URL or @handle */

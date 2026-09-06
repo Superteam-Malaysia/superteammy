@@ -102,6 +102,7 @@ export const telegramLoginSessions = pgTable("telegram_login_sessions", {
   }),
   telegramUserId: text("telegram_user_id"),
   status: text("status").notNull().default("pending"),
+  returnOrigin: text("return_origin"),
   expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
   completedAt: timestamp("completed_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

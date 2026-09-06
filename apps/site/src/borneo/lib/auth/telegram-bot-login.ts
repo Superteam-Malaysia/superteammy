@@ -1,7 +1,12 @@
-import { and, eq, gt, isNotNull } from "drizzle-orm";
+import { and, eq, gt } from "drizzle-orm";
 import { getDb } from "@borneo/lib/db";
-import { participants, telegramLoginSessions, type Participant } from "@borneo/lib/db/schema";
-import { createMagicToken } from "@borneo/lib/auth/session";
+import { participants, telegramLoginSessions } from "@borneo/lib/db/schema";
+import {
+  createMagicToken,
+  resolveAppOrigin,
+  withBasePath,
+} from "@borneo/lib/auth/session";
+import { resolveParticipantForTelegramAuth } from "@borneo/lib/auth/find-participant-telegram";
 import { normalizeTelegramUsername } from "@borneo/lib/auth/telegram";
 import {
   buildTelegramDeepLink,
@@ -9,7 +14,6 @@ import {
   createTelegramStartToken,
   sendTelegramMessage,
 } from "@borneo/lib/auth/telegram-api";
-import { appOrigin, withBasePath } from "@borneo/lib/auth/session";
 import {
   shouldBackfillTelegramAvatar,
 } from "@borneo/lib/uploads/telegram-avatar";
@@ -20,7 +24,10 @@ import {
 
 const LOGIN_TTL_MS = 10 * 60 * 1000;
 
-export async function createTelegramAppLoginSession(botUsername: string) {
+export async function createTelegramAppLoginSession(
+  botUsername: string,
+  returnOrigin?: string | null,
+) {
   const db = getDb();
   const startToken = createTelegramStartToken();
   const expiresAt = new Date(Date.now() + LOGIN_TTL_MS);
@@ -29,6 +36,7 @@ export async function createTelegramAppLoginSession(botUsername: string) {
     startToken,
     expiresAt,
     status: "pending",
+    returnOrigin: returnOrigin?.trim() || null,
   });
 
   return {
@@ -55,9 +63,10 @@ export async function getTelegramLoginSessionStatus(startToken: string) {
   if (!row) return { status: "expired" as const };
 
   if (row.status === "complete" && row.finishToken) {
+    const siteOrigin = resolveAppOrigin(row.returnOrigin);
     return {
       status: "complete" as const,
-      finishUrl: `${appOrigin()}${withBasePath("/api/auth/telegram/finish")}?token=${row.finishToken}`,
+      finishUrl: `${siteOrigin}${withBasePath("/api/auth/telegram/finish")}?token=${row.finishToken}`,
     };
   }
 
@@ -98,25 +107,10 @@ export async function completeTelegramAppLoginFromBot(params: {
   const authUsername = normalizeTelegramUsername(params.username);
   const telegramUserId = String(params.telegramUserId);
 
-  const [linked] = await db
-    .select()
-    .from(participants)
-    .where(eq(participants.telegramUserId, telegramUserId))
-    .limit(1);
-
-  let participant: Participant | null = linked ?? null;
-
-  if (!participant && authUsername) {
-    const registered = await db
-      .select()
-      .from(participants)
-      .where(isNotNull(participants.telegram));
-
-    participant =
-      registered.find(
-        (row) => normalizeTelegramUsername(row.telegram) === authUsername,
-      ) ?? null;
-  }
+  const participant = await resolveParticipantForTelegramAuth({
+    telegramUserId,
+    authUsername,
+  });
 
   if (!participant) {
     await db
@@ -180,7 +174,8 @@ export async function completeTelegramAppLoginFromBot(params: {
     }
   }
 
-  const finishUrl = `${appOrigin()}${withBasePath("/api/auth/telegram/finish")}?token=${finishToken}`;
+  const siteOrigin = resolveAppOrigin(session.returnOrigin);
+  const finishUrl = `${siteOrigin}${withBasePath("/api/auth/telegram/finish")}?token=${finishToken}`;
 
   await sendTelegramMessage(
     params.chatId,
