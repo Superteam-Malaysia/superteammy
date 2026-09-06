@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { AdminRaceLeaderboard } from "@borneo/components/race/AdminRaceLeaderboard";
 import { AdminSubmissionsTable } from "@borneo/components/race/AdminSubmissionsTable";
 import { PageHeader } from "@borneo/components/shell";
 import { SectionArticle, SectionIntro } from "@borneo/components/ui";
-import { getParticipantForSession } from "@borneo/lib/auth/participant";
-import { isOrganizer } from "@borneo/lib/auth/organizer";
 import { getRaceLeaderboard } from "@borneo/lib/race/leaderboard";
 import { listAllRaceSubmissionsForAdmin } from "@borneo/lib/race/submissions";
 
@@ -17,9 +14,6 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function AdminSubmissionsPage() {
-  const participant = await getParticipantForSession();
-  if (!participant || !isOrganizer(participant)) notFound();
-
   const [submissions, leaderboard] = await Promise.all([
     listAllRaceSubmissionsForAdmin(),
     getRaceLeaderboard(),
@@ -28,8 +22,8 @@ export default async function AdminSubmissionsPage() {
   return (
     <main className="site-main site-main--stack">
       <PageHeader
-        title="Race submissions"
-        lead="Thread URLs submitted by teams for Amazing Race stations. Only organizers can view this page."
+        title="Amazing Race"
+        lead="Team leaderboard and thread URLs submitted for race stations."
       />
 
       <SectionArticle className="border border-[color:var(--color-transparent-wisp-10)] p-6 md:p-8">

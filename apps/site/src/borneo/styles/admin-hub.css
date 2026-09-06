@@ -1,0 +1,119 @@
+.admin-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.admin-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 0;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .admin-nav {
+    padding: 1.25rem 2rem 0;
+  }
+}
+
+.admin-nav__link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--color-wisp) 14%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: color-mix(in srgb, var(--color-wisp) 65%, transparent);
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.admin-nav__link:hover {
+  border-color: color-mix(in srgb, var(--color-wisp) 30%, transparent);
+  color: var(--color-wisp);
+}
+
+.admin-nav__link--active {
+  border-color: color-mix(in srgb, var(--color-byte) 45%, transparent);
+  color: var(--color-wisp);
+  background: color-mix(in srgb, var(--color-byte) 8%, transparent);
+}
+
+.admin-hub__grid {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .admin-hub__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.admin-hub__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  min-height: 100%;
+  padding: 1.25rem 1.35rem;
+  border: 1px solid color-mix(in srgb, var(--color-wisp) 12%, transparent);
+  background: color-mix(in srgb, var(--color-null) 92%, var(--color-wisp) 4%);
+  text-decoration: none;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.admin-hub__card:hover {
+  border-color: color-mix(in srgb, var(--color-byte) 35%, transparent);
+  transform: translateY(-1px);
+}
+
+.admin-hub__card-stat {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-byte) 80%, var(--color-wisp));
+}
+
+.admin-hub__card-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-wisp);
+}
+
+.admin-hub__card-desc {
+  flex: 1;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--color-wisp) 68%, transparent);
+}
+
+.admin-hub__card-cta {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-wisp) 55%, transparent);
+}
+
+.admin-hub__empty {
+  margin: 0;
+  font-size: 0.9rem;
+  color: color-mix(in srgb, var(--color-wisp) 60%, transparent);
+}
+
+.admin-meteora-wallet {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--color-wisp);
+}
