@@ -293,7 +293,6 @@ export const FEATURED_SPEAKERS = [
   { name: "Jemmy", org: "MonkeDAO" },
   { name: "Nic", org: "Sanctum" },
   { name: "Vasily", org: "GetBlock" },
-  { name: "Seraphim", org: "Solana Foundation · Demo Day judge" },
   { name: "OhMeOhMy", org: "Kyzzen" },
   { name: "Ming Yang", org: "Elfa AI" },
   { name: "Joey", org: "Virtuals" },
