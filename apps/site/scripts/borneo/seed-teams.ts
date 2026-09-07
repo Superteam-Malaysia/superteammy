@@ -109,6 +109,7 @@ const SEED_TEAMS: SeedTeam[] = [
       { email: "mark@sirachventures.com", role: "owner" },
       { email: "luma@mvn.xyz", role: "editor" },
       { email: "eirie.luma@mvn.xyz", role: "editor" },
+      { email: "ariah.luma@mvn.xyz", role: "editor" },
     ],
   },
   {

@@ -22,6 +22,7 @@ const TELEGRAM_PATCHES: Record<string, string> = {
   "venessa@madisevents.com": "https://t.me/venessaamen",
   "emailsolah@gmail.com": "https://t.me/solahidris",
   "luma@mvn.xyz": "https://t.me/BrittInTech",
+  "eirie.luma@mvn.xyz": "https://t.me/eiriemyt",
   "skky5687@gmail.com": "https://t.me/skyyy0x",
   "rafieqrafizie@gmail.com": "https://t.me/rrafieq",
   "chinbingyong@gmail.com": "https://t.me/mage777",
