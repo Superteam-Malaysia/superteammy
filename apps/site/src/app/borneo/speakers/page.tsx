@@ -73,7 +73,7 @@ export default function SpeakersPage() {
 
       <div className="flex flex-wrap gap-4">
         <CtaButton href="/schedule" variant="byte" size="md">Full schedule</CtaButton>
-        <CtaButton href="/prizes" variant="ghost-wisp" size="md" showArrow={false}>Judges & prizes</CtaButton>
+        <CtaButton href="/tracks" variant="ghost-wisp" size="md" showArrow={false}>Judges & tracks</CtaButton>
       </div>
     </main>
   );

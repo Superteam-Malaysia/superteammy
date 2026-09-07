@@ -105,8 +105,8 @@ export default function SustainabilityPage() {
         </ul>
       </SectionArticle>
 
-      <CtaButton href="/prizes" variant="byte" size="md">
-        All prizes
+      <CtaButton href="/tracks" variant="byte" size="md">
+        All tracks
       </CtaButton>
     </main>
   );

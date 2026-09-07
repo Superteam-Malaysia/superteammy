@@ -87,12 +87,12 @@ export default function HomePage() {
       </section>
 
       {/* Prizes preview — Summit-style tracks panel */}
-      <section id="prizes" className="border-b border-[color:var(--color-transparent-wisp-10)]">
+      <section id="tracks" className="border-b border-[color:var(--color-transparent-wisp-10)]">
         <div className="max-w-[90rem] mx-auto px-4 md:px-8 py-16 md:py-24">
           <PrizeTracksPanel />
           <div className="mt-10">
-            <CtaButton href="/prizes" variant="ghost-wisp" size="md">
-              Prize details & judges
+            <CtaButton href="/tracks" variant="ghost-wisp" size="md">
+              All tracks & judges
             </CtaButton>
           </div>
         </div>

@@ -323,21 +323,21 @@
   }
 }
 
-/* /prizes — tighter gap between hero lead and breakdown table */
-.prizes-page .page-header {
+/* /tracks — tighter gap between hero lead and breakdown table */
+.tracks-page .page-header {
   margin-bottom: 1.25rem;
 }
 
 @media (min-width: 768px) {
-  .prizes-page .page-header {
+  .tracks-page .page-header {
     margin-bottom: 1.5rem;
   }
 }
 
-.prizes-page .bp-article {
+.tracks-page .bp-article {
   padding-top: 0;
 }
 
-.prizes-page .section-intro {
+.tracks-page .section-intro {
   margin-bottom: 0;
 }

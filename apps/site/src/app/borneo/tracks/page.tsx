@@ -10,17 +10,18 @@ import { pageMetadata } from "@borneo/lib/metadata";
 import { withBasePath } from "@borneo/lib/base-path";
 
 export const metadata = pageMetadata({
-  title: "Prizes",
-  description: "USD $10,000 prize pool for Startup Village Borneo — hackathon, race, content, and sustainability tracks.",
-  path: "/prizes",
+  title: "Tracks",
+  description:
+    "Program tracks and prize pool for Startup Village Borneo — demo day, sustainability, content, Amazing Race, and partner challenges.",
+  path: "/tracks",
 });
 
-export default function PrizesPage() {
+export default function TracksPage() {
   return (
-    <main className="site-main prizes-page">
+    <main className="site-main tracks-page">
       <PageHeader
-        title={`${PRIZE_TOTAL} prize pool`}
-        lead="USD $10,000 across demo day, Amazing Race, content, and sustainability tracks. Meteora, RedotPay, and GetBlock run separate partner challenges."
+        title="Tracks"
+        lead={`${PRIZE_TOTAL} prize pool across demo day, Amazing Race, content, and sustainability tracks. Meteora, RedotPay, and GetBlock run separate partner challenges.`}
       />
       <SectionArticle>
         <SectionIntro title="Prize breakdown" accent="byte" />

@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
     return [
       { source: "/borneo/travel", destination: "/borneo/faq", permanent: true },
       { source: "/borneo/venue", destination: "/borneo/faq", permanent: true },
+      { source: "/borneo/prizes", destination: "/borneo/tracks", permanent: true },
     ];
   },
   images: {

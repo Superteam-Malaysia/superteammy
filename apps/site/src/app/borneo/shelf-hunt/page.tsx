@@ -164,8 +164,8 @@ export default function ShelfHuntPage() {
         <CtaButton href={track.externalUrl} variant="ghost-wisp" size="md" external>
           Full brief on GetBlock
         </CtaButton>
-        <CtaButton href="/prizes" variant="ghost-null" size="md">
-          All prizes
+        <CtaButton href="/tracks" variant="ghost-null" size="md">
+          All tracks
         </CtaButton>
       </div>
     </main>
