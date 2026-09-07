@@ -55,6 +55,7 @@ export default function PrizesPage() {
               <ActionCard
                 tone="azure"
                 title="Sustainability"
+                logo={{ src: withBasePath("/partners/socoe.png"), alt: "SOCOE" }}
                 description={`${SUSTAINABILITY_TRACK.prizes.count}×${SUSTAINABILITY_TRACK.prizes.amount}`}
                 cta={{ label: "Track brief", href: "/sustainability" }}
               />

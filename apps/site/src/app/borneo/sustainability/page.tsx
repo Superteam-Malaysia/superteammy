@@ -3,6 +3,7 @@ import { PageHeader } from "@borneo/components/shell";
 import { SUSTAINABILITY_TRACK_BRIEF } from "@borneo/data/sustainability-track";
 import { SUSTAINABILITY_TRACK } from "@borneo/data/tracks";
 import { pageMetadata } from "@borneo/lib/metadata";
+import { withBasePath } from "@borneo/lib/base-path";
 
 export const metadata = pageMetadata({
   title: "Sustainability track",
@@ -29,10 +30,22 @@ export default function SustainabilityPage() {
       <PageHeader title="Sustainability track" lead={brief.lead} />
 
       <SectionArticle className="bg-[var(--color-azure)] text-[var(--color-wisp)] p-8 md:p-10">
-        <SectionIntro title={`${SUSTAINABILITY_TRACK.prizes.count}×${SUSTAINABILITY_TRACK.prizes.amount}`} />
-        <p className="mt-4 text-[var(--color-wisp)]/80">
-          {SUSTAINABILITY_TRACK.total} total · judged on Demo Day · {SUSTAINABILITY_TRACK.partner}-aligned
-        </p>
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div>
+            <SectionIntro title={`${SUSTAINABILITY_TRACK.prizes.count}×${SUSTAINABILITY_TRACK.prizes.amount}`} />
+            <p className="mt-4 text-[var(--color-wisp)]/80">
+              {SUSTAINABILITY_TRACK.total} total · judged on Demo Day · {SUSTAINABILITY_TRACK.partner}-aligned
+            </p>
+          </div>
+          <img
+            src={withBasePath("/partners/socoe.png")}
+            alt="SOCOE"
+            className="h-8 w-auto max-w-[10rem] shrink-0"
+            width={160}
+            height={32}
+            decoding="async"
+          />
+        </div>
       </SectionArticle>
 
       <SectionArticle>

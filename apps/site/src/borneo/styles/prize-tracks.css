@@ -218,6 +218,14 @@
   text-transform: uppercase;
 }
 
+.prize-tracks__panel-logo {
+  display: block;
+  margin-top: 0.65rem;
+  height: 1.75rem;
+  width: auto;
+  max-width: 9rem;
+}
+
 .prize-tracks__panel-amount {
   margin: 0.75rem 0 0;
   color: var(--color-lime);

@@ -45,6 +45,16 @@ export function PrizeTracksPanel() {
             <span className="prize-tracks__panel-line" aria-hidden />
             <div className="prize-tracks__panel-head">
               <h3 className="prize-tracks__panel-title">{track.title}</h3>
+              {track.logo ? (
+                <img
+                  className="prize-tracks__panel-logo"
+                  src={track.logo.src}
+                  alt={track.logo.alt}
+                  width={120}
+                  height={32}
+                  decoding="async"
+                />
+              ) : null}
               {track.amount ? (
                 <p className="prize-tracks__panel-amount">{track.amount}</p>
               ) : null}

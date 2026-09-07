@@ -3,7 +3,10 @@ export type PrizeTrack = {
   title: string;
   description: string;
   amount?: string;
+  logo?: { src: string; alt: string };
 };
+
+import { withBasePath } from "@borneo/lib/base-path";
 
 /**
  * Prize pool tracks — Summit-style panel copy for the homepage prizes section.
@@ -20,6 +23,7 @@ export const PRIZE_TRACKS: PrizeTrack[] = [
     id: "sustainability",
     title: "Sustainability",
     amount: "2×$500",
+    logo: { src: withBasePath("/partners/socoe.png"), alt: "SOCOE" },
     description:
       "Farm-to-table in Sarawak — payments, provenance, market access, and export compliance. Pick one product, go deep.",
   },
