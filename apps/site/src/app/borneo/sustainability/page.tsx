@@ -26,7 +26,7 @@ export default function SustainabilityPage() {
   const brief = SUSTAINABILITY_TRACK_BRIEF;
 
   return (
-    <main className="site-main site-main--stack sustainability-page">
+    <main className="site-main site-main--stack track-page sustainability-page">
       <PageHeader title="Sustainability track" lead={brief.lead} />
 
       <SectionArticle className="bg-[var(--color-azure)] text-[var(--color-wisp)] p-8 md:p-10">

@@ -18,7 +18,7 @@ export const metadata = pageMetadata({
 
 export default function TracksPage() {
   return (
-    <main className="site-main tracks-page">
+    <main className="site-main site-main--stack track-page tracks-page">
       <PageHeader
         title="Tracks"
         lead={`${PRIZE_TOTAL} prize pool across demo day, Amazing Race, content, and sustainability tracks. Meteora, RedotPay, and GetBlock run separate partner challenges.`}

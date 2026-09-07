@@ -15,7 +15,7 @@ export default function ShelfHuntPage() {
   const track = SHELF_HUNT;
 
   return (
-    <main className="site-main site-main--stack shelf-hunt-page">
+    <main className="site-main site-main--stack track-page shelf-hunt-page">
       <PageHeader title={track.title} lead={track.lead} />
 
       <SectionArticle className="bg-[var(--color-azure)] text-[var(--color-wisp)] p-8 md:p-10">
