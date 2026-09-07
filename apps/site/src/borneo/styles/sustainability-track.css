@@ -1,0 +1,75 @@
+.sustainability-prose {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  max-width: 46rem;
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--color-wisp) 78%, transparent);
+}
+
+.sustainability-prose--lead,
+.sustainability-prose--closing {
+  margin-top: 1.25rem;
+}
+
+.sustainability-directions {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin: 1.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sustainability-directions__item {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 0.75rem 1rem;
+  padding: 1rem 0;
+  border-top: 1px solid color-mix(in srgb, var(--color-wisp) 10%, transparent);
+}
+
+.sustainability-directions__item:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.sustainability-directions__n {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: color-mix(in srgb, var(--color-byte) 85%, var(--color-wisp));
+}
+
+.sustainability-directions__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-wisp);
+}
+
+.sustainability-directions__body {
+  margin: 0.45rem 0 0;
+  font-size: 0.94rem;
+  line-height: 1.65;
+  color: color-mix(in srgb, var(--color-wisp) 74%, transparent);
+}
+
+.sustainability-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin: 1.25rem 0 0;
+  padding-left: 1.1rem;
+  max-width: 46rem;
+  color: color-mix(in srgb, var(--color-wisp) 78%, transparent);
+  line-height: 1.6;
+}
+
+.sustainability-list li::marker {
+  color: color-mix(in srgb, var(--color-byte) 70%, var(--color-wisp));
+}

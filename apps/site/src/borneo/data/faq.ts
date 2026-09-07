@@ -55,7 +55,7 @@ export const FAQ_ITEMS: FaqItem[] = [
     category: "general",
     question: "What is the sustainability track?",
     answer:
-      "SOCOE-aligned criteria announced on Day 2 so teams can opt in early. Two $500 prizes — don't retrofit on Day 4.",
+      "A farm-to-table challenge for Sarawak — payments, provenance, direct market access, export compliance, and more. Pick one product and one problem. Two $500 prizes on Demo Day; full brief at /borneo/sustainability.",
   },
   {
     id: "prizes",

@@ -2,23 +2,26 @@
  * Program tracks — sustainability and content awards (official agenda).
  */
 
+import { SUSTAINABILITY_TRACK_BRIEF } from "@borneo/data/sustainability-track";
+
 export const SUSTAINABILITY_TRACK = {
   title: "Sustainability track",
   prizes: { count: 2, amount: "$500" },
   total: "$1,000",
   partner: "SOCOE",
   announcedOn: "Day 2 — Sunday 6 September",
-  summary:
-    "SOCOE-aligned projects addressing real environmental or community sustainability challenges in Borneo and beyond.",
+  summary: SUSTAINABILITY_TRACK_BRIEF.lead,
   criteria: [
-    "Clear problem tied to sustainability — not a retrofit label on Day 4.",
-    "Evidence of local impact or measurable environmental benefit.",
-    "Opt in when criteria are announced on Day 2 — plan early.",
-    "Judged on Demo Day; two teams receive $500 each.",
+    "One product, one clearly defined user — go deep, not wide.",
+    "A real Sarawak producer or buyer problem (payments, provenance, market access, compliance, or similar).",
+    "Working prototype someone in the supply chain would actually use this week.",
+    "Honest about how the first onchain claim earns trust — immutable ≠ accurate.",
+    "Two teams receive $500 each on Demo Day; track projects also compete for main build prizes.",
   ],
   timeline: [
-    { when: "Day 2", what: "Criteria announced during opening workshops" },
-    { when: "Day 2–4", what: "Build with sustainability lens if opted in" },
+    { when: "Day 2", what: "Track brief and challenge directions published" },
+    { when: "Day 3", what: "Get in front of real users — markets, restaurants, exporters, cooperatives" },
+    { when: "Day 2–4", what: "Build with one product and one problem in focus" },
     { when: "Day 5", what: "Demo Day judging includes sustainability track" },
   ],
 };

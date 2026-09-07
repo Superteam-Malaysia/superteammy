@@ -56,7 +56,7 @@ export default function PrizesPage() {
                 tone="azure"
                 title="Sustainability"
                 description={`${SUSTAINABILITY_TRACK.prizes.count}×${SUSTAINABILITY_TRACK.prizes.amount}`}
-                cta={{ label: "Track criteria", href: "/sustainability" }}
+                cta={{ label: "Track brief", href: "/sustainability" }}
               />
             </li>
             <li>

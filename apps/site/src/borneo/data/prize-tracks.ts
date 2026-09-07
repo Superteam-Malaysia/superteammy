@@ -21,7 +21,7 @@ export const PRIZE_TRACKS: PrizeTrack[] = [
     title: "Sustainability",
     amount: "2×$500",
     description:
-      "SOCOE-aligned projects with real environmental or community impact. Criteria announced Day 2.",
+      "Farm-to-table in Sarawak — payments, provenance, market access, and export compliance. Pick one product, go deep.",
   },
   {
     id: "content",
