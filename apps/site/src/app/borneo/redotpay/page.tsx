@@ -24,7 +24,7 @@ export default async function RedotPayPage() {
     : { attempt: null, retakeAfterBug: false };
 
   return (
-    <main className="site-main redotpay-page track-page">
+    <main className="site-main redotpay-page">
       <header className="redotpay-hero">
         <div className="redotpay-hero__inner">
           <p className="redotpay-hero__eyebrow">Partner quiz · Startup Village Borneo</p>

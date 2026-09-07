@@ -39,7 +39,7 @@ export default async function AmazingRacePage() {
   }
 
   return (
-    <main className="site-main site-main--stack track-page race-page-main">
+    <main className="site-main site-main--stack race-page-main">
       <RacePageContent
         isSignedIn={!!participant}
         initialFeed={feed}

@@ -11,7 +11,7 @@ export const metadata = pageMetadata({
 
 export default function ContentAwardsPage() {
   return (
-    <main className="site-main site-main--stack track-page">
+    <main className="site-main site-main--stack">
       <PageHeader
         title="Content Award"
         lead={CONTENT_AWARD.summary}

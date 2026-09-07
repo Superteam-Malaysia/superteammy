@@ -22,7 +22,7 @@ export default async function MeteoraPage() {
     : { solanaWallet: null, locked: false, balances: null };
 
   return (
-    <main className="site-main meteora-page track-page">
+    <main className="site-main meteora-page">
       <header className="meteora-hero">
         <div className="meteora-hero__inner">
           <p className="meteora-hero__day">{METEORA_CHALLENGE.dayLabel}</p>
