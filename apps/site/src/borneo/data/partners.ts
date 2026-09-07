@@ -71,7 +71,7 @@ export const PARTNERS: Partner[] = [
     name: "GetBlock",
     role: "confirmed",
     workshops: true,
-    logo: withBasePath("/partners/magicblock.svg"),
+    logo: withBasePath("/partners/getblock.svg"),
     logoStyle: "light",
   },
   // MagicBlock — replaced on stage by GetBlock (Aug 2026 agenda).

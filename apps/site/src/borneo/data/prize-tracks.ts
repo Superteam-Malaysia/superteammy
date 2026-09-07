@@ -55,4 +55,12 @@ export const PRIZE_TRACKS: PrizeTrack[] = [
     description:
       "All 10 card questions live — 2 minutes, one attempt per profile. Top scores win virtual cards and luggage tags.",
   },
+  {
+    id: "shelf-hunt",
+    title: "Shelf Hunt",
+    amount: "2 shelf slots",
+    logo: { src: withBasePath("/partners/getblock.svg"), alt: "GetBlock" },
+    description:
+      "White-label slots on GetBlock's console — 50/50 revenue share. Apply by Demo Day; afternoon assignment after Vasily's talk.",
+  },
 ];

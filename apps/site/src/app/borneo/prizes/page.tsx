@@ -4,6 +4,7 @@ import { PageHeader } from "@borneo/components/shell";
 import { METEORA_CHALLENGE } from "@borneo/data/meteora-challenge";
 import { PRIZE_ROWS, PRIZE_TOTAL } from "@borneo/data/prizes";
 import { REDOTPAY_QUIZ } from "@borneo/data/redotpay-quiz";
+import { SHELF_HUNT } from "@borneo/data/shelf-hunt";
 import { CONTENT_AWARD, SUSTAINABILITY_TRACK } from "@borneo/data/tracks";
 import { pageMetadata } from "@borneo/lib/metadata";
 import { withBasePath } from "@borneo/lib/base-path";
@@ -19,7 +20,7 @@ export default function PrizesPage() {
     <main className="site-main prizes-page">
       <PageHeader
         title={`${PRIZE_TOTAL} prize pool`}
-        lead="USD $10,000 across demo day, Amazing Race, content, and sustainability tracks. Meteora and RedotPay run separate partner challenges."
+        lead="USD $10,000 across demo day, Amazing Race, content, and sustainability tracks. Meteora, RedotPay, and GetBlock run separate partner challenges."
       />
       <SectionArticle>
         <SectionIntro title="Prize breakdown" accent="byte" />
@@ -92,6 +93,15 @@ export default function PrizesPage() {
                 logo={{ src: withBasePath("/partners/redotpay.svg"), alt: "RedotPay" }}
                 description={`${REDOTPAY_QUIZ.prize} · 10 questions · 2 min · 1 attempt`}
                 cta={{ label: "Take the quiz", href: "/redotpay" }}
+              />
+            </li>
+            <li>
+              <ActionCard
+                tone="null"
+                title="Shelf Hunt"
+                logo={{ src: withBasePath("/partners/getblock.svg"), alt: "GetBlock" }}
+                description={`${SHELF_HUNT.prize.slots} shelf slots · 50/50 revenue share`}
+                cta={{ label: "Track brief", href: "/shelf-hunt" }}
               />
             </li>
           </ul>

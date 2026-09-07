@@ -1,0 +1,115 @@
+.shelf-hunt-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .shelf-hunt-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+.shelf-hunt-stats__item {
+  margin: 0;
+  padding: 1rem 0;
+  border-top: 1px solid color-mix(in srgb, var(--color-wisp) 14%, transparent);
+}
+
+.shelf-hunt-stats__value {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--color-wisp);
+}
+
+.shelf-hunt-stats__label {
+  margin: 0.45rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-wisp) 68%, transparent);
+}
+
+.shelf-hunt-columns {
+  display: grid;
+  gap: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .shelf-hunt-columns {
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+}
+
+.shelf-hunt-step-time {
+  margin-left: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-byte) 75%, var(--color-wisp));
+}
+
+.shelf-hunt-quote {
+  margin: 0;
+  padding: 1.25rem 0 1.25rem 1rem;
+  max-width: 46rem;
+  border-left: 3px solid color-mix(in srgb, var(--color-byte) 70%, transparent);
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--color-wisp) 78%, transparent);
+}
+
+.shelf-hunt-prompt {
+  margin: 1.5rem 0 0;
+  padding: 1.25rem 1rem;
+  max-width: 46rem;
+  overflow-x: auto;
+  border: 1px solid color-mix(in srgb, var(--color-wisp) 12%, transparent);
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, var(--color-null) 82%, var(--color-wisp));
+  font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Monaco, Consolas, monospace;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  color: color-mix(in srgb, var(--color-wisp) 82%, transparent);
+}
+
+.shelf-hunt-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.shelf-hunt-contact li {
+  display: grid;
+  gap: 0.35rem;
+}
+
+@media (min-width: 640px) {
+  .shelf-hunt-contact li {
+    grid-template-columns: 6.5rem 1fr;
+    align-items: baseline;
+  }
+}
+
+.shelf-hunt-contact__link {
+  color: var(--color-byte);
+  text-decoration: none;
+}
+
+.shelf-hunt-contact__link:hover {
+  text-decoration: underline;
+}
+
+.shelf-hunt-contact__text {
+  color: color-mix(in srgb, var(--color-wisp) 78%, transparent);
+}

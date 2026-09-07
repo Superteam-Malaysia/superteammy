@@ -58,6 +58,13 @@ export const FAQ_ITEMS: FaqItem[] = [
       "A farm-to-table challenge for Sarawak — payments, provenance, direct market access, export compliance, and more. Pick one product and one problem. Two $500 prizes on Demo Day; full brief at /borneo/sustainability.",
   },
   {
+    id: "shelf-hunt",
+    category: "general",
+    question: "What is the GetBlock Shelf Hunt?",
+    answer:
+      "Two white-label slots on GetBlock's developer console for Q4 2026 — 50/50 revenue share. Apply by Demo Day with a live backend and a five-line pitch. Full brief and afternoon assignment at /borneo/shelf-hunt.",
+  },
+  {
     id: "prizes",
     category: "general",
     question: "How are prizes paid?",

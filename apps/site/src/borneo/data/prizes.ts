@@ -1,6 +1,7 @@
 import type { PrizeRow } from "@borneo/types/event";
 import { METEORA_CHALLENGE } from "./meteora-challenge";
 import { REDOTPAY_QUIZ } from "./redotpay-quiz";
+import { SHELF_HUNT } from "./shelf-hunt";
 
 export const PRIZE_TOTAL = "$10,000";
 
@@ -26,6 +27,11 @@ export const PARTNER_PRIZE_ROWS: PrizeRow[] = [
     label: "RedotPay Card Quiz",
     amount: REDOTPAY_QUIZ.prize,
     note: "Virtual cards + luggage tags · 10 questions · 2 min · 1 attempt",
+  },
+  {
+    label: "GetBlock Shelf Hunt",
+    amount: `${SHELF_HUNT.prize.slots} shelf slots`,
+    note: "50/50 revenue share · apply by Demo Day",
   },
 ];
 
