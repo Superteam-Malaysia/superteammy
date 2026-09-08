@@ -12,7 +12,7 @@ export type RaceTask = {
   title: string;
   shortDescription: string;
   details: string[];
-  /** Base or fixed points; use pointsMax + pointsNote for variable scoring. */
+  /** Flat points earned per unique qualifying post. */
   pointsBase: number;
   pointsMax?: number;
   pointsNote?: string;
@@ -68,7 +68,7 @@ export const CONTENT_TASKS: RaceTask[] = [
   },
 ];
 
-/** Milestones #3–#16 — race stations. */
+/** Milestones #3–#16 — race stations. Flat points per unique post (no bonus counting from X links). */
 export const RACE_TASKS: RaceTask[] = [
   {
     id: "race-bourdain",
@@ -81,6 +81,7 @@ export const RACE_TASKS: RaceTask[] = [
       "Then hunt down a laksa you can actually eat, and rank it against a West Malaysian laksa (e.g. Johor, Penang).",
     ],
     pointsBase: 6,
+    pointsNote: "6 pts per post",
     category: "race",
     theme: "food",
     location: "Choon Hui Cafe",
@@ -94,6 +95,7 @@ export const RACE_TASKS: RaceTask[] = [
       "Taste a few, film the first bite, and buy your team's favourite flavour.",
     ],
     pointsBase: 4,
+    pointsNote: "4 pts per post",
     category: "race",
     theme: "food",
     location: "Mama Su",
@@ -108,6 +110,7 @@ export const RACE_TASKS: RaceTask[] = [
       "Take a picture eating, and tell us what's the flavor of the day.",
     ],
     pointsBase: 3,
+    pointsNote: "3 pts per post",
     category: "race",
     theme: "food",
     location: "Sam's Ice Cream",
@@ -116,12 +119,13 @@ export const RACE_TASKS: RaceTask[] = [
     id: "race-ceylonese-naan",
     number: 6,
     title: "Ceylonese restaurant",
-    shortDescription: 'Try the "Best cheese naan in town" and film the longest cheese pull.',
+    shortDescription: 'Try the "Best cheese naan in town" and film your cheese pull.',
     details: [
       'Try the "Best cheese naan in town".',
-      "Record yourself stretching the cheese as long as possible — extra points for the longest cheese pull.",
+      "Film your cheese pull — one qualifying post earns 4 points.",
     ],
     pointsBase: 4,
+    pointsNote: "4 pts per post",
     category: "race",
     theme: "food",
     location: "Ceylonese Restaurant",
@@ -130,7 +134,7 @@ export const RACE_TASKS: RaceTask[] = [
     id: "race-cats",
     number: 7,
     title: "Cats of Kuching",
-    shortDescription: "Team photo at a Kuching cat statue — one post, 2 points.",
+    shortDescription: "Team photo at a Kuching cat statue — 2 points per post.",
     details: [
       "Post your team at a Kuching cat statue.",
       "One qualifying post earns 2 points — we do not count individual statues in the post.",
@@ -151,6 +155,7 @@ export const RACE_TASKS: RaceTask[] = [
       "Take a picture in front of it in the most creative way.",
     ],
     pointsBase: 4,
+    pointsNote: "4 pts per post",
     category: "race",
     theme: "waterfront",
     location: "Kuching Waterfront",
@@ -159,13 +164,13 @@ export const RACE_TASKS: RaceTask[] = [
     id: "race-carpenter-street",
     number: 9,
     title: "Carpenter Street",
-    shortDescription: "Three unique murals, three photos — one point each.",
+    shortDescription: "Photo with a Carpenter Street mural — 3 points per post.",
     details: [
-      "Explore Carpenter Street and take a picture with 3 unique murals.",
+      "Explore Carpenter Street and post a picture with a mural.",
+      "One qualifying post earns 3 points — we do not count individual murals in the post.",
     ],
-    pointsBase: 1,
-    pointsMax: 3,
-    pointsNote: "3 pts — 1 per mural",
+    pointsBase: 3,
+    pointsNote: "3 pts per post",
     category: "race",
     theme: "culture",
     location: "Carpenter Street",
@@ -174,16 +179,13 @@ export const RACE_TASKS: RaceTask[] = [
     id: "race-kuching-waterfront",
     number: 10,
     title: "Kuching Waterfront",
-    shortDescription: "Pick at least one waterfront activity — max 8 points from this station.",
+    shortDescription: "Sampan ride, flagpole photo, or waterfront moment — 2 points per post.",
     details: [
-      "Pick at least one, and max 8 points from this station.",
-      "Take a sampan over to the Astana or Fort Margherita side. Film the ride. [8 points]",
-      "Take a photo \"leaning\" against the giant flagpole. [2 points]",
-      "Take a group picture under the giant flagpole. [3 points]",
+      "Post any qualifying waterfront moment — sampan ride, flagpole photo, or group shot.",
+      "One qualifying post earns 2 points — we do not verify which activity you picked.",
     ],
     pointsBase: 2,
-    pointsMax: 8,
-    pointsNote: "Pick at least 1 — max 8 pts from this station",
+    pointsNote: "2 pts per post",
     category: "race",
     theme: "waterfront",
     location: "Kuching Waterfront",
@@ -197,6 +199,7 @@ export const RACE_TASKS: RaceTask[] = [
       "Cross on foot, take your best photo mid-span.",
     ],
     pointsBase: 3,
+    pointsNote: "3 pts per post",
     category: "race",
     theme: "waterfront",
     location: "Darul Hana Bridge",
@@ -210,6 +213,7 @@ export const RACE_TASKS: RaceTask[] = [
       "Team photo inside or outside — best shot!",
     ],
     pointsBase: 3,
+    pointsNote: "3 pts per post",
     category: "race",
     theme: "culture",
     location: "Old Court House",
@@ -223,6 +227,7 @@ export const RACE_TASKS: RaceTask[] = [
       "Take a picture with the biggest anchor you can find.",
     ],
     pointsBase: 3,
+    pointsNote: "3 pts per post",
     category: "race",
     theme: "culture",
     location: "Brooke's Dockyard Heritage Museum",
@@ -231,7 +236,7 @@ export const RACE_TASKS: RaceTask[] = [
     id: "race-traditional-attire",
     number: 14,
     title: "Traditional attire",
-    shortDescription: "Team photo with Sarawakian traditional attire — one post, 5 points.",
+    shortDescription: "Team photo with Sarawakian traditional attire — 5 points per post.",
     details: [
       "Post your team with Sarawakian traditional outfits from the waterfront shops.",
       "One qualifying post earns 5 points — we do not count individual outfits in the post.",
@@ -253,6 +258,7 @@ export const RACE_TASKS: RaceTask[] = [
       "Teach, don't sell. If they aren't interested, thank them and move on.",
     ],
     pointsBase: 10,
+    pointsNote: "10 pts per post",
     category: "wallet",
     theme: "wallet",
   },
@@ -266,6 +272,7 @@ export const RACE_TASKS: RaceTask[] = [
       "Take a picture at the Superteam MY × Solana × SOCOE photobooth at VOCO hotel on 6 Sept.",
     ],
     pointsBase: 3,
+    pointsNote: "3 pts per post",
     category: "race",
     theme: "culture",
     location: "Voco Kuching",
@@ -306,8 +313,8 @@ export const SUMMARY_THEME_ORDER: TaskTheme[] = [
 export const THEME_MAX_POINTS: Record<TaskTheme, number> = {
   content: 20,
   food: 17,
-  culture: 26,
-  waterfront: 15,
+  culture: 21,
+  waterfront: 9,
   wallet: 10,
 };
 
@@ -328,11 +335,8 @@ export const CATEGORY_LABELS: Record<TaskCategory, string> = {
   wallet: "Wallet",
 };
 
-/** Max race points if every task is completed at cap (excludes per-member content posts). */
-export const MAX_RACE_POINTS = RACE_TASKS.reduce(
-  (sum, t) => sum + (t.pointsMax ?? t.pointsBase),
-  0,
-);
+/** Max race points if every station is completed once (excludes per-member content posts). */
+export const MAX_RACE_POINTS = RACE_TASKS.reduce((sum, t) => sum + t.pointsBase, 0);
 
 export function getThemePointsSummary(): { theme: TaskTheme; max: number }[] {
   return SUMMARY_THEME_ORDER.map((theme) => ({
@@ -354,8 +358,9 @@ export function groupRaceTasksByTheme(): Record<TaskTheme, RaceTask[]> {
 }
 
 export const RACE_SUBMISSION_RULES = [
-  "Every member can submit any milestone — as many unique X posts as you like; each post earns points once.",
+  "Every member can submit any milestone — as many unique X posts as you like; each post earns flat points once.",
   "No duplicate posts: the same X link cannot be used twice anywhere on the feed.",
+  "Flat scoring only — we cannot verify bonus content (extra cats, murals, cheese-pull length, waterfront activity, outfits, etc.) from the link.",
   "All milestones due 10 September 23:59 MYT — nothing accepted after.",
   "Teach wallet users; never pressure anyone about money or investment.",
   "Content posts must tag @superteamMY, @solana, and @socoe_s.",

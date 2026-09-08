@@ -31,7 +31,8 @@ const RETIRED_RACE_TASKS: RaceTask[] = [
     details: [
       "Take a sampan over to the Astana or Fort Margherita side. Film the ride.",
     ],
-    pointsBase: 8,
+    pointsBase: 2,
+    pointsNote: "2 pts per post",
     category: "race",
     theme: "waterfront",
     location: "Kuching Waterfront",
@@ -45,6 +46,7 @@ const RETIRED_RACE_TASKS: RaceTask[] = [
       "Take a photo \"leaning\" against the giant flagpole.",
     ],
     pointsBase: 2,
+    pointsNote: "2 pts per post",
     category: "race",
     theme: "waterfront",
     location: "Kuching Waterfront",
@@ -57,7 +59,8 @@ const RETIRED_RACE_TASKS: RaceTask[] = [
     details: [
       "Take a group picture under the giant flagpole.",
     ],
-    pointsBase: 3,
+    pointsBase: 2,
+    pointsNote: "2 pts per post",
     category: "race",
     theme: "waterfront",
     location: "Kuching Waterfront",

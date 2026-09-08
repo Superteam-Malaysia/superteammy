@@ -34,7 +34,7 @@ export const FAQ_ITEMS: FaqItem[] = [
     category: "race",
     question: "How do we submit Amazing Race tasks?",
     answer:
-      "Post on X and paste the link on the Amazing Race page. Any member can submit any milestone — as many unique posts as you like. The same X link cannot be used twice. Milestone #1 and #2 are 10 pts each; traditional attire (#14) is 5 pts per post.",
+      "Post on X and paste the link on the Amazing Race page. Any member can submit any milestone — as many unique posts as you like. Flat points per post; the same X link cannot be used twice.",
   },
   {
     id: "wallet-task",

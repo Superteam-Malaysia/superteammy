@@ -136,7 +136,7 @@ export const WATERFRONT_RACE_STATIONS: WaterfrontStation[] = [
   {
     id: "race-kuching-waterfront",
     name: "Kuching Waterfront",
-    points: "max 8 pts",
+    points: "2 pts per post",
     href: "/amazing-race#race-kuching-waterfront",
   },
   { id: "race-darul-hana-bridge", name: "Darul Hana Bridge", points: "3 pts", href: "/amazing-race#race-darul-hana-bridge" },
