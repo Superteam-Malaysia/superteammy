@@ -376,7 +376,7 @@ export const SCHEDULE_DAYS: ScheduleDay[] = [
         title: "HARD CUTOFF · Amazing Race & pitch deck",
         start: "18:00",
         end: "18:15",
-        description: "Final deadline moved to Wed 10 Sept midnight MYT — same cutoff for race and decks.",
+        description: "Tue 9 Sept, 9pm MYT — same cutoff for Amazing Race milestones and pitch decks.",
         color: "byte",
         isDeadline: true,
       },

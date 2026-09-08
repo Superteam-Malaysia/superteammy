@@ -45,14 +45,14 @@ export const CONTENT_AWARD = {
     {
       id: "overall-impressions",
       title: "Overall impressions of SVB",
-      deadline: "10 September 2026",
+      deadline: "9 September 2026, 9pm MYT",
       points: "Content Award — no race points",
       format: "Video or collage reflecting the full week",
     },
   ],
   rules: [
     "Tag @superteamMY, @solana, and @socoe_s on every post.",
-    "Final impressions due 10 September — judged remotely after the event.",
+    "Final impressions due 9 September 9pm MYT — judged remotely after the event.",
     "Quality and authenticity beat production polish.",
   ],
 };

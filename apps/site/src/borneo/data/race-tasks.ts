@@ -27,7 +27,7 @@ import { SUBMISSION_CUTOFF } from "@borneo/data/submission-cutoff";
 /** @deprecated Use SUBMISSION_CUTOFF — kept for existing imports. */
 export const RACE_CUTOFF = SUBMISSION_CUTOFF;
 
-export const RACE_DEADLINE = "10 Sept 2026, midnight MYT";
+export const RACE_DEADLINE = "9 Sept 2026, 9pm MYT";
 
 /** Milestones #1–#2 — individual X posts (Content Award). */
 export const CONTENT_TASKS: RaceTask[] = [
@@ -36,10 +36,10 @@ export const CONTENT_TASKS: RaceTask[] = [
     number: 1,
     title: "Landed in Kuching",
     shortDescription:
-      "Video or picture collage on X — due 10 September. Tag @superteamMY, @solana, and @socoe_s.",
+      "Video or picture collage on X — due 9 September 9pm MYT. Tag @superteamMY, @solana, and @socoe_s.",
     details: [
       "Can be a video or a picture collage and post on X!",
-      "Due by 10 September 2026.",
+      "Due by 9 September 2026, 9pm MYT.",
       "Tag @superteamMY, @solana, and @socoe_s.",
     ],
     pointsBase: 10,
@@ -53,10 +53,10 @@ export const CONTENT_TASKS: RaceTask[] = [
     number: 2,
     title: "Overall impressions of Kuching and Startup Village Borneo",
     shortDescription:
-      "Video or picture collage on X — due 10 September. Tag @superteamMY, @solana, and @socoe_s.",
+      "Video or picture collage on X — due 9 September 9pm MYT. Tag @superteamMY, @solana, and @socoe_s.",
     details: [
       "Can be a video or a picture collage and post on X!",
-      "Due on 10 September 2026.",
+      "Due on 9 September 2026, 9pm MYT.",
       "Tag @superteamMY, @solana, and @socoe_s.",
     ],
     pointsBase: 10,
@@ -390,7 +390,7 @@ export const RACE_SUBMISSION_RULES = [
   "Every member can submit any milestone — as many unique X posts as you like; each post earns flat points once.",
   "No duplicate posts: the same X link cannot be used twice anywhere on the feed.",
   "Flat scoring per post — pick the correct waterfront activity milestone (sampan, flagpole lean, or flagpole group).",
-  "All milestones and pitch decks due Wed 10 Sept until midnight MYT — nothing accepted after.",
+  "All milestones and pitch decks due Tue 9 Sept, 9pm MYT — nothing accepted after.",
   "Teach wallet users; never pressure anyone about money or investment.",
   "Content posts must tag @superteamMY, @solana, and @socoe_s.",
   "Your build comes first — race runs in evenings and gaps.",
