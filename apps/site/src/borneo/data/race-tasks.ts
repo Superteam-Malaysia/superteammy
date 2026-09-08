@@ -176,16 +176,46 @@ export const RACE_TASKS: RaceTask[] = [
     location: "Carpenter Street",
   },
   {
-    id: "race-kuching-waterfront",
+    id: "race-sampan-ride",
     number: 10,
-    title: "Kuching Waterfront",
-    shortDescription: "Sampan ride, flagpole photo, or waterfront moment — 2 points per post.",
+    title: "Waterfront sampan ride",
+    shortDescription: "Film your team on a sampan ride across the Sarawak River.",
     details: [
-      "Post any qualifying waterfront moment — sampan ride, flagpole photo, or group shot.",
-      "One qualifying post earns 2 points — we do not verify which activity you picked.",
+      "Take a sampan over to the Astana or Fort Margherita side and film the ride.",
+      "One qualifying post earns 8 points.",
+    ],
+    pointsBase: 8,
+    pointsNote: "8 pts per post",
+    category: "race",
+    theme: "waterfront",
+    location: "Kuching Waterfront",
+  },
+  {
+    id: "race-flagpole-lean",
+    number: 10,
+    title: "Lean on the flagpole",
+    shortDescription: "Team photo leaning on the giant waterfront flagpole.",
+    details: [
+      "Take a photo leaning against the giant flagpole.",
+      "One qualifying post earns 2 points.",
     ],
     pointsBase: 2,
     pointsNote: "2 pts per post",
+    category: "race",
+    theme: "waterfront",
+    location: "Kuching Waterfront",
+  },
+  {
+    id: "race-flagpole-group",
+    number: 10,
+    title: "Group photo under the flagpole",
+    shortDescription: "Full team grouped under the giant waterfront flagpole.",
+    details: [
+      "Take a group picture under the giant flagpole.",
+      "One qualifying post earns 3 points.",
+    ],
+    pointsBase: 3,
+    pointsNote: "3 pts per post",
     category: "race",
     theme: "waterfront",
     location: "Kuching Waterfront",
@@ -287,7 +317,7 @@ for (const task of RACE_TASKS) {
 
 export const ALL_TASKS: RaceTask[] = [...CONTENT_TASKS, ...RACE_TASKS];
 
-/** Exactly 16 milestones for the submit drawer — content posts first, then race stations. */
+/** Exactly 18 milestones for the submit drawer — content posts first, then race stations (#10 = 3 waterfront activities). */
 export const MILESTONE_SUBMIT_TASKS: RaceTask[] = [...CONTENT_TASKS, ...RACE_TASKS].sort(
   (a, b) => a.number - b.number,
 );
@@ -314,7 +344,7 @@ export const THEME_MAX_POINTS: Record<TaskTheme, number> = {
   content: 20,
   food: 17,
   culture: 21,
-  waterfront: 9,
+  waterfront: 20,
   wallet: 10,
 };
 
@@ -360,7 +390,7 @@ export function groupRaceTasksByTheme(): Record<TaskTheme, RaceTask[]> {
 export const RACE_SUBMISSION_RULES = [
   "Every member can submit any milestone — as many unique X posts as you like; each post earns flat points once.",
   "No duplicate posts: the same X link cannot be used twice anywhere on the feed.",
-  "Flat scoring only — we cannot verify bonus content (extra cats, murals, cheese-pull length, waterfront activity, outfits, etc.) from the link.",
+  "Flat scoring per post — pick the correct waterfront activity milestone (sampan, flagpole lean, or flagpole group).",
   "All milestones due 10 September 23:59 MYT — nothing accepted after.",
   "Teach wallet users; never pressure anyone about money or investment.",
   "Content posts must tag @superteamMY, @solana, and @socoe_s.",
