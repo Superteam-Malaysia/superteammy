@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { CtaButton } from "@borneo/components/ui";
 import { RaceFeed } from "./RaceFeed";
-import { RaceRulebookTable } from "./RaceRulebookTable";
 import { MilestoneSubmitGate } from "./MilestoneSubmitDrawer";
 import { RaceGroupPanel } from "./RaceGroupPanel";
 import type { PublicRaceSubmission, RaceFeedItem } from "@borneo/lib/race/submissions";
@@ -63,8 +62,6 @@ export function RacePageContent({
           Complete milestones across Kuching — post proof on X, paste the link here. Your post shows up in the feed.
         </p>
       </header>
-
-      <RaceRulebookTable />
 
       {isSignedIn && submission && !drawerOpen ? (
         <RaceGroupPanel
