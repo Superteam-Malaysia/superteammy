@@ -390,7 +390,7 @@ export const RACE_SUBMISSION_RULES = [
   "Every member can submit any milestone — as many unique X posts as you like; each post earns flat points once.",
   "No duplicate posts: the same X link cannot be used twice anywhere on the feed.",
   "Flat scoring per post — pick the correct waterfront activity milestone (sampan, flagpole lean, or flagpole group).",
-  "All milestones and pitch decks due Tue 9 Sept, 9pm MYT — nothing accepted after.",
+  "All milestones and pitch decks due Wed 9 Sept, 9pm MYT — nothing accepted after.",
   "Teach wallet users; never pressure anyone about money or investment.",
   "Content posts must tag @superteamMY, @solana, and @socoe_s.",
   "Your build comes first — race runs in evenings and gaps.",

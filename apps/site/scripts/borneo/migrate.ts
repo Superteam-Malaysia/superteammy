@@ -4,6 +4,9 @@ import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import postgres from "postgres";
 
+/** First ledger migration — older files assumed applied on existing production DBs. */
+const LEDGER_START_FILE = "0024_race_multi_submit.sql";
+
 async function main() {
   const url = process.env.DATABASE_URL;
   if (!url) throw new Error("DATABASE_URL is not set");
@@ -26,6 +29,29 @@ async function main() {
     SELECT filename FROM _schema_migrations ORDER BY filename
   `;
   const applied = new Set(appliedRows.map((row) => row.filename));
+
+  if (applied.size === 0) {
+    const [{ exists }] = await db<{ exists: boolean }[]>`
+      SELECT EXISTS (
+        SELECT 1 FROM information_schema.tables
+        WHERE table_schema = 'public' AND table_name = 'participants'
+      ) AS exists
+    `;
+
+    if (exists) {
+      for (const file of files) {
+        if (file >= LEDGER_START_FILE) continue;
+        await db`
+          INSERT INTO _schema_migrations (filename)
+          VALUES (${file})
+        `;
+        applied.add(file);
+      }
+      console.log(
+        `Bootstrapped migration ledger (${applied.size} pre-${LEDGER_START_FILE} migrations).`,
+      );
+    }
+  }
 
   for (const file of files) {
     if (applied.has(file)) {
