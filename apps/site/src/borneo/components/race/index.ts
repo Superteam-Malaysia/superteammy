@@ -1,3 +1,4 @@
+export { RaceRulebookTable } from "./RaceRulebookTable";
 export { RaceTaskCard } from "./RaceTaskCard";
 export { RaceGroupPanel } from "./RaceGroupPanel";
 export { RacePageContent } from "./RacePageContent";
