@@ -119,7 +119,7 @@ export const VENUE_DAY_PLAN: VenueDayPlan[] = [
     venueId: "voco",
     headline: "Storytelling & pitch",
     detail:
-      "Breakfast at Sheraton → 09:30 bus to Voco for deck clinic and Roast My Pitch. Hard cutoff 18:00 — race & deck submissions, then dinner at Fable. Bus back to Sheraton at 21:00.",
+      "Breakfast at Sheraton → 09:30 bus to Voco for deck clinic and Roast My Pitch. Unified cutoff Wed 10 Sept midnight MYT — race & deck, then dinner at Fable. Bus back to Sheraton at 21:00.",
   },
   {
     day: "Day 5",

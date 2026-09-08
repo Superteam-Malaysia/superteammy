@@ -27,7 +27,7 @@ export const FAQ_ITEMS: FaqItem[] = [
     category: "submissions",
     question: "What is the submission cutoff?",
     answer:
-      "Amazing Race milestones: Wednesday 10 September, 23:59 MYT — each unique X post earns points until then. Pitch decks: Day 4 (Tuesday 8 September) at 18:00 sharp. The system rejects late submissions.",
+      "Wednesday 10 September until midnight MYT (12:00 AM) — one cutoff for Amazing Race milestones and pitch decks. The system rejects anything late.",
   },
   {
     id: "race-submit",

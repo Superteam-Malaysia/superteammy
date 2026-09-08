@@ -5,6 +5,7 @@ import {
   RACE_TASKS,
   type RaceTask,
 } from "@borneo/data/race-tasks";
+import { isSubmissionCutoffPassed } from "@borneo/data/submission-cutoff";
 
 const THREAD_HOSTS = new Set(["twitter.com", "x.com", "www.twitter.com", "mobile.twitter.com"]);
 
@@ -53,7 +54,7 @@ export function isValidRaceTaskId(taskId: string): boolean {
 }
 
 export function isRaceCutoffPassed(now = new Date()): boolean {
-  return now.getTime() > new Date(RACE_CUTOFF.iso).getTime();
+  return isSubmissionCutoffPassed(now);
 }
 
 /** Pull numeric tweet id from an x.com / twitter.com status URL. */

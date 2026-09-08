@@ -1,5 +1,7 @@
 import { withBasePath } from "@borneo/lib/base-path";
 
+import { SUBMISSION_CUTOFF } from "@borneo/data/submission-cutoff";
+
 export const SITE = {
   name: "Startup Village Borneo",
   shortName: "SVB",
@@ -9,7 +11,7 @@ export const SITE = {
   anchors: ["Solana Foundation", "SOCOE"],
   rhythm:
     "Sessions start at 10:00. Hard stop 17:00–17:30. Evenings are free for building at the hotel.",
-  cutoff: "Amazing Race milestones due 10 Sept · Deck cutoff Day 4 · 18:00",
+  cutoff: SUBMISSION_CUTOFF.banner,
   email: "hello@superteam.my",
   telegram: "https://t.me/semi_infiknight",
   applyUrl: "https://luma.com/bpn4ndl8",

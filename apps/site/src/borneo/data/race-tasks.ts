@@ -22,13 +22,12 @@ export type RaceTask = {
   deadline?: string;
 };
 
-export const RACE_CUTOFF = {
-  label: "Wed 10 Sept",
-  time: "23:59 MYT",
-  iso: "2026-09-10T23:59:59+08:00",
-} as const;
+import { SUBMISSION_CUTOFF } from "@borneo/data/submission-cutoff";
 
-export const RACE_DEADLINE = "10 Sept 2026";
+/** @deprecated Use SUBMISSION_CUTOFF — kept for existing imports. */
+export const RACE_CUTOFF = SUBMISSION_CUTOFF;
+
+export const RACE_DEADLINE = "10 Sept 2026, midnight MYT";
 
 /** Milestones #1–#2 — individual X posts (Content Award). */
 export const CONTENT_TASKS: RaceTask[] = [
@@ -391,7 +390,7 @@ export const RACE_SUBMISSION_RULES = [
   "Every member can submit any milestone — as many unique X posts as you like; each post earns flat points once.",
   "No duplicate posts: the same X link cannot be used twice anywhere on the feed.",
   "Flat scoring per post — pick the correct waterfront activity milestone (sampan, flagpole lean, or flagpole group).",
-  "All milestones due 10 September 23:59 MYT — nothing accepted after.",
+  "All milestones and pitch decks due Wed 10 Sept, 12:00 AM MYT (midnight) — nothing accepted after.",
   "Teach wallet users; never pressure anyone about money or investment.",
   "Content posts must tag @superteamMY, @solana, and @socoe_s.",
   "Your build comes first — race runs in evenings and gaps.",
