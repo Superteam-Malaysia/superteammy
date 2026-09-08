@@ -23,10 +23,12 @@ export type RaceTask = {
 };
 
 export const RACE_CUTOFF = {
-  label: "Day 4 · Tue 8 Sept",
-  time: "18:00 MYT",
-  iso: "2026-09-08T18:00:00+08:00",
+  label: "Wed 10 Sept",
+  time: "23:59 MYT",
+  iso: "2026-09-10T23:59:59+08:00",
 } as const;
+
+export const RACE_DEADLINE = "10 Sept 2026";
 
 /** Milestones #1–#2 — individual X posts (Content Award). */
 export const CONTENT_TASKS: RaceTask[] = [
@@ -35,17 +37,17 @@ export const CONTENT_TASKS: RaceTask[] = [
     number: 1,
     title: "Landed in Kuching",
     shortDescription:
-      "Video or picture collage on X — due 6 September. Tag @superteamMY, @solana, and @socoe_s.",
+      "Video or picture collage on X — due 10 September. Tag @superteamMY, @solana, and @socoe_s.",
     details: [
       "Can be a video or a picture collage and post on X!",
-      "Due by 6 September 2026.",
+      "Due by 10 September 2026.",
       "Tag @superteamMY, @solana, and @socoe_s.",
     ],
     pointsBase: 10,
     pointsNote: "10 pts",
     category: "content",
     theme: "content",
-    deadline: "6 Sept 2026",
+    deadline: RACE_DEADLINE,
   },
   {
     id: "content-overall-impressions",
@@ -58,11 +60,11 @@ export const CONTENT_TASKS: RaceTask[] = [
       "Due on 10 September 2026.",
       "Tag @superteamMY, @solana, and @socoe_s.",
     ],
-    pointsBase: 0,
-    pointsNote: "Content Award — no race points",
+    pointsBase: 10,
+    pointsNote: "10 pts",
     category: "content",
     theme: "content",
-    deadline: "10 Sept 2026",
+    deadline: RACE_DEADLINE,
   },
 ];
 
@@ -230,15 +232,16 @@ export const RACE_TASKS: RaceTask[] = [
     id: "race-traditional-attire",
     number: 14,
     title: "Traditional attire",
-    shortDescription: "Photograph five distinct Sarawakian outfits — one point each.",
+    shortDescription: "Team photo with Sarawakian traditional attire — one post, 5 points.",
     details: [
-      "Photograph five different Sarawakian traditional outfits in the waterfront shops.",
+      "Post your team with Sarawakian traditional outfits from the waterfront shops.",
+      "One qualifying post earns 5 points — we do not count individual outfits in the post.",
     ],
-    pointsBase: 1,
-    pointsMax: 5,
-    pointsNote: "5 pts — 1 per attire",
+    pointsBase: 5,
+    pointsNote: "5 pts per post",
     category: "race",
     theme: "culture",
+    deadline: RACE_DEADLINE,
   },
   {
     id: "race-onboard-user",
@@ -267,9 +270,14 @@ export const RACE_TASKS: RaceTask[] = [
     category: "race",
     theme: "culture",
     location: "Voco Kuching",
-    deadline: "6 Sept 2026",
+    deadline: RACE_DEADLINE,
   },
 ];
+
+/** Apply shared milestone deadline to race stations missing one. */
+for (const task of RACE_TASKS) {
+  if (!task.deadline) task.deadline = RACE_DEADLINE;
+}
 
 export const ALL_TASKS: RaceTask[] = [...CONTENT_TASKS, ...RACE_TASKS];
 
@@ -297,9 +305,9 @@ export const SUMMARY_THEME_ORDER: TaskTheme[] = [
 ];
 
 export const THEME_MAX_POINTS: Record<TaskTheme, number> = {
-  content: 10,
+  content: 20,
   food: 17,
-  culture: 27,
+  culture: 26,
   waterfront: 15,
   wallet: 10,
 };
@@ -347,8 +355,9 @@ export function groupRaceTasksByTheme(): Record<TaskTheme, RaceTask[]> {
 }
 
 export const RACE_SUBMISSION_RULES = [
-  "One X post per milestone per person — your Amazing Race group shows as a tag on the feed.",
-  "Amazing Race and deck cutoff: Day 4 at 18:00 — nothing accepted after.",
+  "Every member can submit any milestone — as many unique X posts as you like; each post earns points once.",
+  "No duplicate posts: the same X link cannot be used twice anywhere on the feed.",
+  "All milestones due 10 September 23:59 MYT — nothing accepted after.",
   "Teach wallet users; never pressure anyone about money or investment.",
   "Content posts must tag @superteamMY, @solana, and @socoe_s.",
   "Your build comes first — race runs in evenings and gaps.",

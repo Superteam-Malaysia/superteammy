@@ -53,16 +53,20 @@ export function MilestoneSubmitDrawer({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const submissionByTask = useMemo(() => {
-    const map = new Map<string, PublicRaceSubmission>();
-    for (const row of submissions) map.set(row.taskId, row);
+  const submissionsByTask = useMemo(() => {
+    const map = new Map<string, PublicRaceSubmission[]>();
+    for (const row of submissions) {
+      const list = map.get(row.taskId) ?? [];
+      list.push(row);
+      map.set(row.taskId, list);
+    }
     return map;
   }, [submissions]);
 
   const selectedTask = MILESTONE_SUBMIT_TASKS.find((task) => task.id === selectedTaskId) ?? null;
   const selectedTaskImage = selectedTask ? raceMilestoneImage(selectedTask.id) : null;
-  const completedCount = submissions.length;
-  const totalCount = MILESTONE_SUBMIT_TASKS.length;
+  const completedMilestones = submissionsByTask.size;
+  const totalSubmissions = submissions.length;
 
   useEffect(() => {
     if (!open) {
@@ -92,9 +96,8 @@ export function MilestoneSubmitDrawer({
   }, [open, onClose]);
 
   function pickTask(taskId: string) {
-    const saved = submissionByTask.get(taskId);
     setSelectedTaskId(taskId);
-    setThreadUrl(saved?.threadUrl ?? "");
+    setThreadUrl("");
     setStep("link");
     setError(null);
   }
@@ -154,20 +157,17 @@ export function MilestoneSubmitDrawer({
               )
             : null,
       };
-      setSubmissions((prev) => {
-        const rest = prev.filter((row) => row.taskId !== selectedTaskId);
-        return [
-          {
-            id: next.id,
-            taskId: next.taskId,
-            threadUrl: next.threadUrl,
-            submittedAt: next.submittedAt,
-            taskTitle: next.taskTitle,
-            taskNumber: next.taskNumber,
-          },
-          ...rest,
-        ];
-      });
+      setSubmissions((prev) => [
+        {
+          id: next.id,
+          taskId: next.taskId,
+          threadUrl: next.threadUrl,
+          submittedAt: next.submittedAt,
+          taskTitle: next.taskTitle,
+          taskNumber: next.taskNumber,
+        },
+        ...prev,
+      ]);
       onSubmitted(next);
       onClose();
     }
@@ -219,24 +219,27 @@ export function MilestoneSubmitDrawer({
           <>
             <div className="race-drawer__progress">
               <p className="race-drawer__progress-label">
-                {completedCount} of {totalCount} completed by you
+                {totalSubmissions} post{totalSubmissions === 1 ? "" : "s"} · {completedMilestones} of{" "}
+                {MILESTONE_SUBMIT_TASKS.length} milestones
               </p>
               <div className="race-drawer__progress-bar" aria-hidden>
                 <span
                   className="race-drawer__progress-fill"
-                  style={{ width: `${totalCount ? (completedCount / totalCount) * 100 : 0}%` }}
+                  style={{
+                    width: `${MILESTONE_SUBMIT_TASKS.length ? (completedMilestones / MILESTONE_SUBMIT_TASKS.length) * 100 : 0}%`,
+                  }}
                 />
               </div>
             </div>
 
             <p className="race-drawer__hint">
-              Pick a milestone, then paste your X link — one post per person per milestone.
+              Pick a milestone and paste a unique X link — submit as many different posts as you like.
             </p>
 
             <div className="race-drawer__scroll">
               <ul className="race-drawer__milestones list-none">
                 {MILESTONE_SUBMIT_TASKS.map((task) => {
-                const saved = submissionByTask.has(task.id);
+                const savedCount = submissionsByTask.get(task.id)?.length ?? 0;
                 const imageSrc = raceMilestoneImage(task.id);
                 return (
                   <li key={task.id}>
@@ -267,7 +270,7 @@ export function MilestoneSubmitDrawer({
                         <span className="race-drawer__milestone-desc">{task.shortDescription}</span>
                       </span>
                       <span className="race-drawer__milestone-action" aria-hidden>
-                        {saved ? "✓" : "+"}
+                        {savedCount > 0 ? `${savedCount}✓` : "+"}
                       </span>
                     </button>
                   </li>
@@ -335,7 +338,7 @@ export function MilestoneSubmitDrawer({
               disabled={cutoffPassed || saving}
               onClick={() => void submitLink()}
             >
-              {saving ? "Posting…" : submissionByTask.has(selectedTask.id) ? "Update feed post" : "Add to feed"}
+              {saving ? "Posting…" : "Add to feed"}
             </CtaButton>
           </div>
           </div>

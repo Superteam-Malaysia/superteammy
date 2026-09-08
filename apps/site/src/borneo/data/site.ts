@@ -9,7 +9,7 @@ export const SITE = {
   anchors: ["Solana Foundation", "SOCOE"],
   rhythm:
     "Sessions start at 10:00. Hard stop 17:00–17:30. Evenings are free for building at the hotel.",
-  cutoff: "Day 4 · 18:00 — Amazing Race & deck submission cutoff",
+  cutoff: "Amazing Race milestones due 10 Sept · Deck cutoff Day 4 · 18:00",
   email: "hello@superteam.my",
   telegram: "https://t.me/semi_infiknight",
   applyUrl: "https://luma.com/bpn4ndl8",

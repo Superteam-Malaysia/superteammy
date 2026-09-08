@@ -3,8 +3,9 @@ import { getParticipantForSession } from "@borneo/lib/auth/participant";
 import { getTeamMembership } from "@borneo/lib/teams/access";
 import { getTeamRecordBySlug } from "@borneo/lib/teams/public-teams";
 import {
+  getRaceThreadUrlConflict,
+  insertParticipantRaceSubmission,
   listParticipantRaceSubmissions,
-  upsertParticipantRaceSubmission,
 } from "@borneo/lib/race/submissions";
 import { validateRaceSubmissionInput } from "@borneo/lib/race/validation";
 
@@ -55,7 +56,16 @@ export async function POST(request: Request, { params }: Params) {
     return NextResponse.json({ error: validation.error }, { status: 400 });
   }
 
-  const row = await upsertParticipantRaceSubmission({
+  const duplicate = await getRaceThreadUrlConflict({
+    participantId: participant.id,
+    taskId: validation.taskId,
+    threadUrl: validation.threadUrl,
+  });
+  if (duplicate) {
+    return NextResponse.json({ error: duplicate }, { status: 409 });
+  }
+
+  const row = await insertParticipantRaceSubmission({
     participantId: participant.id,
     taskId: validation.taskId,
     threadUrl: validation.threadUrl,

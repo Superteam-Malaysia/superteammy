@@ -74,7 +74,7 @@ export async function listParticipantRaceSubmissions(
   });
 }
 
-export async function upsertParticipantRaceSubmission(input: {
+export async function insertParticipantRaceSubmission(input: {
   participantId: string;
   taskId: string;
   threadUrl: string;
@@ -93,18 +93,13 @@ export async function upsertParticipantRaceSubmission(input: {
       submittedAt: now,
       updatedAt: now,
     })
-    .onConflictDoUpdate({
-      target: [raceSubmissions.submittedBy, raceSubmissions.taskId],
-      set: {
-        threadUrl: input.threadUrl,
-        teamId: input.teamId ?? null,
-        updatedAt: now,
-      },
-    })
     .returning();
 
   return row;
 }
+
+/** @deprecated Use insertParticipantRaceSubmission — upsert removed for multi-submit rules. */
+export const upsertParticipantRaceSubmission = insertParticipantRaceSubmission;
 
 /** Returns an error message when this X link is already used on another submission. */
 export async function getRaceThreadUrlConflict(input: {
@@ -126,12 +121,11 @@ export async function getRaceThreadUrlConflict(input: {
   for (const row of rows) {
     if (!raceThreadUrlsMatch(row.threadUrl, input.threadUrl)) continue;
 
-    if (row.submitterId === input.participantId && row.taskId === input.taskId) {
-      continue;
-    }
-
     const who = row.submitterName?.trim() || "Someone else";
-    return `This X link was already submitted${row.submitterId === input.participantId ? " for another milestone" : ` by ${who}`}.`;
+    if (row.submitterId === input.participantId) {
+      return "This X link was already submitted — each post must be unique.";
+    }
+    return `This X link was already submitted by ${who}.`;
   }
 
   return null;

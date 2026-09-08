@@ -155,24 +155,18 @@ export const teamMembers = pgTable(
   (table) => [unique("team_members_team_participant_unique").on(table.teamId, table.participantId)],
 );
 
-/** Amazing Race thread URL — one per participant per task; team is an optional feed tag. */
-export const raceSubmissions = pgTable(
-  "race_submissions",
-  {
-    id: uuid("id").defaultRandom().primaryKey(),
-    teamId: uuid("team_id").references(() => teams.id, { onDelete: "set null" }),
-    taskId: text("task_id").notNull(),
-    threadUrl: text("thread_url").notNull(),
-    submittedBy: uuid("submitted_by")
-      .notNull()
-      .references(() => participants.id, { onDelete: "cascade" }),
-    submittedAt: timestamp("submitted_at", { withTimezone: true }).notNull().defaultNow(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
-  },
-  (table) => [
-    unique("race_submissions_participant_task_unique").on(table.submittedBy, table.taskId),
-  ],
-);
+/** Amazing Race thread URL — many per participant per task; each X link must be unique globally. */
+export const raceSubmissions = pgTable("race_submissions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  teamId: uuid("team_id").references(() => teams.id, { onDelete: "set null" }),
+  taskId: text("task_id").notNull(),
+  threadUrl: text("thread_url").notNull(),
+  submittedBy: uuid("submitted_by")
+    .notNull()
+    .references(() => participants.id, { onDelete: "cascade" }),
+  submittedAt: timestamp("submitted_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
 
 /** Small profile/team images stored in Postgres (no bucket or volume). */
 export const uploadedImages = pgTable("uploaded_images", {

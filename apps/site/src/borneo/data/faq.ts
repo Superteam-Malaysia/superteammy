@@ -27,14 +27,14 @@ export const FAQ_ITEMS: FaqItem[] = [
     category: "submissions",
     question: "What is the submission cutoff?",
     answer:
-      "Day 4 (Tuesday 8 September) at 18:00 sharp. Amazing Race threads and pitch decks must be submitted before this time. The system will reject anything late — plan accordingly.",
+      "Amazing Race milestones: Wednesday 10 September, 23:59 MYT — each unique X post earns points until then. Pitch decks: Day 4 (Tuesday 8 September) at 18:00 sharp. The system rejects late submissions.",
   },
   {
     id: "race-submit",
     category: "race",
     question: "How do we submit Amazing Race tasks?",
     answer:
-      "Post a team Twitter thread tagging all members. Content tasks are individual X posts (each member earns 10 pts for the team). See the Amazing Race page for every station and point value.",
+      "Post on X and paste the link on the Amazing Race page. Any member can submit any milestone — as many unique posts as you like. The same X link cannot be used twice. Milestone #1 and #2 are 10 pts each; traditional attire (#14) is 5 pts per post.",
   },
   {
     id: "wallet-task",
@@ -48,7 +48,7 @@ export const FAQ_ITEMS: FaqItem[] = [
     category: "race",
     question: "What is the Content Award?",
     answer:
-      "Post your overall impressions of Kuching and SVB on X by 10 September (no race points). Ten content prizes of $100 each are judged remotely after the event.",
+      "Milestone #2 — overall impressions of Kuching and SVB on X by 10 September. Worth 10 race points per unique post (same as #1). Ten separate content prizes of $100 each are judged remotely after the event.",
   },
   {
     id: "sustainability",

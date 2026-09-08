@@ -373,10 +373,10 @@ export const SCHEDULE_DAYS: ScheduleDay[] = [
       },
       {
         id: "d4-cutoff",
-        title: "HARD CUTOFF · Amazing Race & deck submission",
+        title: "HARD CUTOFF · Pitch deck submission",
         start: "18:00",
         end: "18:15",
-        description: "Nothing accepted after 18:00. Dinner at Fable follows.",
+        description: "Deck due by 18:00. Amazing Race milestones remain open until 10 Sept 23:59 MYT.",
         color: "byte",
         isDeadline: true,
       },
