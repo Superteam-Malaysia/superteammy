@@ -15,7 +15,8 @@ END $$;
 
 ALTER TABLE "race_submissions" DROP CONSTRAINT IF EXISTS "race_submissions_participant_task_unique";
 
-ALTER TABLE "race_submissions"
-  ADD CONSTRAINT "race_submissions_participant_task_unique" UNIQUE ("submitted_by", "task_id");
+-- Multi-submit (0024) permanently removes this constraint — do not re-add on redeploy.
+-- ALTER TABLE "race_submissions"
+--   ADD CONSTRAINT "race_submissions_participant_task_unique" UNIQUE ("submitted_by", "task_id");
 
 CREATE INDEX IF NOT EXISTS "race_submissions_submitted_by_idx" ON "race_submissions" ("submitted_by");
