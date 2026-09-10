@@ -1,5 +1,5 @@
 /**
- * Amazing Race task catalog — 16 milestones from the official Startup Village Borneo agenda.
+ * Amazing Race task catalog — content posts + race stations from the Startup Village Borneo agenda.
  */
 
 export type TaskCategory = "content" | "race" | "wallet";
@@ -27,19 +27,38 @@ import { SUBMISSION_CUTOFF } from "@borneo/data/submission-cutoff";
 /** @deprecated Use SUBMISSION_CUTOFF — kept for existing imports. */
 export const RACE_CUTOFF = SUBMISSION_CUTOFF;
 
-export const RACE_DEADLINE = "9 Sept 2026, 9pm MYT";
+export const RACE_DEADLINE = "10 Sept 2026, midnight MYT";
 
-/** Milestones #1–#2 — individual X posts (Content Award). */
+/** Milestones #0–#2 — individual X posts (Content Award + race points). */
 export const CONTENT_TASKS: RaceTask[] = [
+  {
+    id: "content-final-impressions",
+    number: 0,
+    title: "Content Award",
+    shortDescription:
+      "Tell us how Startup Village Borneo felt overall — video or picture collage on X. Content Award entry (no race points). Due 10 September midnight MYT. Tag @superteamMY, @solana, and @socoe_s.",
+    details: [
+      "Share your honest take on the full Startup Village experience — the build, the people, the week.",
+      "Can be a video or a picture collage and post on X!",
+      "Counts toward the Content Award ($100 prizes) — does not add Amazing Race points.",
+      "Due by 10 September 2026, midnight MYT.",
+      "Tag @superteamMY, @solana, and @socoe_s.",
+    ],
+    pointsBase: 0,
+    pointsNote: "Content Award",
+    category: "content",
+    theme: "content",
+    deadline: RACE_DEADLINE,
+  },
   {
     id: "race-landed-in-kuching",
     number: 1,
     title: "Landed in Kuching",
     shortDescription:
-      "Video or picture collage on X — due 9 September 9pm MYT. Tag @superteamMY, @solana, and @socoe_s.",
+      "Video or picture collage on X — due 10 September midnight MYT. Tag @superteamMY, @solana, and @socoe_s.",
     details: [
       "Can be a video or a picture collage and post on X!",
-      "Due by 9 September 2026, 9pm MYT.",
+      "Due by 10 September 2026, midnight MYT.",
       "Tag @superteamMY, @solana, and @socoe_s.",
     ],
     pointsBase: 10,
@@ -53,10 +72,10 @@ export const CONTENT_TASKS: RaceTask[] = [
     number: 2,
     title: "Overall impressions of Kuching and Startup Village Borneo",
     shortDescription:
-      "Video or picture collage on X — due 9 September 9pm MYT. Tag @superteamMY, @solana, and @socoe_s.",
+      "Video or picture collage on X — due 10 September midnight MYT. Tag @superteamMY, @solana, and @socoe_s.",
     details: [
       "Can be a video or a picture collage and post on X!",
-      "Due on 9 September 2026, 9pm MYT.",
+      "Due on 10 September 2026, midnight MYT.",
       "Tag @superteamMY, @solana, and @socoe_s.",
     ],
     pointsBase: 10,
@@ -316,7 +335,7 @@ for (const task of RACE_TASKS) {
 
 export const ALL_TASKS: RaceTask[] = [...CONTENT_TASKS, ...RACE_TASKS];
 
-/** Exactly 18 milestones for the submit drawer — content posts first, then race stations (#10 = 3 waterfront activities). */
+/** Content + race stations for the submit drawer (#10 = 3 waterfront activities). */
 export const MILESTONE_SUBMIT_TASKS: RaceTask[] = [...CONTENT_TASKS, ...RACE_TASKS].sort(
   (a, b) => a.number - b.number,
 );
@@ -390,7 +409,7 @@ export const RACE_SUBMISSION_RULES = [
   "Every member can submit any milestone — as many unique X posts as you like; each post earns flat points once.",
   "No duplicate posts: the same X link cannot be used twice anywhere on the feed.",
   "Flat scoring per post — pick the correct waterfront activity milestone (sampan, flagpole lean, or flagpole group).",
-  "All milestones and pitch decks due Wed 9 Sept, 9pm MYT — nothing accepted after.",
+  "All milestones and pitch decks due Thu 10 Sept, midnight MYT — nothing accepted after.",
   "Teach wallet users; never pressure anyone about money or investment.",
   "Content posts must tag @superteamMY, @solana, and @socoe_s.",
   "Your build comes first — race runs in evenings and gaps.",

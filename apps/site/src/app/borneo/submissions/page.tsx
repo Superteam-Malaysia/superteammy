@@ -68,7 +68,7 @@ export default function SubmissionsPage() {
             <ActionCard
               title="Pitch deck"
               tone="mint"
-              description="Upload before Tue 9 Sept, 9:00 PM MYT — same cutoff as Amazing Race."
+              description="Upload before Thu 10 Sept, midnight MYT — same cutoff as Amazing Race."
             />
           </li>
           <li>

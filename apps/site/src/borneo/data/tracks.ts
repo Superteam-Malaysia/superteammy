@@ -36,6 +36,13 @@ export const CONTENT_AWARD = {
   tags: ["@superteamMY", "@solana", "@socoe_s"],
   tasks: [
     {
+      id: "final-impressions",
+      title: "Content Award",
+      deadline: "10 September 2026, midnight MYT",
+      points: "Content Award — no race points",
+      format: "Video or picture collage on X — how the village week felt overall",
+    },
+    {
       id: "first-impressions",
       title: "First impressions of Kuching",
       deadline: "6 September 2026",
@@ -45,14 +52,14 @@ export const CONTENT_AWARD = {
     {
       id: "overall-impressions",
       title: "Overall impressions of SVB",
-      deadline: "9 September 2026, 9pm MYT",
-      points: "Content Award — no race points",
+      deadline: "10 September 2026, midnight MYT",
+      points: "10 pts per qualifying team member post (race)",
       format: "Video or collage reflecting the full week",
     },
   ],
   rules: [
     "Tag @superteamMY, @solana, and @socoe_s on every post.",
-    "Final impressions due 9 September 9pm MYT — judged remotely after the event.",
+    "Milestone #0 (Content Award) is prize entry only — no race points; due 10 September midnight MYT.",
     "Quality and authenticity beat production polish.",
   ],
 };

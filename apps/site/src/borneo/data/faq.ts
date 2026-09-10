@@ -27,7 +27,7 @@ export const FAQ_ITEMS: FaqItem[] = [
     category: "submissions",
     question: "What is the submission cutoff?",
     answer:
-      "Tuesday 9 September, 9:00 PM MYT — one cutoff for Amazing Race milestones and pitch decks. The system rejects anything late.",
+      "Thursday 10 September, midnight MYT — one cutoff for Amazing Race milestones and pitch decks. The system rejects anything late.",
   },
   {
     id: "race-submit",
@@ -48,7 +48,7 @@ export const FAQ_ITEMS: FaqItem[] = [
     category: "race",
     question: "What is the Content Award?",
     answer:
-      "Milestone #2 — overall impressions of Kuching and SVB on X by 9 September 9pm MYT. Worth 10 race points per unique post (same as #1). Ten separate content prizes of $100 each are judged remotely after the event.",
+      "Milestone #0 — Content Award: post your take on Startup Village on X by 10 September midnight MYT. Prize entry only (no race points). Milestone #1 and #2 still earn 10 race points per unique post. Ten $100 content prizes are judged remotely after the event.",
   },
   {
     id: "sustainability",

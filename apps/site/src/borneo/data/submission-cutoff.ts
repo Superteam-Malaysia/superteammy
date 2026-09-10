@@ -1,9 +1,9 @@
 /** Unified Amazing Race + pitch deck cutoff — Malaysia Time (UTC+8). */
 export const SUBMISSION_CUTOFF = {
-  label: "Wed 9 Sept",
-  time: "9:00 PM MYT",
-  banner: "Wed 9 Sept · 9pm MYT — Amazing Race & pitch deck cutoff",
-  iso: "2026-09-09T21:00:00+08:00",
+  label: "Thu 10 Sept",
+  time: "midnight MYT",
+  banner: "Thu 10 Sept · midnight MYT — Amazing Race & pitch deck cutoff",
+  iso: "2026-09-11T00:00:00+08:00",
 } as const;
 
 export function isSubmissionCutoffPassed(now = new Date()): boolean {

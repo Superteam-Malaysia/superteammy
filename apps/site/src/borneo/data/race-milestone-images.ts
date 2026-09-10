@@ -6,6 +6,7 @@ function milestoneAsset(filename: string): string {
 
 /** Thumbnail for each Amazing Race milestone — local assets under public/borneo/race/milestones/. */
 const RACE_MILESTONE_IMAGES: Record<string, string> = {
+  "content-final-impressions": withBasePath("/schedule/days/day-5-demo-day.jpg"),
   "race-landed-in-kuching": milestoneAsset("race-landed-in-kuching.jpg"),
   "content-first-impressions": milestoneAsset("race-landed-in-kuching.jpg"),
   "content-overall-impressions": withBasePath("/schedule/days/day-5-demo-day.jpg"),
