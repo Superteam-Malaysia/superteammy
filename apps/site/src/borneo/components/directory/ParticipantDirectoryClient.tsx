@@ -15,8 +15,8 @@ export function ParticipantDirectoryClient({ people }: { people: PublicParticipa
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {people.map((person, index) => (
-        <BuilderCard key={person.id} person={person} index={index} />
+      {people.map((person) => (
+        <BuilderCard key={person.id} person={person} />
       ))}
     </div>
   );

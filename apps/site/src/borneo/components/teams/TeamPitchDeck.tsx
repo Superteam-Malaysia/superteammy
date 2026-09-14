@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { deckMappingForSlug, demoDayPdfUrl } from "@borneo/data/demo-day-decks";
 import type { PublicTeam } from "@borneo/lib/teams/types";
 
@@ -20,6 +23,7 @@ type TeamPitchDeckProps = {
 };
 
 export function TeamPitchDeck({ team }: TeamPitchDeckProps) {
+  const [embedReady, setEmbedReady] = useState(false);
   const mapping = deckMappingForSlug(team.slug);
   const pdfSrc = mapping ? demoDayPdfUrl(mapping.slug) : null;
   const fallbackUrl = team.deckUrl;
@@ -53,13 +57,25 @@ export function TeamPitchDeck({ team }: TeamPitchDeckProps) {
         </a>
       </div>
       <div className="team-detail__deck-frame">
-        <iframe
-          title={`${team.name} Demo Day pitch deck`}
-          src={embedSrc}
-          loading="lazy"
-          allow="fullscreen"
-          allowFullScreen
-        />
+        {embedReady ? (
+          <iframe
+            title={`${team.name} Demo Day pitch deck`}
+            src={embedSrc}
+            allow="fullscreen"
+            allowFullScreen
+          />
+        ) : (
+          <button
+            type="button"
+            className="team-detail__deck-load"
+            onClick={() => setEmbedReady(true)}
+          >
+            <span className="team-detail__deck-load-title">Load pitch</span>
+            <span className="team-detail__deck-load-hint">
+              {pdfSrc ? "Opens the PDF in this page when you need it" : "Loads the deck embed when you need it"}
+            </span>
+          </button>
+        )}
       </div>
     </section>
   );

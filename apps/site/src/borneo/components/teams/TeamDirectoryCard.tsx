@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
 import Link from "@borneo/components/Link";
 import { ScalableCardWrapper } from "@/components/members/ScalableCardWrapper";
 import type { PublicTeam } from "@borneo/lib/teams/types";
@@ -19,23 +18,17 @@ function cardDescription(team: PublicTeam): string | null {
 
 type TeamDirectoryCardProps = {
   team: PublicTeam;
-  index?: number;
 };
 
 /** Trading-card shell with gray blueprint texture — links to the team detail page. */
-export function TeamDirectoryCard({ team, index = 0 }: TeamDirectoryCardProps) {
+export function TeamDirectoryCard({ team }: TeamDirectoryCardProps) {
   const category = team.category ?? "Other";
   const visibleMembers = team.members.slice(0, 6);
   const overflowCount = team.memberCount - visibleMembers.length;
 
   return (
     <ScalableCardWrapper>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: index * 0.05 }}
-        className="w-[320px]"
-      >
+      <div className="w-[320px]">
         <Link href={`/teams/${team.slug}`} className="team-directory-card">
           <div className="team-directory-card__surface">
             <div className="team-directory-card__header">
@@ -91,7 +84,7 @@ export function TeamDirectoryCard({ team, index = 0 }: TeamDirectoryCardProps) {
             <p className="team-directory-card__cta">View team →</p>
           </div>
         </Link>
-      </motion.div>
+      </div>
     </ScalableCardWrapper>
   );
 }

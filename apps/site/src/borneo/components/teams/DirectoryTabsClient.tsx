@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
 import {
   BorneoDirectoryFilters,
   DirectorySectionTabs,
@@ -159,12 +158,7 @@ export function DirectoryTabsClient({
       />
 
       <div className="relative max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-left md:text-center md:mb-8 mb-6"
-        >
+        <div className="text-left md:text-center md:mb-8 mb-6">
           <h1 className="font-[family-name:var(--font-orbitron)] uppercase text-3xl md:text-4xl lg:text-7xl font-black text-white mb-3">
             Teams &amp; Mentors
           </h1>
@@ -172,23 +166,13 @@ export function DirectoryTabsClient({
             Explore hackathon teams, registered builders, and workshop leaders plus Demo Day judges at
             Startup Village Borneo
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.08 }}
-          className="md:mb-6 mb-4"
-        >
+        <div className="md:mb-6 mb-4">
           <DirectorySectionTabs tab={tab} onTabChange={setTab} />
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.12 }}
-          className="md:mb-8 mb-6"
-        >
+        <div className="md:mb-8 mb-6">
           {tab === "teams" ? (
             <BorneoDirectoryFilters
               searchQuery={searchQuery}
@@ -208,7 +192,7 @@ export function DirectoryTabsClient({
               onFilterChange={(value) => setMentorFilter(value as (typeof MENTOR_FILTERS)[number])}
             />
           )}
-        </motion.div>
+        </div>
 
         <div role="tabpanel" hidden={tab !== "teams"} aria-hidden={tab !== "teams"}>
           {filteredTeams.length > 0 ? (

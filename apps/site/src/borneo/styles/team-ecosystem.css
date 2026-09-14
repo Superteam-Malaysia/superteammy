@@ -931,6 +931,43 @@
   border: 0;
 }
 
+.team-detail__deck-load {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 1.5rem;
+  border: 0;
+  background: transparent;
+  color: color-mix(in srgb, var(--color-wisp) 88%, transparent);
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+
+.team-detail__deck-load:hover,
+.team-detail__deck-load:focus-visible {
+  background: color-mix(in srgb, var(--color-wisp) 6%, transparent);
+}
+
+.team-detail__deck-load-title {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.team-detail__deck-load-hint {
+  max-width: 22rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: color-mix(in srgb, var(--color-wisp) 50%, transparent);
+}
+
 .team-detail__section-label {
   margin: 0 0 0.85rem;
   font-family: var(--font-mono);
