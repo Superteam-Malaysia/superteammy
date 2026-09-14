@@ -22,10 +22,11 @@ type TeamPitchDeckProps = {
 export function TeamPitchDeck({ team }: TeamPitchDeckProps) {
   const mapping = deckMappingForSlug(team.slug);
   const pdfSrc = mapping ? demoDayPdfUrl(mapping.slug) : null;
-  if (!pdfSrc && !team.deckUrl) return null;
+  const fallbackUrl = team.deckUrl;
+  if (!pdfSrc && !fallbackUrl) return null;
 
-  const embedSrc = pdfSrc ?? team.deckUrl.replace("/view", "/view?embed");
-  const openHref = pdfSrc ?? team.deckUrl;
+  const embedSrc = pdfSrc ?? fallbackUrl.replace("/view", "/view?embed");
+  const openHref = pdfSrc ?? fallbackUrl;
 
   return (
     <section className="team-detail__deck" aria-labelledby={`${team.slug}-pitch-deck`}>
