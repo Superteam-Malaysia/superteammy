@@ -20,10 +20,10 @@ type TeamPitchDeckProps = {
 };
 
 export function TeamPitchDeck({ team }: TeamPitchDeckProps) {
-  if (!team.deckUrl) return null;
-
   const mapping = deckMappingForSlug(team.slug);
   const pdfSrc = mapping ? demoDayPdfUrl(mapping.slug) : null;
+  if (!pdfSrc && !team.deckUrl) return null;
+
   const embedSrc = pdfSrc ?? team.deckUrl.replace("/view", "/view?embed");
   const openHref = pdfSrc ?? team.deckUrl;
 
