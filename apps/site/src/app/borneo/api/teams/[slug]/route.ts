@@ -41,6 +41,7 @@ export async function PATCH(request: Request, { params }: Params) {
     category?: string;
     websiteUrl?: string;
     proofUrl?: string;
+    deckUrl?: string;
   };
 
   const db = getDb();
@@ -53,6 +54,7 @@ export async function PATCH(request: Request, { params }: Params) {
       category: body.category?.trim() ?? record.category,
       websiteUrl: body.websiteUrl?.trim() ?? record.websiteUrl,
       proofUrl: body.proofUrl?.trim() ?? record.proofUrl,
+      deckUrl: body.deckUrl?.trim() ?? record.deckUrl,
       updatedAt: new Date(),
     })
     .where(eq(teams.id, record.id));

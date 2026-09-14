@@ -132,6 +132,8 @@ export const teams = pgTable("teams", {
   logoUrl: text("logo_url"),
   websiteUrl: text("website_url"),
   proofUrl: text("proof_url"),
+  /** Canva or other pitch deck view URL (Demo Day master deck + page anchor). */
+  deckUrl: text("deck_url"),
   createdBy: uuid("created_by").references(() => participants.id, {
     onDelete: "set null",
   }),

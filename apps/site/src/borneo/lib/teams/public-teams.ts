@@ -49,6 +49,7 @@ function mapTeamRow(
     logoUrl: uploadPublicUrl(team.logoUrl),
     websiteUrl: team.websiteUrl,
     proofUrl: team.proofUrl,
+    deckUrl: team.deckUrl,
     memberCount: members.length,
     members,
   };

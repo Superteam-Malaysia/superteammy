@@ -15,6 +15,7 @@ export type PublicTeam = {
   logoUrl: string | null;
   websiteUrl: string | null;
   proofUrl: string | null;
+  deckUrl: string | null;
   memberCount: number;
   members: PublicTeamMember[];
 };

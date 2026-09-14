@@ -8,6 +8,7 @@ import { eq, sql, and } from "drizzle-orm";
 import { closeDb, getDb } from "../../src/borneo/lib/db";
 import { participants, teamMembers, teams } from "../../src/borneo/lib/db/schema";
 import { slugifyTeamName } from "../../src/borneo/lib/teams/slug";
+import { deckUrlForSlug, logoUrlForSlug } from "../../src/borneo/data/demo-day-decks";
 import { isMentorTeamSlug } from "../../src/borneo/data/mentors";
 
 type SeedMember = { email: string; role: "owner" | "editor" | "member" };
@@ -20,6 +21,8 @@ type SeedTeam = {
   category: string;
   websiteUrl?: string;
   proofUrl?: string;
+  deckUrl?: string;
+  logoUrl?: string;
   members: SeedMember[];
 };
 
@@ -39,9 +42,9 @@ const SEED_TEAMS: SeedTeam[] = [
   {
     slug: "float-finance",
     name: "Float Finance",
-    tagline: "Payroll financing for on-chain businesses",
+    tagline: "Credit reputation on chain for businesses",
     description:
-      "Float is payroll financing for businesses the banking system can't see. We underwrite against verified on-chain revenue instead of bank statements.",
+      "Working capital now, credit reputation with every repayment. Float underwrites against verified on-chain incoming payments — evidence of your future, not just your past.",
     category: "DeFi",
     proofUrl: "https://github.com/Samisha68",
     members: [{ email: "samishaofficial68@gmail.com", role: "owner" }],
@@ -198,13 +201,13 @@ const SEED_TEAMS: SeedTeam[] = [
   },
   {
     slug: "foresight",
-    name: "Foresight",
-    tagline: "Prize-linked savings with skill-and-chance mini-games",
+    name: "hexo.fun",
+    tagline: "Savings that pays stable yield with daily prize draws",
     description:
-      "A principal-protected savings pool where weekly yield is awarded by draw, and players compete in skill-and-chance mini-games to increase their odds — never their capital.",
+      "Deposit USDC, earn ~5% interest, and play free weekly entries for daily HEXO prizes — principal guaranteed, yield-funded prize pools on Solana.",
     category: "DeFi",
-    websiteUrl: "https://foresight.now",
-    proofUrl: "https://foresight.now",
+    websiteUrl: "https://hexofun-beta.vercel.app",
+    proofUrl: "https://hexofun-beta.vercel.app",
     members: [
       { email: "menghong6988@gmail.com", role: "owner" },
       { email: "echai2905@gmail.com", role: "editor" },
@@ -226,10 +229,10 @@ const SEED_TEAMS: SeedTeam[] = [
   },
   {
     slug: "tuc",
-    name: "TUC",
-    tagline: "Verified on-chain sustainability for events",
+    name: "TUC Event Wallet",
+    tagline: "Recover, verify, and upcycle event materials",
     description:
-      "Turns sustainability actions at events into verified on-chain proof on Solana — solving unverifiable ESG reporting for event organisers, sponsors and venues, beginning with Sarawak's events industry.",
+      "The Upcycle Collective's event wallet — collect usable event materials, verify handovers on Solana, reward contributors with TUC, and prove the journey from waste to new products.",
     category: "Consumer",
     websiteUrl: "https://linktr.ee/tucswk",
     proofUrl: "https://upcycle-collective.vercel.app",
@@ -306,10 +309,10 @@ const SEED_TEAMS: SeedTeam[] = [
   },
   {
     slug: "fractionax",
-    name: "Fractionax",
-    tagline: "Agentic RWA investment infrastructure",
+    name: "Vori",
+    tagline: "The transparent carbon market you can trust",
     description:
-      "Agentic real-world asset investment infrastructure using AI agents to source, evaluate, structure, and manage tokenized opportunities across real estate, private credit, businesses, and commodities.",
+      "A transparent carbon market built on Solana — making carbon credits verifiable and trustworthy for buyers and sellers.",
     category: "DeFi",
     websiteUrl: "https://fractionax.app",
     proofUrl: "https://fractionax.app",
@@ -379,16 +382,28 @@ const SEED_TEAMS: SeedTeam[] = [
     members: [{ email: "kai@kurtosis-labs.com", role: "owner" }],
   },
   {
-    slug: "cardsjp",
-    name: "CardsJP",
-    tagline: "Reselling Pokémon cards from Akihabara to the world",
-    description:
-      "Reselling Pokémon cards from Akihabara Tokyo — collaborating with shop owners to reach collectors worldwide.",
-    category: "Consumer",
-    websiteUrl: "https://cardsjp.com",
-    proofUrl: "https://cardsjp.com",
-    members: [{ email: "emailsolah@gmail.com", role: "owner" }],
-  },
+    // {
+    //   slug: "cardsjp",
+    //   name: "CardsJP",
+    //   tagline: "Reselling Pokémon cards from Akihabara to the world",
+    //   description:
+    //     "Reselling Pokémon cards from Akihabara Tokyo — collaborating with shop owners to reach collectors worldwide.",
+    //   category: "Consumer",
+    //   websiteUrl: "https://cardsjp.com",
+    //   proofUrl: "https://cardsjp.com",
+    //   members: [{ email: "emailsolah@gmail.com", role: "owner" }],
+    // },
+    {
+      slug: "solodeath",
+      name: "SoloDeath",
+      tagline: "Workout RPG with optional Solana reward pools",
+      description:
+        "A workout RPG where daily quests, rank progression, and sealed gear chests make fitness consistency part of the game — with optional S-rank Solana reward pools.",
+      category: "Gaming",
+      websiteUrl: "https://solodeath.com",
+      proofUrl: "https://solodeath.com",
+      members: [{ email: "emailsolah@gmail.com", role: "owner" }],
+    },
   {
     slug: "hypebiscus",
     name: "Hypebiscus",
@@ -466,10 +481,10 @@ const SEED_TEAMS: SeedTeam[] = [
   },
   {
     slug: "socoe-impact",
-    name: "SOCOE Impact",
-    tagline: "On-chain verification for Sarawak events and agriculture",
+    name: "Verita",
+    tagline: "Retention that releases itself — no contractor, no delay",
     description:
-      "Walletless event-impact verification for BESarawak and agencies, digital micro-credentialing for rural farm skills, and on-chain traceability helping independent palm oil smallholders achieve MSPO certification.",
+      "Construction retention held in a Solana vault, not the contractor's account. Subcontractors claim release by rule when the defects period ends — verifiable the whole time.",
     category: "Consumer",
     members: [
       { email: "yiethin.socoe@gmail.com", role: "owner" },
@@ -568,13 +583,79 @@ const SEED_TEAMS: SeedTeam[] = [
   },
   {
     slug: "konrad-gnat",
-    name: "Soulbound Subscriptions",
-    tagline: "Soulbound NFT subscriptions and treasury on Solana",
+    name: "Argo",
+    tagline: "Private foundry for founders — journal, AI, soulbound practice record",
     description:
-      "Soulbound NFT and payment infrastructure for subscriptions and treasuries on Solana.",
+      "The private foundry where raw thoughts get hammered into shape before they become a pitch or product decision — client-side encrypted, wallet-secured, open source.",
     category: "Consumer",
-    proofUrl: "https://linkedin.com/in/konrad-gnat",
+    websiteUrl: "https://myargoquest.com",
+    proofUrl: "https://myargoquest.com",
     members: [{ email: "konradmgnat@gmail.com", role: "owner" }],
+  },
+  {
+    slug: "bario-seeker",
+      name: "Bario Seeker",
+      tagline: "Digital passport and marketplace for verified Bario Rice",
+      description:
+        "Bario Digital Passport and Marketplace — verified producers, batch QR traceability, and trusted consumer access to authentic Bario Rice from Sarawak.",
+      category: "Consumer",
+      members: [
+        { email: "wanaqilre@gmail.com", role: "owner" },
+        { email: "abdazharee@gmail.com", role: "editor" },
+        { email: "mudennn94@gmail.com", role: "editor" },
+      ],
+  },
+  {
+    slug: "veya",
+      name: "Veya",
+      tagline: "Digital badge book for Girl Scouts",
+      description:
+        "A digital badge book that helps Girl Scouts discover, earn, organize, and share badges in one app — replacing bulky physical badge books.",
+      category: "Consumer",
+      members: [
+        { email: "ariah.luma@mvn.xyz", role: "owner" },
+        { email: "eirie.luma@mvn.xyz", role: "editor" },
+      ],
+  },
+  {
+    slug: "webmerger",
+      name: "Web#Merger",
+      tagline: "The front gate to Web3 for Web2 talent",
+      description:
+        "Five minutes from confused Web2 user to verified Solana contributor — SNS Builder Passport, cNFT badges, and matched Superteam Earn opportunities.",
+      category: "Consumer",
+      websiteUrl: "https://webmerger.vercel.app",
+      proofUrl: "https://webmerger.vercel.app",
+      members: [{ email: "53845tianbelulok@gmail.com", role: "owner" }],
+  },
+  {
+    slug: "couch",
+      name: "COUCH",
+      tagline: "Anonymous verified compensation reviews for crypto",
+      description:
+        "Anonymous social network for crypto jobs and projects with a ZK identity layer — verified reputation without exposing wallets.",
+      category: "Social",
+      members: [],
+  },
+  {
+    slug: "agent-ctos",
+      name: "Agent CTOS",
+      tagline: "On-chain underwriting for agents that pay strangers",
+      description:
+        "Merchant scores from completed x402 payments — instant settle for trusted merchants, escrow for unknowns, self-recovery after timeout. Live on Solana devnet.",
+      category: "Infrastructure",
+      websiteUrl: "https://agent-ctos.vercel.app",
+      proofUrl: "https://agent-ctos.vercel.app",
+      members: [],
+  },
+  {
+    slug: "sugarsafe",
+      name: "SugarSafe",
+      tagline: "Diabetes-friendly meal logging built for Malaysian food",
+      description:
+        "One photo, real Malaysian nutrition data, and plain advice — not a lecture. Tamper-proof logs on Solana for people managing diabetes.",
+      category: "Consumer",
+      members: [],
   },
   {
     slug: "thomas-vault",
@@ -653,6 +734,8 @@ async function main() {
       category: seed.category,
       websiteUrl: seed.websiteUrl ?? null,
       proofUrl: seed.proofUrl ?? null,
+      deckUrl: seed.deckUrl ?? deckUrlForSlug(seed.slug) ?? null,
+      logoUrl: seed.logoUrl ?? logoUrlForSlug(seed.slug) ?? null,
       createdBy,
       updatedAt: new Date(),
     };

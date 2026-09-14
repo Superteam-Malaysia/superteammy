@@ -1,4 +1,5 @@
 import Link from "@borneo/components/Link";
+import { TeamPitchDeck } from "@borneo/components/teams/TeamPitchDeck";
 import type { PublicTeam } from "@borneo/lib/teams/types";
 
 function teamInitials(name: string): string {
@@ -79,6 +80,8 @@ export function TeamDetailPublicView({ team }: TeamDetailPublicViewProps) {
           {team.description?.trim() || team.tagline}
         </p>
       )}
+
+      <TeamPitchDeck team={team} />
     </>
   );
 }
