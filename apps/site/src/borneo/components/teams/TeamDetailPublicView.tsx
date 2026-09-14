@@ -1,4 +1,4 @@
-import Link from "@borneo/components/Link";
+import { teamPageCopy } from "@borneo/data/demo-day-pitch-copy";
 import { TeamPitchDeck } from "@borneo/components/teams/TeamPitchDeck";
 import type { PublicTeam } from "@borneo/lib/teams/types";
 
@@ -28,8 +28,8 @@ type TeamDetailPublicViewProps = {
 };
 
 export function TeamDetailPublicView({ team }: TeamDetailPublicViewProps) {
-  const category = team.category ?? "Other";
-  const websiteUrl = team.websiteUrl ?? team.proofUrl;
+  const copy = teamPageCopy(team);
+  const websiteUrl = copy.websiteUrl;
 
   return (
     <>
@@ -44,16 +44,16 @@ export function TeamDetailPublicView({ team }: TeamDetailPublicViewProps) {
               // eslint-disable-next-line @next/next/no-img-element
               <img src={team.logoUrl} alt="" className="team-detail__logo-img" />
             ) : (
-              teamInitials(team.name)
+              teamInitials(copy.name)
             )}
           </div>
         </div>
 
         <div>
-          <h1 className="team-detail__title">{team.name}</h1>
-          {team.tagline ? <p className="team-detail__tagline">{team.tagline}</p> : null}
+          <h1 className="team-detail__title">{copy.name}</h1>
+          {copy.tagline ? <p className="team-detail__tagline">{copy.tagline}</p> : null}
           <p className="team-detail__meta">
-            <span className="team-detail__badge">{category}</span>
+            <span className="team-detail__badge">{copy.category}</span>
             <span aria-hidden="true">·</span>
             <span>
               {team.memberCount} {team.memberCount === 1 ? "member" : "members"}
@@ -76,15 +76,23 @@ export function TeamDetailPublicView({ team }: TeamDetailPublicViewProps) {
         </div>
       </div>
 
-      {team.description?.trim() ? (
+      {copy.description?.trim() ? (
         <div className="team-detail__description">
-          {team.description
+          {copy.description
             .trim()
             .split(/\n\n+/)
             .map((paragraph) => (
               <p key={paragraph.slice(0, 48)}>{paragraph}</p>
             ))}
         </div>
+      ) : null}
+
+      {copy.highlights.length > 0 ? (
+        <ul className="team-detail__facts">
+          {copy.highlights.map((fact) => (
+            <li key={fact}>{fact}</li>
+          ))}
+        </ul>
       ) : null}
 
       <TeamPitchDeck team={team} />

@@ -10,6 +10,7 @@ import { getParticipantForSession } from "@borneo/lib/auth/participant";
 import { getPublicParticipantsByIds } from "@borneo/lib/participants/public-directory";
 import { requireTeamEditor } from "@borneo/lib/teams/access";
 import { getPublicTeamBySlug, getTeamRecordBySlug } from "@borneo/lib/teams/public-teams";
+import { pitchCopyForSlug } from "@borneo/data/demo-day-pitch-copy";
 import { getDb } from "@borneo/lib/db";
 import { teams } from "@borneo/lib/db/schema";
 
@@ -35,9 +36,13 @@ export async function generateMetadata({ params }: TeamDetailPageProps): Promise
   const { slug } = await params;
   const team = await getPublicTeamBySlug(slug);
   if (!team) return { title: "Team not found" };
+  const pitch = pitchCopyForSlug(slug);
+  const title = pitch?.name ?? team.name;
+  const description =
+    pitch?.tagline ?? team.tagline ?? team.description ?? `${team.name} at Startup Village Borneo`;
   return {
-    title: team.name,
-    description: team.tagline ?? team.description ?? `${team.name} — SVB 2026`,
+    title,
+    description,
   };
 }
 

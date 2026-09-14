@@ -773,6 +773,25 @@
   color: color-mix(in srgb, var(--color-wisp) 78%, transparent);
 }
 
+.team-detail__facts {
+  margin: 1.35rem 0 0;
+  padding: 0;
+  max-width: 44rem;
+  list-style: none;
+  border-top: 1px solid color-mix(in srgb, var(--color-wisp) 14%, transparent);
+}
+
+.team-detail__facts li {
+  margin: 0;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-wisp) 14%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--color-wisp) 72%, transparent);
+}
+
 .team-detail__deck {
   margin-top: 2rem;
 }

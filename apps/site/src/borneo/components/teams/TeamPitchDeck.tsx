@@ -70,9 +70,9 @@ export function TeamPitchDeck({ team }: TeamPitchDeckProps) {
             className="team-detail__deck-load"
             onClick={() => setEmbedReady(true)}
           >
-            <span className="team-detail__deck-load-title">Load pitch</span>
+            <span className="team-detail__deck-load-title">Load full pitch</span>
             <span className="team-detail__deck-load-hint">
-              {pdfSrc ? "Opens the PDF in this page when you need it" : "Loads the deck embed when you need it"}
+              Numbers, GTM, and the ask. The page above is the brief.
             </span>
           </button>
         )}
