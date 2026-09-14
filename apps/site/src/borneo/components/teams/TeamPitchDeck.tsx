@@ -1,5 +1,4 @@
 import { deckMappingForSlug, deckSlideUrlsForSlug } from "@borneo/data/demo-day-decks";
-import { withBasePath } from "@borneo/lib/base-path";
 import type { PublicTeam } from "@borneo/lib/teams/types";
 
 function ExternalIcon() {
@@ -57,7 +56,7 @@ export function TeamPitchDeck({ team }: TeamPitchDeckProps) {
                 <span className="team-detail__slide-label">Slide {index + 1}</span>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={withBasePath(src)}
+                  src={src}
                   alt={`${team.name} pitch deck slide ${index + 1}`}
                   loading={index < 2 ? "eager" : "lazy"}
                   width={1920}

@@ -6,6 +6,10 @@ export function withBasePath(path: string): string {
   if (!path.startsWith("/") || path.startsWith("//") || !BASE_PATH) {
     return path;
   }
+  // Files in public/ (e.g. public/images) are served from the site root, not under basePath.
+  if (path.startsWith("/images/")) {
+    return path;
+  }
   if (path === BASE_PATH || path.startsWith(`${BASE_PATH}/`)) {
     return path;
   }
