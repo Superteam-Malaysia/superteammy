@@ -12,8 +12,8 @@ export function TeamMemberCards({ members }: TeamMemberCardsProps) {
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {members.map((person, index) => (
-        <BuilderCard key={person.id} person={person} index={index} />
+      {members.map((person) => (
+        <BuilderCard key={person.id} person={person} />
       ))}
     </div>
   );
