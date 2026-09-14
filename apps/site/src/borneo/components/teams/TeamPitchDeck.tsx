@@ -1,4 +1,4 @@
-import { deckMappingForSlug, demoDayDeckEmbedUrl } from "@borneo/data/demo-day-decks";
+import { deckMappingForSlug, demoDayPdfUrl } from "@borneo/data/demo-day-decks";
 import type { PublicTeam } from "@borneo/lib/teams/types";
 
 function ExternalIcon() {
@@ -23,9 +23,9 @@ export function TeamPitchDeck({ team }: TeamPitchDeckProps) {
   if (!team.deckUrl) return null;
 
   const mapping = deckMappingForSlug(team.slug);
-  const embedSrc = mapping
-    ? demoDayDeckEmbedUrl(mapping.pageStart)
-    : team.deckUrl.replace("/view", "/view?embed");
+  const pdfSrc = mapping ? demoDayPdfUrl(mapping.slug) : null;
+  const embedSrc = pdfSrc ?? team.deckUrl.replace("/view", "/view?embed");
+  const openHref = pdfSrc ?? team.deckUrl;
 
   return (
     <section className="team-detail__deck" aria-labelledby={`${team.slug}-pitch-deck`}>
@@ -34,13 +34,12 @@ export function TeamPitchDeck({ team }: TeamPitchDeckProps) {
           Demo Day pitch
         </h2>
         <a
-          href={team.deckUrl}
+          href={openHref}
           className="team-detail__link-btn team-detail__link-btn--muted"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Open in Canva
-          {mapping ? ` · from slide ${mapping.pageStart}` : null}
+          {pdfSrc ? "Open PDF" : "Open deck"}
           <ExternalIcon />
         </a>
       </div>
