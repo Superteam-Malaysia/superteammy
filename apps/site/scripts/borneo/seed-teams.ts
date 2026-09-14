@@ -582,6 +582,14 @@ const SEED_TEAMS: SeedTeam[] = [
     members: [{ email: "mariamhii@gmail.com", role: "owner" }],
   },
   {
+    slug: "argo",
+    name: "argo",
+    tagline: "",
+    description: "",
+    category: "Consumer",
+    members: [{ email: "konradmgnat@gmail.com", role: "owner" }],
+  },
+  {
     slug: "bario-seeker",
       name: "Bario Seeker",
       tagline: "Digital passport and marketplace for verified Bario Rice",
