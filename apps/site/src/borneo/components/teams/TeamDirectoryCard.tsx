@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "@borneo/components/Link";
 import { ScalableCardWrapper } from "@/components/members/ScalableCardWrapper";
+import { teamDisplayLogoUrl } from "@borneo/data/demo-day-decks";
 import type { PublicTeam } from "@borneo/lib/teams/types";
 
 function teamInitials(name: string): string {
@@ -25,6 +26,7 @@ export function TeamDirectoryCard({ team }: TeamDirectoryCardProps) {
   const category = team.category ?? "Other";
   const visibleMembers = team.members.slice(0, 6);
   const overflowCount = team.memberCount - visibleMembers.length;
+  const logoUrl = teamDisplayLogoUrl(team.slug, team.logoUrl);
 
   return (
     <ScalableCardWrapper>
@@ -49,9 +51,9 @@ export function TeamDirectoryCard({ team }: TeamDirectoryCardProps) {
             </div>
 
             <div className="team-directory-card__logo-wrap">
-              {team.logoUrl ? (
+              {logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={team.logoUrl} alt="" className="team-directory-card__logo-img" />
+                <img src={logoUrl} alt="" className="team-directory-card__logo-img" />
               ) : (
                 <span className="team-directory-card__logo-fallback">{teamInitials(team.name)}</span>
               )}

@@ -1,3 +1,4 @@
+import { teamDisplayLogoUrl } from "@borneo/data/demo-day-decks";
 import { teamPageCopy } from "@borneo/data/demo-day-pitch-copy";
 import { TeamPitchDeck } from "@borneo/components/teams/TeamPitchDeck";
 import type { PublicTeam } from "@borneo/lib/teams/types";
@@ -30,6 +31,7 @@ type TeamDetailPublicViewProps = {
 export function TeamDetailPublicView({ team }: TeamDetailPublicViewProps) {
   const copy = teamPageCopy(team);
   const websiteUrl = copy.websiteUrl;
+  const logoUrl = teamDisplayLogoUrl(team.slug, team.logoUrl);
 
   return (
     <>
@@ -40,9 +42,9 @@ export function TeamDetailPublicView({ team }: TeamDetailPublicViewProps) {
           <span className="team-detail__logo-corner team-detail__logo-corner--bl" />
           <span className="team-detail__logo-corner team-detail__logo-corner--br" />
           <div className="team-detail__logo" aria-hidden="true">
-            {team.logoUrl ? (
+            {logoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={team.logoUrl} alt="" className="team-detail__logo-img" />
+              <img src={logoUrl} alt="" className="team-detail__logo-img" />
             ) : (
               teamInitials(copy.name)
             )}

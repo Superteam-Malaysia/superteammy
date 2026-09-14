@@ -50,8 +50,8 @@ export const DEMO_DAY_DECK_MAPPINGS: DemoDayDeckMapping[] = [
   { slug: "dgen", pageStart: 387, pageEnd: 398, pitchTitle: "DGEN", designId: "DAHVMThQkec" },
 ];
 
-/** Static path for title-slide logo exported from the master deck. */
-export const DEMO_DAY_LOGO_DIR = "/images/teams/demo-day";
+/** Cropped marks from each title slide. */
+export const DEMO_DAY_LOGO_DIR = "/images/teams/demo-day/logos";
 
 /** Per-page pitch slide screenshots (Canva thumbnails). */
 export const DEMO_DAY_SLIDES_DIR = "/images/teams/demo-day/slides";
@@ -71,6 +71,24 @@ export function demoDayPdfUrl(slug: string): string {
 /** Title-slide thumbnail (small PNG). Shown before the PDF iframe loads. */
 export function demoDayPreviewUrl(slug: string): string {
   return `/images/teams/demo-day/previews/${slug}.png`;
+}
+
+export function demoDayLogoUrl(slug: string): string {
+  return `${DEMO_DAY_LOGO_DIR}/${slug}.png`;
+}
+
+const DEMO_DAY_LOGO_SLUGS = new Set([
+  ...DEMO_DAY_DECK_MAPPINGS.map((entry) => entry.slug),
+  "wintel",
+]);
+
+/** Prefer a founder upload. Fall back to the mark cropped from the Demo Day title slide. */
+export function teamDisplayLogoUrl(slug: string, storedLogoUrl: string | null | undefined): string | null {
+  if (storedLogoUrl && !storedLogoUrl.includes("/images/teams/demo-day/")) {
+    return storedLogoUrl;
+  }
+  if (DEMO_DAY_LOGO_SLUGS.has(slug)) return demoDayLogoUrl(slug);
+  return storedLogoUrl ?? null;
 }
 
 export function demoDayDeckViewUrl(pageStart: number): string {

@@ -685,7 +685,13 @@ async function removeDuplicateTeams(db: ReturnType<typeof getDb>) {
 async function clearBrokenLogos(db: ReturnType<typeof getDb>) {
   const rows = await db.select({ id: teams.id, slug: teams.slug, logoUrl: teams.logoUrl }).from(teams);
   for (const row of rows) {
-    if (row.logoUrl && row.logoUrl.startsWith(BROKEN_LOGO_PREFIX) && !row.logoUrl.includes("/slides/")) {
+    if (
+      row.logoUrl &&
+      row.logoUrl.startsWith(BROKEN_LOGO_PREFIX) &&
+      !row.logoUrl.includes("/slides/") &&
+      !row.logoUrl.includes("/logos/") &&
+      !row.logoUrl.includes("/previews/")
+    ) {
       await db.update(teams).set({ logoUrl: null, updatedAt: sql`now()` }).where(eq(teams.id, row.id));
       console.log(`Cleared broken logo: ${row.slug}`);
     }
