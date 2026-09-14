@@ -84,7 +84,7 @@ export const DEMO_DAY_PITCH_COPY: DemoDayPitchCopy[] = [
     category: "Social",
   },
   {
-    slug: "konrad-gnat",
+    slug: "argo",
     name: "Argo",
     tagline: "The private foundry where raw thoughts become clear decisions",
     description:

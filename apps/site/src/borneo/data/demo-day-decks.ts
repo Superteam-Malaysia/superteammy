@@ -21,7 +21,7 @@ export const DEMO_DAY_DECK_MAPPINGS: DemoDayDeckMapping[] = [
   { slug: "solodeath", pageStart: 103, pageEnd: 111, pitchTitle: "SoloDeath" },
   { slug: "float-finance", pageStart: 112, pageEnd: 115, pitchTitle: "Float Finance" },
   { slug: "couch", pageStart: 116, pageEnd: 127, pitchTitle: "COUCH" },
-  { slug: "konrad-gnat", pageStart: 128, pageEnd: 139, pitchTitle: "Argo" },
+  { slug: "argo", pageStart: 128, pageEnd: 139, pitchTitle: "Argo" },
   { slug: "tuc", pageStart: 140, pageEnd: 163, pitchTitle: "TUC Event Wallet" },
   { slug: "agent-ctos", pageStart: 164, pageEnd: 179, pitchTitle: "Agent CTOS" },
   { slug: "webmerger", pageStart: 180, pageEnd: 186, pitchTitle: "Web#Merger" },
@@ -59,12 +59,6 @@ export function deckUrlForSlug(slug: string): string | null {
 
 export function deckMappingForSlug(slug: string): DemoDayDeckMapping | null {
   return DEMO_DAY_DECK_MAPPINGS.find((entry) => entry.slug === slug) ?? null;
-}
-
-export function logoUrlForSlug(slug: string): string | null {
-  const mapping = DEMO_DAY_DECK_MAPPINGS.find((entry) => entry.slug === slug);
-  if (!mapping) return null;
-  return `${DEMO_DAY_LOGO_DIR}/${slug}.png`;
 }
 
 export function deckSlidePathsForSlug(slug: string): string[] {

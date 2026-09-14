@@ -8,7 +8,7 @@ import { eq, sql, and } from "drizzle-orm";
 import { closeDb, getDb } from "../../src/borneo/lib/db";
 import { participants, teamMembers, teams } from "../../src/borneo/lib/db/schema";
 import { slugifyTeamName } from "../../src/borneo/lib/teams/slug";
-import { deckUrlForSlug, logoUrlForSlug } from "../../src/borneo/data/demo-day-decks";
+import { deckUrlForSlug } from "../../src/borneo/data/demo-day-decks";
 import { pitchCopyForSlug } from "../../src/borneo/data/demo-day-pitch-copy";
 import { isMentorTeamSlug } from "../../src/borneo/data/mentors";
 
@@ -582,17 +582,6 @@ const SEED_TEAMS: SeedTeam[] = [
     members: [{ email: "mariamhii@gmail.com", role: "owner" }],
   },
   {
-    slug: "konrad-gnat",
-    name: "Argo",
-    tagline: "Private foundry for founders — journal, AI, soulbound practice record",
-    description:
-      "The private foundry where raw thoughts get hammered into shape before they become a pitch or product decision — client-side encrypted, wallet-secured, open source.",
-    category: "Consumer",
-    websiteUrl: "https://myargoquest.com",
-    proofUrl: "https://myargoquest.com",
-    members: [{ email: "konradmgnat@gmail.com", role: "owner" }],
-  },
-  {
     slug: "bario-seeker",
       name: "Bario Seeker",
       tagline: "Digital passport and marketplace for verified Bario Rice",
@@ -669,6 +658,19 @@ const SEED_TEAMS: SeedTeam[] = [
   },
 ];
 
+/** Duplicate slugs created by earlier seed runs — safe to remove since the real team exists under a different slug. */
+const DUPLICATE_TEAM_SLUGS = ["konrad-gnat", "edventures-1"];
+
+async function removeDuplicateTeams(db: ReturnType<typeof getDb>) {
+  for (const slug of DUPLICATE_TEAM_SLUGS) {
+    const [row] = await db.select({ id: teams.id }).from(teams).where(eq(teams.slug, slug)).limit(1);
+    if (!row) continue;
+    await db.delete(teamMembers).where(eq(teamMembers.teamId, row.id));
+    await db.delete(teams).where(eq(teams.id, row.id));
+    console.log(`Removed duplicate team: ${slug}`);
+  }
+}
+
 /** Mentor directory slugs — not hackathon teams; deleted on each seed run. */
 async function removeMentorTeams(db: ReturnType<typeof getDb>) {
   const rows = await db.select({ id: teams.id, slug: teams.slug, name: teams.name }).from(teams);
@@ -715,6 +717,7 @@ async function main() {
   const db = getDb();
 
   await removeMentorTeams(db);
+  await removeDuplicateTeams(db);
   await pruneDeclinedTeamMembers(db);
 
   for (const seed of SEED_TEAMS) {
@@ -727,54 +730,83 @@ async function main() {
     const createdBy = ownerEmail ? await participantIdByEmail(db, ownerEmail) : null;
 
     const pitch = pitchCopyForSlug(seed.slug);
+    const deckUrl = seed.deckUrl ?? deckUrlForSlug(seed.slug) ?? null;
 
-    const values = {
-      slug: seed.slug || slugifyTeamName(seed.name),
-      name: pitch?.name ?? seed.name,
-      tagline: pitch?.tagline ?? seed.tagline,
-      description: pitch?.description ?? seed.description,
-      category: pitch?.category ?? seed.category,
-      websiteUrl: pitch?.websiteUrl ?? seed.websiteUrl ?? null,
-      proofUrl: seed.proofUrl ?? pitch?.websiteUrl ?? seed.websiteUrl ?? null,
-      deckUrl: seed.deckUrl ?? deckUrlForSlug(seed.slug) ?? null,
-      logoUrl: seed.logoUrl ?? logoUrlForSlug(seed.slug) ?? null,
-      createdBy,
-      updatedAt: new Date(),
-    };
+    // Check if team already exists — if so, only update deckUrl and pitch copy
+    // without overwriting real logos or founder-written descriptions.
+    const [existing] = await db
+      .select()
+      .from(teams)
+      .where(eq(teams.slug, seed.slug || slugifyTeamName(seed.name)))
+      .limit(1);
 
-    const [team] = await db
-      .insert(teams)
-      .values(values)
-      .onConflictDoUpdate({
-        target: teams.slug,
-        set: {
-          ...values,
+    const slug = seed.slug || slugifyTeamName(seed.name);
+    const ownerEmail = seed.members.find((m) => m.role === "owner")?.email;
+    const createdBy = ownerEmail ? await participantIdByEmail(db, ownerEmail) : null;
+
+    if (existing) {
+      // Only update deckUrl and pitch copy (tagline/description) if the team
+      // doesn't already have better values. Never overwrite a real uploaded logo.
+      await db
+        .update(teams)
+        .set({
+          deckUrl,
+          tagline: existing.tagline || pitch?.tagline || seed.tagline,
+          description: existing.description || pitch?.description || seed.description,
           updatedAt: sql`now()`,
-        },
-      })
-      .returning();
+        })
+        .where(eq(teams.id, existing.id));
+      console.log(`Updated deck for: ${existing.name} (${existing.slug})`);
+    } else {
+      const values = {
+        slug,
+        name: pitch?.name ?? seed.name,
+        tagline: pitch?.tagline ?? seed.tagline,
+        description: pitch?.description ?? seed.description,
+        category: pitch?.category ?? seed.category,
+        websiteUrl: pitch?.websiteUrl ?? seed.websiteUrl ?? null,
+        proofUrl: seed.proofUrl ?? pitch?.websiteUrl ?? seed.websiteUrl ?? null,
+        deckUrl,
+        createdBy,
+        updatedAt: new Date(),
+      };
 
-    for (const member of seed.members) {
-      const participantId = await participantIdByEmail(db, member.email);
-      if (!participantId) {
-        console.warn(`  skip member (not in DB): ${member.email} → ${seed.name}`);
-        continue;
+      const [team] = await db
+        .insert(teams)
+        .values(values)
+        .onConflictDoUpdate({
+          target: teams.slug,
+          set: {
+            deckUrl,
+            tagline: sql`COALESCE(${teams.tagline}, ${pitch?.tagline ?? seed.tagline})`,
+            description: sql`COALESCE(${teams.description}, ${pitch?.description ?? seed.description})`,
+            updatedAt: sql`now()`,
+          },
+        })
+        .returning();
+
+      for (const member of seed.members) {
+        const participantId = await participantIdByEmail(db, member.email);
+        if (!participantId) {
+          console.warn(`  skip member (not in DB): ${member.email} → ${seed.name}`);
+          continue;
+        }
+
+        await db
+          .insert(teamMembers)
+          .values({
+            teamId: team.id,
+            participantId,
+            role: member.role,
+          })
+          .onConflictDoUpdate({
+            target: [teamMembers.teamId, teamMembers.participantId],
+            set: { role: member.role },
+          });
       }
 
-      await db
-        .insert(teamMembers)
-        .values({
-          teamId: team.id,
-          participantId,
-          role: member.role,
-        })
-        .onConflictDoUpdate({
-          target: [teamMembers.teamId, teamMembers.participantId],
-          set: { role: member.role },
-        });
+      console.log(`Seeded team: ${seed.name} (${team.slug})`);
     }
-
-    console.log(`Seeded team: ${seed.name} (${team.slug})`);
   }
 
   await closeDb();
