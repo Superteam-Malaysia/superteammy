@@ -381,29 +381,28 @@ const SEED_TEAMS: SeedTeam[] = [
     proofUrl: "https://superteam.fun/earn/listing/ranger-build-a-bear-hackathon-main-track",
     members: [{ email: "kai@kurtosis-labs.com", role: "owner" }],
   },
+  // {
+  //   slug: "cardsjp",
+  //   name: "CardsJP",
+  //   tagline: "Reselling Pokémon cards from Akihabara to the world",
+  //   description:
+  //     "Reselling Pokémon cards from Akihabara Tokyo — collaborating with shop owners to reach collectors worldwide.",
+  //   category: "Consumer",
+  //   websiteUrl: "https://cardsjp.com",
+  //   proofUrl: "https://cardsjp.com",
+  //   members: [{ email: "emailsolah@gmail.com", role: "owner" }],
+  // },
   {
-    // {
-    //   slug: "cardsjp",
-    //   name: "CardsJP",
-    //   tagline: "Reselling Pokémon cards from Akihabara to the world",
-    //   description:
-    //     "Reselling Pokémon cards from Akihabara Tokyo — collaborating with shop owners to reach collectors worldwide.",
-    //   category: "Consumer",
-    //   websiteUrl: "https://cardsjp.com",
-    //   proofUrl: "https://cardsjp.com",
-    //   members: [{ email: "emailsolah@gmail.com", role: "owner" }],
-    // },
-    {
-      slug: "solodeath",
-      name: "SoloDeath",
-      tagline: "Workout RPG with optional Solana reward pools",
-      description:
-        "A workout RPG where daily quests, rank progression, and sealed gear chests make fitness consistency part of the game — with optional S-rank Solana reward pools.",
-      category: "Gaming",
-      websiteUrl: "https://solodeath.com",
-      proofUrl: "https://solodeath.com",
-      members: [{ email: "emailsolah@gmail.com", role: "owner" }],
-    },
+    slug: "solodeath",
+    name: "SoloDeath",
+    tagline: "Workout RPG with optional Solana reward pools",
+    description:
+      "A workout RPG where daily quests, rank progression, and sealed gear chests make fitness consistency part of the game — with optional S-rank Solana reward pools.",
+    category: "Gaming",
+    websiteUrl: "https://solodeath.com",
+    proofUrl: "https://solodeath.com",
+    members: [{ email: "emailsolah@gmail.com", role: "owner" }],
+  },
   {
     slug: "hypebiscus",
     name: "Hypebiscus",
