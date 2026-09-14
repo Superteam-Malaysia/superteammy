@@ -41,6 +41,9 @@ export const DEMO_DAY_DECK_MAPPINGS: DemoDayDeckMapping[] = [
 /** Static path for title-slide logo exported from the master deck. */
 export const DEMO_DAY_LOGO_DIR = "/images/teams/demo-day";
 
+/** Per-page pitch slide screenshots (Canva thumbnails, 1920×1080 deck → ~596px wide). */
+export const DEMO_DAY_SLIDES_DIR = "/images/teams/demo-day/slides";
+
 export function demoDayDeckViewUrl(pageStart: number): string {
   return `${DEMO_DAY_MASTER_VIEW_URL}#page-${pageStart}`;
 }
@@ -62,4 +65,14 @@ export function logoUrlForSlug(slug: string): string | null {
   const mapping = DEMO_DAY_DECK_MAPPINGS.find((entry) => entry.slug === slug);
   if (!mapping) return null;
   return `${DEMO_DAY_LOGO_DIR}/${slug}.png`;
+}
+
+export function deckSlideUrlsForSlug(slug: string): string[] {
+  const mapping = deckMappingForSlug(slug);
+  if (!mapping) return [];
+  const slides: string[] = [];
+  for (let page = mapping.pageStart; page <= mapping.pageEnd; page++) {
+    slides.push(`${DEMO_DAY_SLIDES_DIR}/${slug}/${page}.png`);
+  }
+  return slides;
 }

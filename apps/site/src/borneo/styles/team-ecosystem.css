@@ -794,6 +794,49 @@
   background: color-mix(in srgb, var(--color-wisp) 4%, transparent);
 }
 
+.team-detail__deck-count {
+  margin-left: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-wisp) 45%, transparent);
+}
+
+.team-detail__slides {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.team-detail__slide {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.team-detail__slide-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-wisp) 42%, transparent);
+}
+
+.team-detail__slide-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--color-wisp) 12%, transparent);
+  background: color-mix(in srgb, var(--color-wisp) 4%, transparent);
+}
+
 .team-detail__deck-frame iframe {
   position: absolute;
   inset: 0;

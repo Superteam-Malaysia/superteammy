@@ -1,4 +1,5 @@
-import { deckMappingForSlug, demoDayDeckEmbedUrl } from "@borneo/data/demo-day-decks";
+import { deckMappingForSlug, deckSlideUrlsForSlug } from "@borneo/data/demo-day-decks";
+import { withBasePath } from "@borneo/lib/base-path";
 import type { PublicTeam } from "@borneo/lib/teams/types";
 
 function ExternalIcon() {
@@ -23,13 +24,19 @@ export function TeamPitchDeck({ team }: TeamPitchDeckProps) {
   if (!team.deckUrl) return null;
 
   const mapping = deckMappingForSlug(team.slug);
-  const embedSrc = mapping ? demoDayDeckEmbedUrl(mapping.pageStart) : team.deckUrl.replace("/view", "/view?embed");
+  const slideUrls = deckSlideUrlsForSlug(team.slug);
+  const slideCount = slideUrls.length;
 
   return (
     <section className="team-detail__deck" aria-labelledby={`${team.slug}-pitch-deck`}>
       <div className="team-detail__deck-header">
         <h2 id={`${team.slug}-pitch-deck`} className="team-detail__section-label">
           Demo Day pitch
+          {slideCount > 0 ? (
+            <span className="team-detail__deck-count">
+              {slideCount} {slideCount === 1 ? "slide" : "slides"}
+            </span>
+          ) : null}
         </h2>
         <a
           href={team.deckUrl}
@@ -38,18 +45,39 @@ export function TeamPitchDeck({ team }: TeamPitchDeckProps) {
           rel="noopener noreferrer"
         >
           Open in Canva
+          {mapping ? ` · from slide ${mapping.pageStart}` : null}
           <ExternalIcon />
         </a>
       </div>
-      <div className="team-detail__deck-frame">
-        <iframe
-          title={`${team.name} Demo Day pitch deck`}
-          src={embedSrc}
-          loading="lazy"
-          allow="fullscreen"
-          allowFullScreen
-        />
-      </div>
+
+      {slideCount > 0 ? (
+        <ol className="team-detail__slides">
+          {slideUrls.map((src, index) => (
+              <li key={src} className="team-detail__slide">
+                <span className="team-detail__slide-label">Slide {index + 1}</span>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={withBasePath(src)}
+                  alt={`${team.name} pitch deck slide ${index + 1}`}
+                  loading={index < 2 ? "eager" : "lazy"}
+                  width={1920}
+                  height={1080}
+                  className="team-detail__slide-img"
+                />
+              </li>
+          ))}
+        </ol>
+      ) : (
+        <div className="team-detail__deck-frame">
+          <iframe
+            title={`${team.name} Demo Day pitch deck`}
+            src={team.deckUrl.replace("/view", "/view?embed")}
+            loading="lazy"
+            allow="fullscreen"
+            allowFullScreen
+          />
+        </div>
+      )}
     </section>
   );
 }
