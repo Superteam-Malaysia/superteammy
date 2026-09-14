@@ -1,4 +1,6 @@
-import { deckMappingForSlug, deckSlideUrlsForSlug } from "@borneo/data/demo-day-decks";
+import { deckMappingForSlug, deckSlidePathsForSlug } from "@borneo/data/demo-day-decks";
+import { TeamPitchSlideshow } from "@borneo/components/teams/TeamPitchSlideshow";
+import { publicAssetUrl } from "@borneo/lib/public-asset-url";
 import type { PublicTeam } from "@borneo/lib/teams/types";
 
 function ExternalIcon() {
@@ -23,7 +25,7 @@ export function TeamPitchDeck({ team }: TeamPitchDeckProps) {
   if (!team.deckUrl) return null;
 
   const mapping = deckMappingForSlug(team.slug);
-  const slideUrls = deckSlideUrlsForSlug(team.slug);
+  const slideUrls = deckSlidePathsForSlug(team.slug).map(publicAssetUrl);
   const slideCount = slideUrls.length;
 
   return (
@@ -50,22 +52,7 @@ export function TeamPitchDeck({ team }: TeamPitchDeckProps) {
       </div>
 
       {slideCount > 0 ? (
-        <ol className="team-detail__slides">
-          {slideUrls.map((src, index) => (
-              <li key={src} className="team-detail__slide">
-                <span className="team-detail__slide-label">Slide {index + 1}</span>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={src}
-                  alt={`${team.name} pitch deck slide ${index + 1}`}
-                  loading={index < 2 ? "eager" : "lazy"}
-                  width={1920}
-                  height={1080}
-                  className="team-detail__slide-img"
-                />
-              </li>
-          ))}
-        </ol>
+        <TeamPitchSlideshow slides={slideUrls} teamName={team.name} />
       ) : (
         <div className="team-detail__deck-frame">
           <iframe

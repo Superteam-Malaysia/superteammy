@@ -67,7 +67,7 @@ export function logoUrlForSlug(slug: string): string | null {
   return `${DEMO_DAY_LOGO_DIR}/${slug}.png`;
 }
 
-export function deckSlideUrlsForSlug(slug: string): string[] {
+export function deckSlidePathsForSlug(slug: string): string[] {
   const mapping = deckMappingForSlug(slug);
   if (!mapping) return [];
   const slides: string[] = [];
