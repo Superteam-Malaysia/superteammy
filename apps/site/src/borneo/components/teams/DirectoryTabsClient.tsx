@@ -13,6 +13,7 @@ import { getUnassignedBuilders } from "@borneo/lib/participants/unassigned-build
 import type { PublicParticipant } from "@borneo/lib/participants/types";
 import type { PublicTeam } from "@borneo/lib/teams/types";
 import { TEAM_CATEGORIES } from "@borneo/lib/teams/types";
+import { directoryTeams } from "@borneo/lib/teams/directory-teams";
 import type { DirectoryTab } from "@borneo/lib/directory/tabs";
 
 type DirectoryTabsClientProps = {
@@ -71,6 +72,7 @@ export function DirectoryTabsClient({
   const [mentorFilter, setMentorFilter] = useState<(typeof MENTOR_FILTERS)[number]>("All");
   const [expandMentorId, setExpandMentorId] = useState<string | null>(null);
 
+  const listedTeams = useMemo(() => directoryTeams(teams), [teams]);
   const unassigned = useMemo(() => getUnassignedBuilders(people), [people]);
 
   const setTab = useCallback((next: DirectoryTab) => {
@@ -110,7 +112,7 @@ export function DirectoryTabsClient({
   }, [tab]);
 
   const filteredTeams = useMemo(() => {
-    return teams.filter((team) => {
+    return listedTeams.filter((team) => {
       const matchesCategory =
         teamCategory === "All" || (team.category ?? "Other") === teamCategory;
       const matchesQuery = matchesSearch(
@@ -119,7 +121,7 @@ export function DirectoryTabsClient({
       );
       return matchesCategory && matchesQuery;
     });
-  }, [teams, teamCategory, searchQuery]);
+  }, [listedTeams, teamCategory, searchQuery]);
 
   const filteredUnassigned = useMemo(() => {
     return unassigned.filter((person) =>
