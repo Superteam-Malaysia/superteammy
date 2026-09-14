@@ -17,7 +17,7 @@ export const DEMO_DAY_DECK_MAPPINGS: DemoDayDeckMapping[] = [
   { slug: "shoqi-io", pageStart: 33, pageEnd: 38, pitchTitle: "SHOQI" },
   { slug: "foresight", pageStart: 39, pageEnd: 51, pitchTitle: "hexo.fun" },
   { slug: "socoe-impact", pageStart: 52, pageEnd: 71, pitchTitle: "Verita" },
-  { slug: "veya", pageStart: 72, pageEnd: 77, pitchTitle: "Veya" },
+  { slug: "veya", pageStart: 84, pageEnd: 102, pitchTitle: "Veya" },
   { slug: "solodeath", pageStart: 103, pageEnd: 111, pitchTitle: "SoloDeath" },
   { slug: "float-finance", pageStart: 112, pageEnd: 115, pitchTitle: "Float Finance" },
   { slug: "couch", pageStart: 116, pageEnd: 127, pitchTitle: "COUCH" },

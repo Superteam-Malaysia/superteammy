@@ -689,6 +689,16 @@
   color: var(--color-wisp);
 }
 
+.team-detail__tagline {
+  margin: 0.5rem 0 0;
+  max-width: 42rem;
+  font-family: var(--font-sans);
+  font-size: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  font-weight: 500;
+  line-height: 1.45;
+  color: color-mix(in srgb, var(--color-wisp) 82%, transparent);
+}
+
 .team-detail__meta {
   display: flex;
   flex-wrap: wrap;
@@ -748,8 +758,15 @@
 }
 
 .team-detail__description {
-  margin: 0;
+  margin: 1.5rem 0 0;
   max-width: 44rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.team-detail__description p {
+  margin: 0;
   font-family: var(--font-sans);
   font-size: 1rem;
   line-height: 1.65;

@@ -51,6 +51,7 @@ export function TeamDetailPublicView({ team }: TeamDetailPublicViewProps) {
 
         <div>
           <h1 className="team-detail__title">{team.name}</h1>
+          {team.tagline ? <p className="team-detail__tagline">{team.tagline}</p> : null}
           <p className="team-detail__meta">
             <span className="team-detail__badge">{category}</span>
             <span aria-hidden="true">·</span>
@@ -75,11 +76,16 @@ export function TeamDetailPublicView({ team }: TeamDetailPublicViewProps) {
         </div>
       </div>
 
-      {(team.description || team.tagline) && (
-        <p className="team-detail__description">
-          {team.description?.trim() || team.tagline}
-        </p>
-      )}
+      {team.description?.trim() ? (
+        <div className="team-detail__description">
+          {team.description
+            .trim()
+            .split(/\n\n+/)
+            .map((paragraph) => (
+              <p key={paragraph.slice(0, 48)}>{paragraph}</p>
+            ))}
+        </div>
+      ) : null}
 
       <TeamPitchDeck team={team} />
     </>

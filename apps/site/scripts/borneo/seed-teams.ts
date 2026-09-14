@@ -9,6 +9,7 @@ import { closeDb, getDb } from "../../src/borneo/lib/db";
 import { participants, teamMembers, teams } from "../../src/borneo/lib/db/schema";
 import { slugifyTeamName } from "../../src/borneo/lib/teams/slug";
 import { deckUrlForSlug, logoUrlForSlug } from "../../src/borneo/data/demo-day-decks";
+import { pitchCopyForSlug } from "../../src/borneo/data/demo-day-pitch-copy";
 import { isMentorTeamSlug } from "../../src/borneo/data/mentors";
 
 type SeedMember = { email: string; role: "owner" | "editor" | "member" };
@@ -725,14 +726,16 @@ async function main() {
     const ownerEmail = seed.members.find((m) => m.role === "owner")?.email;
     const createdBy = ownerEmail ? await participantIdByEmail(db, ownerEmail) : null;
 
+    const pitch = pitchCopyForSlug(seed.slug);
+
     const values = {
       slug: seed.slug || slugifyTeamName(seed.name),
-      name: seed.name,
-      tagline: seed.tagline,
-      description: seed.description,
-      category: seed.category,
-      websiteUrl: seed.websiteUrl ?? null,
-      proofUrl: seed.proofUrl ?? null,
+      name: pitch?.name ?? seed.name,
+      tagline: pitch?.tagline ?? seed.tagline,
+      description: pitch?.description ?? seed.description,
+      category: pitch?.category ?? seed.category,
+      websiteUrl: pitch?.websiteUrl ?? seed.websiteUrl ?? null,
+      proofUrl: seed.proofUrl ?? pitch?.websiteUrl ?? seed.websiteUrl ?? null,
       deckUrl: seed.deckUrl ?? deckUrlForSlug(seed.slug) ?? null,
       logoUrl: seed.logoUrl ?? logoUrlForSlug(seed.slug) ?? null,
       createdBy,
