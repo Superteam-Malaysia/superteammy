@@ -669,6 +669,9 @@ const SEED_TEAMS: SeedTeam[] = [
 /** Duplicate slugs created by earlier seed runs — safe to remove since the real team exists under a different slug. */
 const DUPLICATE_TEAM_SLUGS = ["konrad-gnat", "edventures-1"];
 
+/** Logo paths from deleted title-slide screenshots — clear so teams show initials instead of broken images. */
+const BROKEN_LOGO_PREFIX = "/images/teams/demo-day/";
+
 async function removeDuplicateTeams(db: ReturnType<typeof getDb>) {
   for (const slug of DUPLICATE_TEAM_SLUGS) {
     const [row] = await db.select({ id: teams.id }).from(teams).where(eq(teams.slug, slug)).limit(1);
@@ -676,6 +679,16 @@ async function removeDuplicateTeams(db: ReturnType<typeof getDb>) {
     await db.delete(teamMembers).where(eq(teamMembers.teamId, row.id));
     await db.delete(teams).where(eq(teams.id, row.id));
     console.log(`Removed duplicate team: ${slug}`);
+  }
+}
+
+async function clearBrokenLogos(db: ReturnType<typeof getDb>) {
+  const rows = await db.select({ id: teams.id, slug: teams.slug, logoUrl: teams.logoUrl }).from(teams);
+  for (const row of rows) {
+    if (row.logoUrl && row.logoUrl.startsWith(BROKEN_LOGO_PREFIX) && !row.logoUrl.includes("/slides/")) {
+      await db.update(teams).set({ logoUrl: null, updatedAt: sql`now()` }).where(eq(teams.id, row.id));
+      console.log(`Cleared broken logo: ${row.slug}`);
+    }
   }
 }
 
@@ -726,6 +739,7 @@ async function main() {
 
   await removeMentorTeams(db);
   await removeDuplicateTeams(db);
+  await clearBrokenLogos(db);
   await pruneDeclinedTeamMembers(db);
 
   for (const seed of SEED_TEAMS) {

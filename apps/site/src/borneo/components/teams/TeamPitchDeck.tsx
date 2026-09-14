@@ -1,6 +1,4 @@
-import { deckMappingForSlug, deckSlidePathsForSlug } from "@borneo/data/demo-day-decks";
-import { TeamPitchSlideshow } from "@borneo/components/teams/TeamPitchSlideshow";
-import { publicAssetUrl } from "@borneo/lib/public-asset-url";
+import { deckMappingForSlug, demoDayDeckEmbedUrl } from "@borneo/data/demo-day-decks";
 import type { PublicTeam } from "@borneo/lib/teams/types";
 
 function ExternalIcon() {
@@ -25,19 +23,15 @@ export function TeamPitchDeck({ team }: TeamPitchDeckProps) {
   if (!team.deckUrl) return null;
 
   const mapping = deckMappingForSlug(team.slug);
-  const slideUrls = deckSlidePathsForSlug(team.slug).map(publicAssetUrl);
-  const slideCount = slideUrls.length;
+  const embedSrc = mapping
+    ? demoDayDeckEmbedUrl(mapping.pageStart)
+    : team.deckUrl.replace("/view", "/view?embed");
 
   return (
     <section className="team-detail__deck" aria-labelledby={`${team.slug}-pitch-deck`}>
       <div className="team-detail__deck-header">
         <h2 id={`${team.slug}-pitch-deck`} className="team-detail__section-label">
           Demo Day pitch
-          {slideCount > 0 ? (
-            <span className="team-detail__deck-count">
-              {slideCount} {slideCount === 1 ? "slide" : "slides"}
-            </span>
-          ) : null}
         </h2>
         <a
           href={team.deckUrl}
@@ -50,20 +44,15 @@ export function TeamPitchDeck({ team }: TeamPitchDeckProps) {
           <ExternalIcon />
         </a>
       </div>
-
-      {slideCount > 0 ? (
-        <TeamPitchSlideshow slides={slideUrls} teamName={team.name} />
-      ) : (
-        <div className="team-detail__deck-frame">
-          <iframe
-            title={`${team.name} Demo Day pitch deck`}
-            src={team.deckUrl.replace("/view", "/view?embed")}
-            loading="lazy"
-            allow="fullscreen"
-            allowFullScreen
-          />
-        </div>
-      )}
+      <div className="team-detail__deck-frame">
+        <iframe
+          title={`${team.name} Demo Day pitch deck`}
+          src={embedSrc}
+          loading="lazy"
+          allow="fullscreen"
+          allowFullScreen
+        />
+      </div>
     </section>
   );
 }
