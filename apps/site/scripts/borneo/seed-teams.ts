@@ -632,7 +632,7 @@ const SEED_TEAMS: SeedTeam[] = [
       description:
         "Anonymous social network for crypto jobs and projects with a ZK identity layer — verified reputation without exposing wallets.",
       category: "Social",
-      members: [],
+      members: [{ email: "alialeexin@gmail.com", role: "owner" }],
   },
   {
     slug: "agent-ctos",
@@ -652,7 +652,7 @@ const SEED_TEAMS: SeedTeam[] = [
       description:
         "One photo, real Malaysian nutrition data, and plain advice — not a lecture. Tamper-proof logs on Solana for people managing diabetes.",
       category: "Consumer",
-      members: [],
+      members: [{ email: "hpy5c8whjc@privaterelay.appleid.com", role: "owner" }],
   },
   {
     slug: "thomas-vault",
@@ -700,6 +700,33 @@ async function removeMentorTeams(db: ReturnType<typeof getDb>) {
     await db.delete(teamMembers).where(eq(teamMembers.teamId, team.id));
     await db.delete(teams).where(eq(teams.id, team.id));
     console.log(`Removed mentor team: ${team.slug}`);
+  }
+}
+
+async function upsertSeedMembers(
+  db: ReturnType<typeof getDb>,
+  teamId: string,
+  teamName: string,
+  members: SeedMember[],
+) {
+  for (const member of members) {
+    const participantId = await participantIdByEmail(db, member.email);
+    if (!participantId) {
+      console.warn(`  skip member (not in DB): ${member.email} → ${teamName}`);
+      continue;
+    }
+
+    await db
+      .insert(teamMembers)
+      .values({
+        teamId,
+        participantId,
+        role: member.role,
+      })
+      .onConflictDoUpdate({
+        target: [teamMembers.teamId, teamMembers.participantId],
+        set: { role: member.role },
+      });
   }
 }
 
@@ -775,6 +802,7 @@ async function main() {
           updatedAt: sql`now()`,
         })
         .where(eq(teams.id, existing.id));
+      await upsertSeedMembers(db, existing.id, existing.name, seed.members);
       console.log(`Updated deck for: ${existing.name} (${existing.slug})`);
     } else {
       const values = {
@@ -804,26 +832,7 @@ async function main() {
         })
         .returning();
 
-      for (const member of seed.members) {
-        const participantId = await participantIdByEmail(db, member.email);
-        if (!participantId) {
-          console.warn(`  skip member (not in DB): ${member.email} → ${seed.name}`);
-          continue;
-        }
-
-        await db
-          .insert(teamMembers)
-          .values({
-            teamId: team.id,
-            participantId,
-            role: member.role,
-          })
-          .onConflictDoUpdate({
-            target: [teamMembers.teamId, teamMembers.participantId],
-            set: { role: member.role },
-          });
-      }
-
+      await upsertSeedMembers(db, team.id, seed.name, seed.members);
       console.log(`Seeded team: ${seed.name} (${team.slug})`);
     }
   }
