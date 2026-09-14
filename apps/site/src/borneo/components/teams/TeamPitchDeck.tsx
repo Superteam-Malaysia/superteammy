@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { deckMappingForSlug, demoDayPdfUrl } from "@borneo/data/demo-day-decks";
+import { deckMappingForSlug, demoDayPdfUrl, demoDayPreviewUrl } from "@borneo/data/demo-day-decks";
 import type { PublicTeam } from "@borneo/lib/teams/types";
 
 function ExternalIcon() {
@@ -26,6 +26,7 @@ export function TeamPitchDeck({ team }: TeamPitchDeckProps) {
   const [embedReady, setEmbedReady] = useState(false);
   const mapping = deckMappingForSlug(team.slug);
   const pdfSrc = mapping ? demoDayPdfUrl(mapping.slug) : null;
+  const previewSrc = mapping ? demoDayPreviewUrl(mapping.slug) : null;
   const fallbackUrl = team.deckUrl;
 
   let embedSrc: string;
@@ -70,9 +71,22 @@ export function TeamPitchDeck({ team }: TeamPitchDeckProps) {
             className="team-detail__deck-load"
             onClick={() => setEmbedReady(true)}
           >
-            <span className="team-detail__deck-load-title">Load full pitch</span>
-            <span className="team-detail__deck-load-hint">
-              Numbers, GTM, and the ask. The page above is the brief.
+            {previewSrc ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={previewSrc}
+                alt=""
+                className="team-detail__deck-preview"
+                width={596}
+                height={336}
+              />
+            ) : null}
+            <span className="team-detail__deck-load-scrim" aria-hidden="true" />
+            <span className="team-detail__deck-load-copy">
+              <span className="team-detail__deck-load-title">Load full pitch</span>
+              <span className="team-detail__deck-load-hint">
+                Title slide only until you ask. Then the PDF.
+              </span>
             </span>
           </button>
         )}

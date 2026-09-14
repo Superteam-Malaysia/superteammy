@@ -953,23 +953,57 @@
 .team-detail__deck-load {
   position: absolute;
   inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
+  display: block;
   margin: 0;
-  padding: 1.5rem;
+  padding: 0;
   border: 0;
-  background: transparent;
-  color: color-mix(in srgb, var(--color-wisp) 88%, transparent);
+  background: color-mix(in srgb, var(--color-ink) 40%, transparent);
+  color: var(--color-wisp);
   cursor: pointer;
   font-family: var(--font-sans);
+  overflow: hidden;
 }
 
-.team-detail__deck-load:hover,
-.team-detail__deck-load:focus-visible {
-  background: color-mix(in srgb, var(--color-wisp) 6%, transparent);
+.team-detail__deck-preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.team-detail__deck-load-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--color-ink) 82%, transparent) 0%,
+    color-mix(in srgb, var(--color-ink) 18%, transparent) 48%,
+    transparent 72%
+  );
+}
+
+.team-detail__deck-load:hover .team-detail__deck-load-scrim,
+.team-detail__deck-load:focus-visible .team-detail__deck-load-scrim {
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--color-ink) 88%, transparent) 0%,
+    color-mix(in srgb, var(--color-ink) 28%, transparent) 52%,
+    transparent 78%
+  );
+}
+
+.team-detail__deck-load-copy {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  padding: 1rem 1.1rem 1.05rem;
+  text-align: left;
 }
 
 .team-detail__deck-load-title {
@@ -984,7 +1018,7 @@
   max-width: 22rem;
   font-size: 0.8125rem;
   line-height: 1.4;
-  color: color-mix(in srgb, var(--color-wisp) 50%, transparent);
+  color: color-mix(in srgb, var(--color-wisp) 72%, transparent);
 }
 
 .team-detail__section-label {

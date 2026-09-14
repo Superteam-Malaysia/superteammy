@@ -68,6 +68,11 @@ export function demoDayPdfUrl(slug: string): string {
   return `/images/teams/demo-day/decks/${slug}.pdf`;
 }
 
+/** Title-slide thumbnail (small PNG). Shown before the PDF iframe loads. */
+export function demoDayPreviewUrl(slug: string): string {
+  return `/images/teams/demo-day/previews/${slug}.png`;
+}
+
 export function demoDayDeckViewUrl(pageStart: number): string {
   return `${DEMO_DAY_MASTER_VIEW_URL}#page-${pageStart}`;
 }
