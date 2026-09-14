@@ -726,9 +726,6 @@ async function main() {
       continue;
     }
 
-    const ownerEmail = seed.members.find((m) => m.role === "owner")?.email;
-    const createdBy = ownerEmail ? await participantIdByEmail(db, ownerEmail) : null;
-
     const pitch = pitchCopyForSlug(seed.slug);
     const deckUrl = seed.deckUrl ?? deckUrlForSlug(seed.slug) ?? null;
 
