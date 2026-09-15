@@ -196,7 +196,8 @@ export function DirectoryTabsClient({
           )}
         </div>
 
-        <div role="tabpanel" hidden={tab !== "teams"} aria-hidden={tab !== "teams"}>
+        {tab === "teams" ? (
+          <>
           {filteredTeams.length > 0 ? (
             <section className="mb-10">
               <TeamEcosystemClient teams={filteredTeams} />
@@ -225,11 +226,10 @@ export function DirectoryTabsClient({
               <ParticipantDirectoryClient people={filteredUnassigned} />
             </section>
           ) : null}
-        </div>
-
-        <div role="tabpanel" hidden={tab !== "mentors"} aria-hidden={tab !== "mentors"}>
+          </>
+        ) : (
           <MentorDirectoryClient mentors={filteredMentors} expandMentorId={expandMentorId} />
-        </div>
+        )}
       </div>
     </div>
   );

@@ -114,7 +114,7 @@ export function deckSlidePathsForSlug(slug: string): string[] {
   const slides: string[] = [];
   const count = mapping.pageEnd - mapping.pageStart + 1;
   for (let i = 1; i <= count; i++) {
-    slides.push(`${DEMO_DAY_SLIDES_DIR}/${slug}/${String(i).padStart(2, "0")}.png`);
+    slides.push(`${DEMO_DAY_SLIDES_DIR}/${slug}/${String(i).padStart(2, "0")}.webp`);
   }
   return slides;
 }

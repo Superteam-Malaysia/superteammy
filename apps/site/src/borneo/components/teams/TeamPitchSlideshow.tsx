@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 type TeamPitchSlideshowProps = {
   slides: string[];
@@ -47,21 +47,27 @@ export function TeamPitchSlideshow({ slides, teamName }: TeamPitchSlideshowProps
     setIndex((current) => (current + 1) % total);
   }, [total]);
 
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "ArrowLeft") goPrev();
-      if (event.key === "ArrowRight") goNext();
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [goNext, goPrev]);
-
   if (total === 0) return null;
 
   const src = slides[index];
+  const prevSrc = slides[(index - 1 + total) % total];
+  const nextSrc = slides[(index + 1) % total];
 
   return (
-    <div className="team-detail__slideshow">
+    <div
+      className="team-detail__slideshow"
+      tabIndex={0}
+      onKeyDown={(event) => {
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          goPrev();
+        }
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          goNext();
+        }
+      }}
+    >
       <div className="team-detail__slideshow-stage">
         <button
           type="button"
@@ -78,9 +84,11 @@ export function TeamPitchSlideshow({ slides, teamName }: TeamPitchSlideshowProps
             src={src}
             alt={`${teamName} pitch deck slide ${index + 1} of ${total}`}
             className="team-detail__slideshow-img"
-            width={1920}
-            height={1080}
+            width={1280}
+            height={720}
             draggable={false}
+            decoding="async"
+            fetchPriority="high"
           />
         </figure>
 
@@ -114,6 +122,14 @@ export function TeamPitchSlideshow({ slides, teamName }: TeamPitchSlideshowProps
           </div>
         ) : null}
       </div>
+      {prevSrc !== src ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={prevSrc} alt="" aria-hidden="true" className="team-detail__slideshow-prefetch" />
+      ) : null}
+      {nextSrc !== src ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={nextSrc} alt="" aria-hidden="true" className="team-detail__slideshow-prefetch" />
+      ) : null}
     </div>
   );
 }

@@ -53,7 +53,13 @@ export function TeamDirectoryCard({ team }: TeamDirectoryCardProps) {
             <div className="team-directory-card__logo-wrap">
               {logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={logoUrl} alt="" className="team-directory-card__logo-img" />
+                <img
+                  src={logoUrl}
+                  alt=""
+                  className="team-directory-card__logo-img"
+                  loading="lazy"
+                  decoding="async"
+                />
               ) : (
                 <span className="team-directory-card__logo-fallback">{teamInitials(team.name)}</span>
               )}

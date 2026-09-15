@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { deckMappingForSlug, demoDayPdfUrl, demoDayPreviewUrl } from "@borneo/data/demo-day-decks";
+import {
+  deckMappingForSlug,
+  deckSlidePathsForSlug,
+  demoDayPdfUrl,
+  demoDayPreviewUrl,
+} from "@borneo/data/demo-day-decks";
+import { TeamPitchSlideshow } from "@borneo/components/teams/TeamPitchSlideshow";
 import type { PublicTeam } from "@borneo/lib/teams/types";
 
 function ExternalIcon() {
@@ -25,16 +31,38 @@ type TeamPitchDeckProps = {
 export function TeamPitchDeck({ team }: TeamPitchDeckProps) {
   const [embedReady, setEmbedReady] = useState(false);
   const mapping = deckMappingForSlug(team.slug);
+  const slides = mapping ? deckSlidePathsForSlug(mapping.slug) : [];
   const pdfSrc = mapping ? demoDayPdfUrl(mapping.slug) : null;
   const previewSrc = mapping ? demoDayPreviewUrl(mapping.slug) : null;
   const fallbackUrl = team.deckUrl;
 
+  if (slides.length > 0) {
+    return (
+      <section className="team-detail__deck" aria-labelledby={`${team.slug}-pitch-deck`}>
+        <div className="team-detail__deck-header">
+          <h2 id={`${team.slug}-pitch-deck`} className="team-detail__section-label">
+            Demo Day pitch
+          </h2>
+          {pdfSrc ? (
+            <a
+              href={pdfSrc}
+              className="team-detail__link-btn team-detail__link-btn--muted"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Download PDF
+              <ExternalIcon />
+            </a>
+          ) : null}
+        </div>
+        <TeamPitchSlideshow slides={slides} teamName={team.name} />
+      </section>
+    );
+  }
+
   let embedSrc: string;
   let openHref: string;
-  if (pdfSrc) {
-    embedSrc = pdfSrc;
-    openHref = pdfSrc;
-  } else if (fallbackUrl) {
+  if (fallbackUrl) {
     embedSrc = fallbackUrl.replace("/view", "/view?embed");
     openHref = fallbackUrl;
   } else {
@@ -53,7 +81,7 @@ export function TeamPitchDeck({ team }: TeamPitchDeckProps) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          {pdfSrc ? "Open PDF" : "Open deck"}
+          Open deck
           <ExternalIcon />
         </a>
       </div>
@@ -83,10 +111,8 @@ export function TeamPitchDeck({ team }: TeamPitchDeckProps) {
             ) : null}
             <span className="team-detail__deck-load-scrim" aria-hidden="true" />
             <span className="team-detail__deck-load-copy">
-              <span className="team-detail__deck-load-title">Load full pitch</span>
-              <span className="team-detail__deck-load-hint">
-                Title slide only until you ask. Then the PDF.
-              </span>
+              <span className="team-detail__deck-load-title">Load deck</span>
+              <span className="team-detail__deck-load-hint">Opens the hosted slides in place.</span>
             </span>
           </button>
         )}

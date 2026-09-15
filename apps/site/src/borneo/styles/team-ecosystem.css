@@ -848,9 +848,18 @@
   height: auto;
   border-radius: 0.5rem;
   border: 1px solid color-mix(in srgb, var(--color-wisp) 12%, transparent);
-  background: color-mix(in srgb, var(--color-wisp) 4%, transparent);
+  background: color-mix(in srgb, var(--color-ink) 55%, transparent);
   aspect-ratio: 16 / 9;
   object-fit: contain;
+}
+
+.team-detail__slideshow-prefetch {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .team-detail__slideshow-btn {
