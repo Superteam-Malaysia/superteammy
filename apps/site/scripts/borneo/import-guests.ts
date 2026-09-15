@@ -1,19 +1,23 @@
 #!/usr/bin/env tsx
 /**
  * Import Luma guest CSV into Postgres (participants table).
- * Usage: DATABASE_URL=... npm run db:import-guests [-- path/to/guests.csv]
+ * Usage: DATABASE_URL=... npm run borneo:db:import-guests [-- path/to/guests.csv]
+ *
+ * Check-ins: Luma `checked_in_at` is written to participants.checked_in_at
+ * (coalesce keeps an earlier local check-in if the CSV cell is empty).
  */
 import "dotenv/config";
 import { createReadStream } from "node:fs";
 import { resolve } from "node:path";
 import { parse } from "csv-parse";
-import { eq, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { closeDb, getDb } from "../../src/borneo/lib/db";
 import { participants } from "../../src/borneo/lib/db/schema";
 import { normalizeEmail } from "../../src/borneo/lib/auth/session";
 
-const CSV_DEFAULT = resolve(__dirname, "../../data/imports/guests-2026-09-05.csv");
+const CSV_DEFAULT = resolve(__dirname, "../../data/imports/guests-2026-09-15.csv");
 
+/** Exact survey headers from the 2026-09-15 Luma export. */
 const COL = {
   telegram: "What is your Telegram username?",
   projectIdea:
@@ -30,39 +34,68 @@ const COL = {
   passportLast: "Last Name as per passport/IC",
 } as const;
 
-function emptyToNull(value: string | undefined): string | null {
+function emptyToNull(value: string | undefined | null): string | null {
   const trimmed = value?.trim();
   return trimmed ? trimmed : null;
 }
 
-function parseDate(value: string | undefined): Date | null {
+function parseDate(value: string | undefined | null): Date | null {
   if (!value?.trim()) return null;
   const d = new Date(value);
   return Number.isNaN(d.getTime()) ? null : d;
 }
 
+/** Strip BOM from Luma CSV header keys (often `\\ufeffguest_id`). */
+function normalizeRow(row: Record<string, string>): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [key, value] of Object.entries(row)) {
+    out[key.replace(/^\ufeff/, "").trim()] = value;
+  }
+  return out;
+}
+
+function cell(row: Record<string, string>, header: string): string | null {
+  if (header in row) return emptyToNull(row[header]);
+  const needle = header.slice(0, 40).toLowerCase();
+  for (const [key, value] of Object.entries(row)) {
+    if (key.toLowerCase().startsWith(needle)) return emptyToNull(value);
+  }
+  return null;
+}
+
 async function main() {
-  console.log("Importing guests...");
-  const csvPath = process.argv[2] ?? CSV_DEFAULT;
+  const csvPath = resolve(process.argv[2] ?? CSV_DEFAULT);
+  console.log(`Importing guests from ${csvPath}`);
   const db = getDb();
   const rows: Record<string, string>[] = [];
 
   await new Promise<void>((resolvePromise, reject) => {
     createReadStream(csvPath)
-      .pipe(parse({ columns: true, skip_empty_lines: true, trim: true }))
-      .on("data", (row: Record<string, string>) => rows.push(row))
+      .pipe(parse({ columns: true, skip_empty_lines: true, trim: true, relax_column_count: true }))
+      .on("data", (row: Record<string, string>) => rows.push(normalizeRow(row)))
       .on("error", reject)
       .on("end", () => resolvePromise());
   });
 
   let upserted = 0;
+  let checkedIn = 0;
+  let approved = 0;
+  let skipped = 0;
+
   for (const row of rows) {
     const email = row.email?.trim();
     const guestId = row.guest_id?.trim();
-    if (!email || !guestId) continue;
+    if (!email || !guestId) {
+      skipped += 1;
+      continue;
+    }
 
     const emailNormalized = normalizeEmail(email);
     const checkedInAt = parseDate(row.checked_in_at);
+    const approvalStatus = emptyToNull(row.approval_status);
+    if (checkedInAt) checkedIn += 1;
+    if (approvalStatus === "approved") approved += 1;
+
     const values = {
       guestId,
       email,
@@ -72,20 +105,20 @@ async function main() {
       lastName: emptyToNull(row.last_name),
       phoneNumber: emptyToNull(row.phone_number),
       lumaCreatedAt: parseDate(row.created_at),
-      approvalStatus: emptyToNull(row.approval_status),
+      approvalStatus,
       checkedInAt,
       merchReceivedAt: checkedInAt,
       ticketTypeId: emptyToNull(row.ticket_type_id),
       ticketName: emptyToNull(row.ticket_name),
-      passportFirstName: emptyToNull(row[COL.passportFirst]),
-      passportLastName: emptyToNull(row[COL.passportLast]),
-      telegram: emptyToNull(row[COL.telegram]),
-      projectIdea: emptyToNull(row[COL.projectIdea]),
-      proofOfWork: emptyToNull(row[COL.proofOfWork]),
-      teamSetup: emptyToNull(row[COL.teamSetup]),
-      commitmentProof: emptyToNull(row[COL.commitmentProof]),
-      jerseySize: emptyToNull(row[COL.jerseySize]),
-      ownAccommodation: emptyToNull(row[COL.ownAccommodation]),
+      passportFirstName: cell(row, COL.passportFirst),
+      passportLastName: cell(row, COL.passportLast),
+      telegram: cell(row, COL.telegram),
+      projectIdea: cell(row, COL.projectIdea),
+      proofOfWork: cell(row, COL.proofOfWork),
+      teamSetup: cell(row, COL.teamSetup),
+      commitmentProof: cell(row, COL.commitmentProof),
+      jerseySize: cell(row, COL.jerseySize),
+      ownAccommodation: cell(row, COL.ownAccommodation),
       rawRegistration: row,
       updatedAt: new Date(),
     };
@@ -105,7 +138,9 @@ async function main() {
     upserted += 1;
   }
 
-  console.log(`Imported ${upserted} participants from ${csvPath}`);
+  console.log(
+    `Imported ${upserted} participants (${approved} approved, ${checkedIn} checked in on Luma, ${skipped} skipped) from ${csvPath}`,
+  );
   await closeDb();
 }
 
