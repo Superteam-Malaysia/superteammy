@@ -1,4 +1,5 @@
 import { and, asc, eq, inArray, notLike } from "drizzle-orm";
+import { isMentorParticipant } from "@borneo/data/mentors";
 import { getDb } from "@borneo/lib/db";
 import { participants, teamMembers, teams } from "@borneo/lib/db/schema";
 import {
@@ -26,6 +27,7 @@ type ParticipantRow = {
   name: string | null;
   firstName: string | null;
   lastName: string | null;
+  email: string;
   projectIdea: string | null;
   teamSetup: string | null;
   telegram: string | null;
@@ -104,6 +106,7 @@ const participantSelect = {
   name: participants.name,
   firstName: participants.firstName,
   lastName: participants.lastName,
+  email: participants.email,
   projectIdea: participants.projectIdea,
   teamSetup: participants.teamSetup,
   telegram: participants.telegram,
@@ -117,6 +120,22 @@ const participantSelect = {
   avatarUrl: participants.avatarUrl,
 };
 
+function isMentorRow(row: {
+  name: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  email: string;
+  telegram: string | null;
+  twitterUrl: string | null;
+}): boolean {
+  return isMentorParticipant({
+    name: displayName(row),
+    telegram: row.telegram,
+    twitter: row.twitterUrl,
+    email: row.email,
+  });
+}
+
 /** Public-safe participant rows for the /teams directory. */
 export async function getPublicParticipants(): Promise<PublicParticipant[]> {
   if (!process.env.DATABASE_URL) return [];
@@ -128,8 +147,9 @@ export async function getPublicParticipants(): Promise<PublicParticipant[]> {
     .where(and(eq(participants.approvalStatus, "approved"), notLike(participants.guestId, "staff-%")))
     .orderBy(asc(participants.name));
 
-  const teamMap = await hackathonTeamsByParticipantId(rows.map((row) => row.id));
-  return rows.map((row) => toPublicParticipant(row, teamMap.get(row.id) ?? []));
+  const builders = rows.filter((row) => !isMentorRow(row));
+  const teamMap = await hackathonTeamsByParticipantId(builders.map((row) => row.id));
+  return builders.map((row) => toPublicParticipant(row, teamMap.get(row.id) ?? []));
 }
 
 /** Builder cards for team members — same shape as the directory. */
@@ -149,9 +169,10 @@ export async function getPublicParticipantsByIds(ids: string[]): Promise<PublicP
     )
     .orderBy(asc(participants.name));
 
-  const teamMap = await hackathonTeamsByParticipantId(ids);
+  const builders = rows.filter((row) => !isMentorRow(row));
+  const teamMap = await hackathonTeamsByParticipantId(builders.map((row) => row.id));
   const byId = new Map(
-    rows.map((row) => [row.id, toPublicParticipant(row, teamMap.get(row.id) ?? [])]),
+    builders.map((row) => [row.id, toPublicParticipant(row, teamMap.get(row.id) ?? [])]),
   );
   return ids.map((id) => byId.get(id)).filter((p): p is PublicParticipant => p != null);
 }

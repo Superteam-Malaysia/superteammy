@@ -80,7 +80,7 @@ const MENTOR_CONTACT: Record<
   tristan: { telegram: "hypetris_" },
   vesper: { telegram: "vesper792" },
   jemmy: { telegram: "jemmmyjemm" },
-  nic: { telegram: "NicFury" },
+  nic: { email: "nicfuryyy@gmail.com", telegram: "NicFury" },
   ohmeohmy: { telegram: "OhMeOhMy_Sol" },
   "ming-yang": { telegram: "Ming_Yang" },
   joey: { telegram: "joeylaujy" },
@@ -152,6 +152,103 @@ export function isMentorTeamSlug(slug: string, teamName?: string | null): boolea
     const fromName = mentorSlug(teamName);
     if (fromName && (mentorIds.has(fromName) || orgSlugs.has(fromName))) return true;
   }
+  return false;
+}
+
+/** Extra telegram / X handles that map to a mentor id (Luma typos, alt accounts). */
+const MENTOR_HANDLE_ALIASES: Record<string, string[]> = {
+  nic: ["nicfury", "nicfuryy"],
+};
+
+function normalizeHandle(value: string | null | undefined): string | null {
+  if (!value?.trim()) return null;
+  let cleaned = value.trim();
+  cleaned = cleaned.replace(/^https?:\/\/(t\.me|telegram\.me|x\.com|twitter\.com)\//i, "");
+  cleaned = cleaned.replace(/^@/, "");
+  cleaned = cleaned.split(/[/?#]/)[0] ?? cleaned;
+  const compact = cleaned.toLowerCase().replace(/[^a-z0-9]/g, "");
+  return compact || null;
+}
+
+function normalizePersonName(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9|/\s]+/g, " ").replace(/\s+/g, " ").trim();
+}
+
+/**
+ * True when a Luma / directory person is a workshop mentor or Demo Day judge.
+ * Keeps mentors out of the hackathon teams builder list (and team memberships).
+ */
+export function isMentorParticipant(person: {
+  name: string;
+  telegram?: string | null;
+  twitter?: string | null;
+  email?: string | null;
+}): boolean {
+  const personTelegram = normalizeHandle(person.telegram);
+  const personTwitter = normalizeHandle(person.twitter);
+  const personEmail = person.email?.trim().toLowerCase() || null;
+  const nameNorm = normalizePersonName(person.name);
+  if (!nameNorm && !personTelegram && !personTwitter && !personEmail) return false;
+
+  const firstToken = nameNorm.split(/[\s|/]+/).filter(Boolean)[0] ?? "";
+
+  for (const mentor of getPublicMentors()) {
+    const mentorTelegram = normalizeHandle(mentorTelegramHandle(mentor));
+    const mentorTwitter = normalizeHandle(mentor.twitter);
+    const mentorEmail =
+      mentor.email?.trim().toLowerCase() ||
+      MENTOR_CONTACT[mentor.id]?.email?.trim().toLowerCase() ||
+      null;
+
+    if (personTelegram && mentorTelegram && personTelegram === mentorTelegram) return true;
+    if (personTwitter && mentorTwitter && personTwitter === mentorTwitter) return true;
+    if (personEmail && mentorEmail && personEmail === mentorEmail) return true;
+
+    for (const alias of MENTOR_HANDLE_ALIASES[mentor.id] ?? []) {
+      if (personTelegram === alias || personTwitter === alias) return true;
+    }
+
+    const mentorName = normalizePersonName(mentor.name);
+    if (!mentorName) continue;
+
+    if (nameNorm === mentorName) return true;
+
+    const mentorFirst = mentorName.split(/\s+/)[0] ?? "";
+    // Short / common first names need an org cue or contact match — avoid hiding builders
+    // named Chris, Sam, Han, etc.
+    const ambiguousFirst = new Set([
+      "sam",
+      "han",
+      "chris",
+      "joey",
+      "joyce",
+      "nikki",
+      "nic",
+      "semi",
+      "leon",
+    ]);
+    const prefixOk =
+      mentorName.includes(" ") ||
+      (!ambiguousFirst.has(mentorFirst) && mentorFirst.length >= 5);
+    if (
+      prefixOk &&
+      (nameNorm.startsWith(`${mentorName} `) ||
+        nameNorm.startsWith(`${mentorName}|`) ||
+        nameNorm.startsWith(`${mentorName}/`))
+    ) {
+      return true;
+    }
+
+    // "NIC | SANCTUM" — first token matches mentor first name and org appears in the label
+    if (firstToken && mentorFirst && firstToken === mentorFirst) {
+      const orgPrimary = (mentor.organization ?? "")
+        .toLowerCase()
+        .split(/[/·|]/)[0]
+        ?.trim();
+      if (orgPrimary && nameNorm.includes(orgPrimary)) return true;
+    }
+  }
+
   return false;
 }
 

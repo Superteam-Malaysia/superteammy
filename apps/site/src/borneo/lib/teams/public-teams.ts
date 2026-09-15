@@ -1,6 +1,6 @@
 import { and, asc, eq, inArray, sql } from "drizzle-orm";
 import { cache } from "react";
-import { isMentorTeamSlug } from "@borneo/data/mentors";
+import { isMentorParticipant, isMentorTeamSlug } from "@borneo/data/mentors";
 import { getDb } from "@borneo/lib/db";
 import { participants, teamMembers, teams } from "@borneo/lib/db/schema";
 import { participantInitials } from "@borneo/lib/participants/team-categories";
@@ -68,6 +68,9 @@ async function fetchMembersByTeamIds(teamIds: string[]) {
       name: participants.name,
       firstName: participants.firstName,
       lastName: participants.lastName,
+      email: participants.email,
+      telegram: participants.telegram,
+      twitterUrl: participants.twitterUrl,
       role: teamMembers.role,
     })
     .from(teamMembers)
@@ -77,6 +80,16 @@ async function fetchMembersByTeamIds(teamIds: string[]) {
 
   const membersByTeam = new Map<string, PublicTeamMember[]>();
   for (const row of rows) {
+    if (
+      isMentorParticipant({
+        name: displayName(row),
+        telegram: row.telegram,
+        twitter: row.twitterUrl,
+        email: row.email,
+      })
+    ) {
+      continue;
+    }
     const list = membersByTeam.get(row.teamId) ?? [];
     list.push(mapMember(row));
     membersByTeam.set(row.teamId, list);

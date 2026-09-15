@@ -10,7 +10,7 @@ import { participants, teamMembers, teams } from "../../src/borneo/lib/db/schema
 import { slugifyTeamName } from "../../src/borneo/lib/teams/slug";
 import { deckUrlForSlug } from "../../src/borneo/data/demo-day-decks";
 import { pitchCopyForSlug } from "../../src/borneo/data/demo-day-pitch-copy";
-import { isMentorTeamSlug } from "../../src/borneo/data/mentors";
+import { isMentorParticipant, isMentorTeamSlug } from "../../src/borneo/data/mentors";
 
 type SeedMember = { email: string; role: "owner" | "editor" | "member" };
 
@@ -822,10 +822,59 @@ async function pruneOffSeedMemberships(db: ReturnType<typeof getDb>) {
   }
 }
 
+
+/** Drop workshop mentors / judges from hackathon team_members rows. */
+async function removeMentorMemberships(db: ReturnType<typeof getDb>) {
+  const rows = await db
+    .select({
+      teamId: teamMembers.teamId,
+      participantId: teamMembers.participantId,
+      slug: teams.slug,
+      name: participants.name,
+      firstName: participants.firstName,
+      lastName: participants.lastName,
+      email: participants.email,
+      telegram: participants.telegram,
+      twitterUrl: participants.twitterUrl,
+    })
+    .from(teamMembers)
+    .innerJoin(teams, eq(teamMembers.teamId, teams.id))
+    .innerJoin(participants, eq(teamMembers.participantId, participants.id));
+
+  let removed = 0;
+  for (const row of rows) {
+    const display =
+      row.name?.trim() ||
+      [row.firstName, row.lastName].filter(Boolean).join(" ").trim() ||
+      "";
+    if (
+      !isMentorParticipant({
+        name: display,
+        telegram: row.telegram,
+        twitter: row.twitterUrl,
+        email: row.email,
+      })
+    ) {
+      continue;
+    }
+    await db
+      .delete(teamMembers)
+      .where(
+        and(eq(teamMembers.teamId, row.teamId), eq(teamMembers.participantId, row.participantId)),
+      );
+    removed += 1;
+    console.log(`Removed mentor from team ${row.slug}: ${display || row.email}`);
+  }
+  if (removed > 0) {
+    console.log(`Removed ${removed} mentor team membership(s)`);
+  }
+}
+
 async function main() {
   const db = getDb();
 
   await removeMentorTeams(db);
+  await removeMentorMemberships(db);
   await removeDuplicateTeams(db);
   await clearBrokenLogos(db);
   await pruneDeclinedTeamMembers(db);
