@@ -4,7 +4,7 @@
  * Usage: DATABASE_URL=... npm run db:seed-teams
  */
 import "dotenv/config";
-import { eq, sql, and } from "drizzle-orm";
+import { eq, sql, and, inArray } from "drizzle-orm";
 import { closeDb, getDb } from "../../src/borneo/lib/db";
 import { participants, teamMembers, teams } from "../../src/borneo/lib/db/schema";
 import { slugifyTeamName } from "../../src/borneo/lib/teams/slug";
@@ -767,6 +767,61 @@ async function pruneDeclinedTeamMembers(db: ReturnType<typeof getDb>) {
   }
 }
 
+/**
+ * Seed lists the real home team(s) for known emails. Drop those people from
+ * other seeded teams (e.g. Vello listed as "team of 3" on Luma so Ronak and
+ * Solah were added there; they belong on Janamat and SoloDeath).
+ * Does not touch memberships on teams that are not in the seed list.
+ */
+async function pruneOffSeedMemberships(db: ReturnType<typeof getDb>) {
+  const allowedByEmail = new Map<string, Set<string>>();
+  const seedSlugs = new Set<string>();
+  for (const seed of SEED_TEAMS) {
+    seedSlugs.add(seed.slug);
+    for (const member of seed.members) {
+      const email = member.email.trim().toLowerCase();
+      const slugs = allowedByEmail.get(email) ?? new Set<string>();
+      slugs.add(seed.slug);
+      allowedByEmail.set(email, slugs);
+    }
+  }
+
+  const emails = [...allowedByEmail.keys()];
+  if (emails.length === 0) return;
+
+  const rows = await db
+    .select({
+      teamId: teamMembers.teamId,
+      participantId: teamMembers.participantId,
+      slug: teams.slug,
+      email: participants.emailNormalized,
+    })
+    .from(teamMembers)
+    .innerJoin(teams, eq(teamMembers.teamId, teams.id))
+    .innerJoin(participants, eq(teamMembers.participantId, participants.id))
+    .where(inArray(participants.emailNormalized, emails));
+
+  let removed = 0;
+  for (const row of rows) {
+    if (!seedSlugs.has(row.slug)) continue;
+    const allowed = allowedByEmail.get(row.email);
+    if (allowed?.has(row.slug)) continue;
+    await db
+      .delete(teamMembers)
+      .where(
+        and(eq(teamMembers.teamId, row.teamId), eq(teamMembers.participantId, row.participantId)),
+      );
+    removed += 1;
+    console.log(
+      `Removed ${row.email} from ${row.slug} (seed teams: ${[...(allowed ?? [])].join(", ")})`,
+    );
+  }
+
+  if (removed > 0) {
+    console.log(`Pruned ${removed} off-seed membership(s)`);
+  }
+}
+
 async function main() {
   const db = getDb();
 
@@ -842,6 +897,8 @@ async function main() {
       console.log(`Seeded team: ${seed.name} (${team.slug})`);
     }
   }
+
+  await pruneOffSeedMemberships(db);
 
   await closeDb();
 }
