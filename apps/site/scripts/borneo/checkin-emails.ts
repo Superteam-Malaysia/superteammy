@@ -45,8 +45,7 @@ async function main() {
     .update(participants)
     .set({
       checkedInAt: now,
-      // Keep existing merch timestamp if already stamped.
-      merchReceivedAt: sql`coalesce(${participants.merchReceivedAt}, ${now})`,
+      merchReceivedAt: sql`coalesce(${participants.merchReceivedAt}, now())`,
       updatedAt: now,
     })
     .where(inArray(participants.emailNormalized, emails))

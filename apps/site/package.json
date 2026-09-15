@@ -23,6 +23,7 @@
     "borneo:db:split-waterfront": "tsx scripts/borneo/split-waterfront-submissions.ts",
     "borneo:db:import-guests": "tsx scripts/borneo/import-guests.ts",
     "borneo:db:checkin-emails": "tsx scripts/borneo/checkin-emails.ts",
+    "borneo:db:delete-participants": "tsx scripts/borneo/delete-participants.ts",
     "borneo:db:seed-teams": "tsx scripts/borneo/seed-teams.ts",
     "borneo:db:seed-race-submissions": "tsx scripts/borneo/seed-race-submissions.ts",
     "borneo:db:seed-staff": "tsx scripts/borneo/seed-staff.ts",

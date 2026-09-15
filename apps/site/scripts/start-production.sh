@@ -20,6 +20,7 @@ npm run borneo:telegram:setup-webhook || echo "[startup] telegram webhook setup 
 echo "[startup] background data sync"
 (
   npm run borneo:db:import-guests || echo "[startup] import guests skipped"
+  npm run borneo:db:delete-participants || echo "[startup] delete participants skipped"
   npm run borneo:db:checkin-emails || echo "[startup] arrival check-in skipped"
   npm run borneo:db:patch-telegram-handles || echo "[startup] telegram patch skipped"
   npm run borneo:db:seed-teams || echo "[startup] seed teams skipped"

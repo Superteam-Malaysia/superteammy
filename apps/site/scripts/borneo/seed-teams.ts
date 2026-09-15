@@ -414,17 +414,18 @@ const SEED_TEAMS: SeedTeam[] = [
     proofUrl: "https://hypebiscus.xyz",
     members: [{ email: "wanaqilre@gmail.com", role: "owner" }],
   },
-  {
-    slug: "withmiautomation",
-    name: "WithMIA Automation",
-    tagline: "Web3 and AI education for everyone",
-    description:
-      "An education platform about Web3 and AI where everyone — even parents new to crypto — can learn on top of the Solana network.",
-    category: "Consumer",
-    websiteUrl: "https://www.withmiautomation.com",
-    proofUrl: "https://www.withmiautomation.com",
-    members: [{ email: "fahmiiireza@gmail.com", role: "owner" }],
-  },
+  // Removed with Fahmi Fahreza (not attending / deleted from guest list).
+  // {
+  //   slug: "withmiautomation",
+  //   name: "WithMIA Automation",
+  //   tagline: "Web3 and AI education for everyone",
+  //   description:
+  //     "An education platform about Web3 and AI where everyone — even parents new to crypto — can learn on top of the Solana network.",
+  //   category: "Consumer",
+  //   websiteUrl: "https://www.withmiautomation.com",
+  //   proofUrl: "https://www.withmiautomation.com",
+  //   members: [{ email: "fahmiiireza@gmail.com", role: "owner" }],
+  // },
   {
     slug: "diabetes-companion",
     name: "Diabetes Companion",
@@ -572,15 +573,16 @@ const SEED_TEAMS: SeedTeam[] = [
     proofUrl: "https://worldtradingtournament",
     members: [{ email: "brandonkongbk@gmail.com", role: "owner" }],
   },
-  {
-    slug: "circle-of-care",
-    name: "Circle of Care",
-    tagline: "Home-care coordination for Sarawak seniors",
-    description:
-      "A pilot home-care support coordination hub for seniors — personalised care plans, skilled caregivers, and dignified ageing-in-place support as Sarawak becomes an ageing state.",
-    category: "Consumer",
-    members: [{ email: "mariamhii@gmail.com", role: "owner" }],
-  },
+  // Removed with Mariam Hii (not attending / deleted from guest list).
+  // {
+  //   slug: "circle-of-care",
+  //   name: "Circle of Care",
+  //   tagline: "Home-care coordination for Sarawak seniors",
+  //   description:
+  //     "A pilot home-care support coordination hub for seniors — personalised care plans, skilled caregivers, and dignified ageing-in-place support as Sarawak becomes an ageing state.",
+  //   category: "Consumer",
+  //   members: [{ email: "mariamhii@gmail.com", role: "owner" }],
+  // },
   {
     slug: "argo",
     name: "argo",
