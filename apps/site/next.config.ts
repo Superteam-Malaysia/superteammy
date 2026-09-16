@@ -21,7 +21,7 @@ const nextConfig: NextConfig = {
             key: "Cache-Control",
             // Short TTL + revalidate so logo/slide replacements are not stuck
             // behind a year-long immutable CDN/browser cache.
-            value: "public, max-age=300, must-revalidate",
+            value: "public, max-age=60, must-revalidate",
           },
         ],
       },

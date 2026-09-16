@@ -57,7 +57,7 @@ export const DEMO_DAY_LOGO_DIR = "/images/teams/demo-day/logos";
 export const DEMO_DAY_SLIDES_DIR = "/images/teams/demo-day/slides";
 
 /** Cache-bust when demo-day static assets are replaced (filenames stay stable). */
-export const DEMO_DAY_ASSET_VERSION = "20260916h";
+export const DEMO_DAY_ASSET_VERSION = "20260916i";
 
 function withAssetVersion(path: string): string {
   const sep = path.includes("?") ? "&" : "?";
@@ -81,8 +81,9 @@ export function demoDayPreviewUrl(slug: string): string {
   return withAssetVersion(`/images/teams/demo-day/previews/${slug}.png`);
 }
 
+/** Argo keeps a unique filename so CDN/browser caches cannot revive the anime portrait. */
 const DEMO_DAY_LOGO_FILES: Record<string, string> = {
-  argo: "argo-mark.png",
+  argo: "argo-quest.png",
 };
 
 export function demoDayLogoUrl(slug: string): string {
