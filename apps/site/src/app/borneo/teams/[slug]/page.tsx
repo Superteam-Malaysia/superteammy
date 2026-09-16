@@ -10,9 +10,15 @@ import { getParticipantForSession } from "@borneo/lib/auth/participant";
 import { getPublicParticipantsByIds } from "@borneo/lib/participants/public-directory";
 import { requireTeamEditor } from "@borneo/lib/teams/access";
 import { getPublicTeamBySlug, getTeamRecordBySlug } from "@borneo/lib/teams/public-teams";
+import {
+  deckMappingForSlug,
+  demoDayPreviewUrl,
+  teamDisplayLogoUrl,
+} from "@borneo/data/demo-day-decks";
 import { pitchCopyForSlug } from "@borneo/data/demo-day-pitch-copy";
 import { getDb } from "@borneo/lib/db";
 import { teams } from "@borneo/lib/db/schema";
+import { borneoPath, pageMetadata } from "@borneo/lib/metadata";
 
 export const dynamic = "force-dynamic";
 
@@ -40,10 +46,18 @@ export async function generateMetadata({ params }: TeamDetailPageProps): Promise
   const title = pitch?.name ?? team.name;
   const description =
     pitch?.tagline ?? team.tagline ?? team.description ?? `${team.name} at Startup Village Borneo`;
-  return {
+  const mapping = deckMappingForSlug(slug);
+  const image =
+    (mapping ? demoDayPreviewUrl(mapping.slug) : null) ??
+    teamDisplayLogoUrl(slug, team.logoUrl) ??
+    "/borneo/brand/svb-logo.png";
+
+  return pageMetadata({
     title,
     description,
-  };
+    path: borneoPath(`/teams/${slug}`),
+    image,
+  });
 }
 
 export default async function TeamDetailPage({ params }: TeamDetailPageProps) {
@@ -64,38 +78,38 @@ export default async function TeamDetailPage({ params }: TeamDetailPageProps) {
   return (
     <main className="site-main site-main--stack">
       <SectionArticle>
-          <div className="team-detail">
-            <Link href="/teams" className="team-detail__back">
-              <span aria-hidden="true">&lt;</span> Back to teams
-            </Link>
+        <div className="team-detail">
+          <Link href="/teams" className="team-detail__back">
+            <span aria-hidden="true">&lt;</span> Back to teams
+          </Link>
 
-            {canEdit ? (
-              <>
-                <h1 className="team-detail__title team-detail__title--manage">Edit {team.name}</h1>
-                <p className="team-detail__manage-lead">
-                  Update your team profile, logo, links, and members below. Each member fills social
-                  links on their own profile page.
-                </p>
-                <TeamManageSection slug={slug} team={team} />
-                <section className="team-detail__members">
-                  <h2 className="team-detail__section-label">Team cards</h2>
-                  <TeamMemberCards members={memberProfiles} />
-                </section>
-              </>
-            ) : (
-              <TeamDetailPublicView team={team} />
-            )}
-
-            {!canEdit ? (
+          {canEdit ? (
+            <>
+              <h1 className="team-detail__title team-detail__title--manage">Edit {team.name}</h1>
+              <p className="team-detail__manage-lead">
+                Update your team profile, logo, links, and members below. Each member fills social
+                links on their own profile page.
+              </p>
+              <TeamManageSection slug={slug} team={team} />
               <section className="team-detail__members">
-                <h2 className="team-detail__section-label">Team</h2>
+                <h2 className="team-detail__section-label">Team cards</h2>
                 <TeamMemberCards members={memberProfiles} />
               </section>
-            ) : null}
+            </>
+          ) : (
+            <TeamDetailPublicView team={team} />
+          )}
 
-            {!canEdit ? <TeamDetailActions slug={slug} /> : null}
-          </div>
-        </SectionArticle>
+          {!canEdit ? (
+            <section className="team-detail__members">
+              <h2 className="team-detail__section-label">Team</h2>
+              <TeamMemberCards members={memberProfiles} />
+            </section>
+          ) : null}
+
+          {!canEdit ? <TeamDetailActions slug={slug} /> : null}
+        </div>
+      </SectionArticle>
     </main>
   );
 }
