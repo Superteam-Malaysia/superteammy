@@ -24,7 +24,7 @@ export function SocialLinkFields({ values, onChange }: SocialLinkFieldsProps) {
     <fieldset className="profile-form__social">
       <legend className="team-form__label">Social links</legend>
       <p className="profile-form__social-hint">
-        Shown on your builder card in Teams &amp; Mentors — and on your team page.
+        Shown on your builder card in the Borneo Builders Directory — and on your team page.
       </p>
       <div className="profile-form__social-grid">
         {FIELDS.map(({ key, label, placeholder }) => (

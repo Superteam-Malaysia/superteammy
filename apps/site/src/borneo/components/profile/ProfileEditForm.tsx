@@ -176,7 +176,7 @@ export function ProfileEditForm({
           <h2 id="profile-preview-heading" className="profile-edit__preview-title">
             Directory preview
           </h2>
-          <p className="profile-edit__preview-lead">Preview how you appear in Teams &amp; Mentors.</p>
+          <p className="profile-edit__preview-lead">Preview how you appear in the Borneo Builders Directory.</p>
         </div>
         <div className="profile-edit__preview-card">
           <MemberProfileCard profile={previewProfile} expandOnClick />

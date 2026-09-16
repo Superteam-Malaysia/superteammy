@@ -6,7 +6,7 @@ import { getPublicParticipants } from "@borneo/lib/participants/public-directory
 import { getPublicTeams } from "@borneo/lib/teams/public-teams";
 
 export const metadata: Metadata = {
-  title: "Teams & Mentors",
+  title: "Borneo Builders Directory",
   description:
     "Hackathon teams, registered builders, and on-stage mentors for Startup Village Borneo.",
 };
