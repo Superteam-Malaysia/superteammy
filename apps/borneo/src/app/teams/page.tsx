@@ -33,7 +33,7 @@ export default async function TeamsPage({ searchParams }: TeamsPageProps) {
     <main className="site-main site-main--stack">
       <PageHeader
         title="Teams, builders & mentors"
-        lead="Explore hackathon teams, registered builders, and workshop leaders plus Demo Day judges."
+        // lead="Explore hackathon teams, registered builders, and workshop leaders plus Demo Day judges."
       />
 
       <DirectoryTabsClient
