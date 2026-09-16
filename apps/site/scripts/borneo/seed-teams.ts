@@ -47,6 +47,7 @@ const SEED_TEAMS: SeedTeam[] = [
     description:
       "Working capital now, credit reputation with every repayment. Float underwrites against verified on-chain incoming payments — evidence of your future, not just your past.",
     category: "DeFi",
+    websiteUrl: "https://justfloat.xyz",
     proofUrl: "https://github.com/Samisha68",
     members: [{ email: "samishaofficial68@gmail.com", role: "owner" }],
   },
@@ -81,6 +82,8 @@ const SEED_TEAMS: SeedTeam[] = [
     description:
       "LP Agent is a liquidity management platform that makes providing liquidity simple and profitable.",
     category: "DeFi",
+    websiteUrl: "https://lpagent.io",
+    proofUrl: "https://app.lpagent.io",
     members: [
       { email: "toanbku@gmail.com", role: "owner" },
       { email: "leqdat18@gmail.com", role: "editor" },
@@ -207,7 +210,7 @@ const SEED_TEAMS: SeedTeam[] = [
     description:
       "Deposit USDC, earn ~5% interest, and play free weekly entries for daily HEXO prizes — principal guaranteed, yield-funded prize pools on Solana.",
     category: "DeFi",
-    websiteUrl: "https://hexofun-beta.vercel.app",
+    websiteUrl: "https://hexo.fun",
     proofUrl: "https://hexofun-beta.vercel.app",
     members: [
       { email: "menghong6988@gmail.com", role: "owner" },
@@ -315,8 +318,8 @@ const SEED_TEAMS: SeedTeam[] = [
     description:
       "A transparent carbon market built on Solana — making carbon credits verifiable and trustworthy for buyers and sellers.",
     category: "DeFi",
-    websiteUrl: "https://fractionax.app",
-    proofUrl: "https://fractionax.app",
+    websiteUrl: "https://www.madebyvori.com",
+    proofUrl: "https://www.madebyvori.com",
     members: [{ email: "nizarsyahmi37@gmail.com", role: "owner" }],
   },
   {
@@ -903,14 +906,23 @@ async function main() {
     const createdBy = ownerEmail ? await participantIdByEmail(db, ownerEmail) : null;
 
     if (existing) {
-      // Only update deckUrl and pitch copy (tagline/description) if the team
-      // doesn't already have better values. Never overwrite a real uploaded logo.
+      // Refresh deck / pitch fields. Fill website when missing or still on an old placeholder.
+      const nextWebsite =
+        pitch?.websiteUrl ?? seed.websiteUrl ?? existing.websiteUrl ?? null;
+      const weakWebsite =
+        !existing.websiteUrl ||
+        existing.websiteUrl.includes("fractionax.app") ||
+        (existing.slug === "float-finance" && !existing.websiteUrl.includes("justfloat")) ||
+        (existing.slug === "lp-agent" && !existing.websiteUrl.includes("lpagent.io")) ||
+        (existing.slug === "foresight" && existing.websiteUrl.includes("vercel.app"));
+
       await db
         .update(teams)
         .set({
           deckUrl,
           tagline: existing.tagline || pitch?.tagline || seed.tagline,
           description: existing.description || pitch?.description || seed.description,
+          ...(weakWebsite && nextWebsite ? { websiteUrl: nextWebsite } : {}),
           updatedAt: sql`now()`,
         })
         .where(eq(teams.id, existing.id));

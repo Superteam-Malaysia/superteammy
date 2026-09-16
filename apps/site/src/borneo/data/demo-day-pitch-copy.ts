@@ -60,9 +60,9 @@ export const DEMO_DAY_PITCH_COPY: DemoDayPitchCopy[] = [
     tagline: "Keep the principal. Play with the yield.",
     description:
       "Fixed deposits are boring. Lotteries eat the stake. hexo.fun lets you deposit USDC, earn about 5% interest, and use free weekly entries for daily HEXO prizes. The principal stays put.\n\nBoost tickets are optional. You are not betting the savings to play.",
-    highlights: ["Live on devnet", "hexofun-beta.vercel.app"],
+    highlights: ["Live on devnet", "hexo.fun"],
     category: "DeFi",
-    websiteUrl: "https://hexofun-beta.vercel.app",
+    websiteUrl: "https://hexo.fun",
   },
   {
     slug: "socoe-impact",
