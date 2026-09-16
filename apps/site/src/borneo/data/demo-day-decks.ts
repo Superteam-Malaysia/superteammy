@@ -57,7 +57,7 @@ export const DEMO_DAY_LOGO_DIR = "/images/teams/demo-day/logos";
 export const DEMO_DAY_SLIDES_DIR = "/images/teams/demo-day/slides";
 
 /** Cache-bust when demo-day static assets are replaced (filenames stay stable). */
-export const DEMO_DAY_ASSET_VERSION = "20260916c";
+export const DEMO_DAY_ASSET_VERSION = "20260916d";
 
 function withAssetVersion(path: string): string {
   const sep = path.includes("?") ? "&" : "?";
