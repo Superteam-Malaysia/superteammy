@@ -1,4 +1,5 @@
 import { and, asc, eq, inArray, notLike } from "drizzle-orm";
+import { isHiddenDirectoryParticipant } from "@borneo/data/directory-exclusions";
 import { isMentorParticipant } from "@borneo/data/mentors";
 import { getDb } from "@borneo/lib/db";
 import { participants, teamMembers, teams } from "@borneo/lib/db/schema";
@@ -120,7 +121,7 @@ const participantSelect = {
   avatarUrl: participants.avatarUrl,
 };
 
-function isMentorRow(row: {
+function isExcludedDirectoryRow(row: {
   name: string | null;
   firstName: string | null;
   lastName: string | null;
@@ -128,6 +129,14 @@ function isMentorRow(row: {
   telegram: string | null;
   twitterUrl: string | null;
 }): boolean {
+  if (
+    isHiddenDirectoryParticipant({
+      email: row.email,
+      telegram: row.telegram,
+    })
+  ) {
+    return true;
+  }
   return isMentorParticipant({
     name: displayName(row),
     telegram: row.telegram,
@@ -147,7 +156,7 @@ export async function getPublicParticipants(): Promise<PublicParticipant[]> {
     .where(and(eq(participants.approvalStatus, "approved"), notLike(participants.guestId, "staff-%")))
     .orderBy(asc(participants.name));
 
-  const builders = rows.filter((row) => !isMentorRow(row));
+  const builders = rows.filter((row) => !isExcludedDirectoryRow(row));
   const teamMap = await hackathonTeamsByParticipantId(builders.map((row) => row.id));
   return builders.map((row) => toPublicParticipant(row, teamMap.get(row.id) ?? []));
 }
@@ -169,7 +178,7 @@ export async function getPublicParticipantsByIds(ids: string[]): Promise<PublicP
     )
     .orderBy(asc(participants.name));
 
-  const builders = rows.filter((row) => !isMentorRow(row));
+  const builders = rows.filter((row) => !isExcludedDirectoryRow(row));
   const teamMap = await hackathonTeamsByParticipantId(builders.map((row) => row.id));
   const byId = new Map(
     builders.map((row) => [row.id, toPublicParticipant(row, teamMap.get(row.id) ?? [])]),

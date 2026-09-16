@@ -1,5 +1,6 @@
 import { and, asc, eq, inArray, sql } from "drizzle-orm";
 import { cache } from "react";
+import { isHiddenDirectoryParticipant } from "@borneo/data/directory-exclusions";
 import { isMentorParticipant, isMentorTeamSlug } from "@borneo/data/mentors";
 import { getDb } from "@borneo/lib/db";
 import { participants, teamMembers, teams } from "@borneo/lib/db/schema";
@@ -81,6 +82,10 @@ async function fetchMembersByTeamIds(teamIds: string[]) {
   const membersByTeam = new Map<string, PublicTeamMember[]>();
   for (const row of rows) {
     if (
+      isHiddenDirectoryParticipant({
+        email: row.email,
+        telegram: row.telegram,
+      }) ||
       isMentorParticipant({
         name: displayName(row),
         telegram: row.telegram,
