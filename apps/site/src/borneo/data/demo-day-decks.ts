@@ -57,7 +57,7 @@ export const DEMO_DAY_LOGO_DIR = "/images/teams/demo-day/logos";
 export const DEMO_DAY_SLIDES_DIR = "/images/teams/demo-day/slides";
 
 /** Cache-bust when demo-day static assets are replaced (filenames stay stable). */
-export const DEMO_DAY_ASSET_VERSION = "20260916g";
+export const DEMO_DAY_ASSET_VERSION = "20260916h";
 
 function withAssetVersion(path: string): string {
   const sep = path.includes("?") ? "&" : "?";
@@ -81,8 +81,13 @@ export function demoDayPreviewUrl(slug: string): string {
   return withAssetVersion(`/images/teams/demo-day/previews/${slug}.png`);
 }
 
+const DEMO_DAY_LOGO_FILES: Record<string, string> = {
+  argo: "argo-mark.png",
+};
+
 export function demoDayLogoUrl(slug: string): string {
-  return withAssetVersion(`${DEMO_DAY_LOGO_DIR}/${slug}.png`);
+  const file = DEMO_DAY_LOGO_FILES[slug] ?? `${slug}.png`;
+  return withAssetVersion(`${DEMO_DAY_LOGO_DIR}/${file}`);
 }
 
 const DEMO_DAY_LOGO_SLUGS = new Set([
