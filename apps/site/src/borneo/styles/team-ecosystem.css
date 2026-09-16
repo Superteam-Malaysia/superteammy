@@ -807,6 +807,13 @@
   margin-bottom: 0.85rem;
 }
 
+.team-detail__deck-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .team-detail__deck-frame {
   position: relative;
   width: 100%;

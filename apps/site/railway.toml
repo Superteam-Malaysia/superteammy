@@ -1,10 +1,11 @@
-# Superteam Malaysia + Startup Village Borneo — https://my.superteam.fun and /borneo
+# Staging Canva-embed experiment — do not use on production superteammy.
+# Skips migrate/seed/telegram webhook so shared Postgres and the prod bot stay untouched.
 [build]
-builder = "NIXPACKS"
-buildCommand = "npm install && npm run build"
+builder = "RAILPACK"
+buildCommand = "npm run build"
 watchPatterns = ["**"]
 
 [deploy]
-startCommand = "npm run start:production"
+startCommand = "npx next start -H 0.0.0.0 -p ${PORT:-8080}"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
