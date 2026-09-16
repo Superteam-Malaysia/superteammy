@@ -851,6 +851,7 @@
   background: color-mix(in srgb, var(--color-ink) 55%, transparent);
   aspect-ratio: 16 / 9;
   object-fit: contain;
+  image-rendering: auto;
 }
 
 .team-detail__slideshow-prefetch {
