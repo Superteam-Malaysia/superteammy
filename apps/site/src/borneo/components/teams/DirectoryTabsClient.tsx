@@ -164,10 +164,10 @@ export function DirectoryTabsClient({
           <h1 className="font-[family-name:var(--font-orbitron)] uppercase text-3xl md:text-4xl lg:text-7xl font-black text-white mb-3">
             Borneo Builders Directory
           </h1>
-          <p className="md:text-lg text-[14px] text-white/90 md:max-w-2xl md:mx-auto">
+          {/* <p className="md:text-lg text-[14px] text-white/90 md:max-w-2xl md:mx-auto">
             Explore hackathon teams, registered builders, and workshop leaders plus Demo Day judges at
             Startup Village Borneo
-          </p>
+          </p> */}
         </div>
 
         <div className="md:mb-6 mb-4">
