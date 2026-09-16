@@ -56,6 +56,14 @@ export const DEMO_DAY_LOGO_DIR = "/images/teams/demo-day/logos";
 /** Per-page pitch slide screenshots (Canva thumbnails). */
 export const DEMO_DAY_SLIDES_DIR = "/images/teams/demo-day/slides";
 
+/** Cache-bust when demo-day static assets are replaced (filenames stay stable). */
+export const DEMO_DAY_ASSET_VERSION = "20260916c";
+
+function withAssetVersion(path: string): string {
+  const sep = path.includes("?") ? "&" : "?";
+  return `${path}${sep}v=${DEMO_DAY_ASSET_VERSION}`;
+}
+
 export function demoDayTeamViewUrl(designId: string): string {
   return `https://www.canva.com/design/${designId}/view`;
 }
@@ -65,16 +73,16 @@ export function demoDayTeamEmbedUrl(designId: string): string {
 }
 
 export function demoDayPdfUrl(slug: string): string {
-  return `/images/teams/demo-day/decks/${slug}.pdf`;
+  return withAssetVersion(`/images/teams/demo-day/decks/${slug}.pdf`);
 }
 
 /** Title-slide thumbnail (small PNG). Shown before the PDF iframe loads. */
 export function demoDayPreviewUrl(slug: string): string {
-  return `/images/teams/demo-day/previews/${slug}.png`;
+  return withAssetVersion(`/images/teams/demo-day/previews/${slug}.png`);
 }
 
 export function demoDayLogoUrl(slug: string): string {
-  return `${DEMO_DAY_LOGO_DIR}/${slug}.png`;
+  return withAssetVersion(`${DEMO_DAY_LOGO_DIR}/${slug}.png`);
 }
 
 const DEMO_DAY_LOGO_SLUGS = new Set([
@@ -82,11 +90,11 @@ const DEMO_DAY_LOGO_SLUGS = new Set([
   "wintel",
 ]);
 
-/** Prefer a founder upload. Fall back to the mark cropped from the Demo Day title slide. */
+/**
+ * Prefer Demo Day HQ marks for pitch teams (founder uploads often kept old
+ * slide crops). Other teams keep their stored upload.
+ */
 export function teamDisplayLogoUrl(slug: string, storedLogoUrl: string | null | undefined): string | null {
-  if (storedLogoUrl && !storedLogoUrl.includes("/images/teams/demo-day/")) {
-    return storedLogoUrl;
-  }
   if (DEMO_DAY_LOGO_SLUGS.has(slug)) return demoDayLogoUrl(slug);
   return storedLogoUrl ?? null;
 }
@@ -114,7 +122,9 @@ export function deckSlidePathsForSlug(slug: string): string[] {
   const slides: string[] = [];
   const count = mapping.pageEnd - mapping.pageStart + 1;
   for (let i = 1; i <= count; i++) {
-    slides.push(`${DEMO_DAY_SLIDES_DIR}/${slug}/${String(i).padStart(2, "0")}.webp`);
+    slides.push(
+      withAssetVersion(`${DEMO_DAY_SLIDES_DIR}/${slug}/${String(i).padStart(2, "0")}.webp`),
+    );
   }
   return slides;
 }

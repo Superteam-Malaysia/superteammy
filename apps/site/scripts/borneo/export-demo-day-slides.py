@@ -8,11 +8,11 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[2]
 DECKS = ROOT / "public/images/teams/demo-day/decks"
 OUT = ROOT / "public/images/teams/demo-day/slides"
-# 1080p-wide WebPs stay sharp on desktop without ballooning the bundle.
-MAX_WIDTH = 1920
-# Oversample PDF → downscale with Lanczos for cleaner type than a 1:1 render.
-RENDER_SCALE = 2.0
-WEBP_QUALITY = 82
+# 1440p-wide WebPs — sharp on retina without ballooning the deploy.
+MAX_WIDTH = 2560
+# Oversample PDF → Lanczos downscale for cleaner type than a 1:1 render.
+RENDER_SCALE = 2.5
+WEBP_QUALITY = 88
 
 
 def export_pdf(pdf_path: Path) -> int:

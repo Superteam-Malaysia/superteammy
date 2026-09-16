@@ -19,7 +19,9 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
+            // Short TTL + revalidate so logo/slide replacements are not stuck
+            // behind a year-long immutable CDN/browser cache.
+            value: "public, max-age=300, must-revalidate",
           },
         ],
       },
