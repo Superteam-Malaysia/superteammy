@@ -21,6 +21,11 @@ const socialLinks = [
     label: "Instagram",
     icon: "/icons/instagram.svg",
   },
+  {
+    href: "https://www.linkedin.com/company/superteam-malaysia/posts/",
+    label: "LinkedIn",
+    icon: "/icons/linkedin.svg",
+  },
 ];
 
 const navLinks = [
