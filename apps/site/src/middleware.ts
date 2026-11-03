@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 
 /** Reachable without a session. */
-const PUBLIC_PREFIXES = ['/invite/', '/login', '/register', '/forgot-password', '/reset-password'];
+const PUBLIC_PREFIXES = ['/invite/', '/login', '/register', '/forgot-password', '/reset-password', '/cradle'];
 
 const SUPER_ADMIN_PATHS = ['/dashboard/members', '/dashboard/invites'];
 const ADMIN_PATHS = [

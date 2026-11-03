@@ -5,6 +5,18 @@ const nextConfig: NextConfig = {
   // dev resources (HMR and friends) by default; this has no effect on a
   // production build. Add your own LAN IP if it differs.
   allowedDevOrigins: ["192.168.100.18", "*.local"],
+  async rewrites() {
+    return [
+      {
+        source: "/cradle",
+        destination: "https://cradle-live-production.up.railway.app/cradle/",
+      },
+      {
+        source: "/cradle/:path*",
+        destination: "https://cradle-live-production.up.railway.app/cradle/:path*",
+      },
+    ];
+  },
   async redirects() {
     return [
       { source: "/borneo/travel", destination: "/borneo/faq", permanent: true },
